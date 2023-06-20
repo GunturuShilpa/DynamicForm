@@ -40,7 +40,7 @@ namespace Infrastructure.Repository
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = UserId, ModifiedDate = DateTime.Now, Status = AccountStatus.Deleted });
+                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = UserId, ModifiedDate = DateTime.Now, Status = true });
                 return Convert.ToInt32(result);
             }
         }
@@ -130,7 +130,7 @@ namespace Infrastructure.Repository
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status " + where + "", new { ModifiedBy = userId, ModifiedDate = DateTime.Now, Status = AccountStatus.Deleted });
+                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status " + where + "", new { ModifiedBy = userId, ModifiedDate = DateTime.Now, Status = true });
                 return Convert.ToInt32(result);
             }
         }

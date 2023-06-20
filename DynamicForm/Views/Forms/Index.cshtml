@@ -1,0 +1,290 @@
+﻿@model DynamicForm.Models.Form
+
+@{
+    ViewBag.Title = "Index";
+}
+
+<style>
+    .modal {
+        background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    }
+</style>
+
+<div class="row">
+    <div class="col-md-12 col-sm-12 col-xs-12">
+        <div class="x_panel">
+            <div class="x_title">
+                <h2>Home - Form</h2>
+                <div class="pull-right">
+                    <a data-toggle="modal" class="btn btn-primary text-right" href="#FormCreate" id="newForm"><i class="fa fa-check"></i>&nbsp;Create</a>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="x_content">
+                <div id="wait" class="loader" style="display:none;width:100px;height:100px;position:absolute;top:50%;left:50%;padding:2px;z-index:100000"></div>
+                <table class="table table-striped table-bordered table-responsive" id="tbForm" style="width:100%">
+                    <thead>
+                        <tr>
+                            <th style="min-width:100px">Serial Number</th>
+                            <th style="min-width:30px">Name</th>
+                            <th style="min-width:30px">Description</th>
+                            <th style="min-width:30px">Status</th>
+                            <th style="min-width:30px">Ordinal</th>
+                            <th style="min-width:30px">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tdForm"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <form id="createForm" method="post" enctype="multipart/form-data" autocomplete="off">
+            <div id="formCreate" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h4 class="modal-title">New Form</h4>
+                            <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
+                        </div>
+                        <div class="modal-body">
+                            <div class="form-group">
+                                <label class="required">Name</label>
+                                <input id="FormName" name="FormName" type="text" class="form-control">
+                                <span id="lblFormName" style="display:none" class="text-danger">The Form Name field is required</span>                                
+                            </div>
+                            <div class="form-group">
+                                <label class="required">Description</label>
+                                <input id="FormDescription" name="FormDescription" type="text" class="form-control">
+                                <span id="lblFormDescription" style="display:none" class="text-danger">The Form Description field is required</span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required">Ordinal</label>
+                                <input id="FormOrdinal" name="FormOrdinal" type="text" class="form-control">
+                                <span id="lblFormOrdinal" style="display:none" class="text-danger">The Form Ordinal field is required</span>
+                            </div>
+                            <div class="form-group">
+                                <label for="Status" class="required">Status</label>
+                                <select name="Status" id="selectedstatus">
+                                    <option value="Confirmed">Active</option>
+                                    <option value="Cancelled">Inactive</option>
+                                </select>                                
+                                <span id="lblFormStatus" style="display:none" class="text-danger">The Form Status field is required</span>
+                            </div>
+                            <div class="text-left">
+                                <button class="btn btn-success " type="button" onclick="addForm(event);" id="newformcreate"><i class="fa fa-check"></i>&nbsp;Add new Form</button>
+                                <button type="button" class="btn btn-danger" id="btnReset">Reset</button>
+                                <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnClose">Cancel</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>        
+    </div>
+</div>
+
+@section Scripts {
+    <script type="text/javascript">
+        $(document).ready(function () {
+            bind();
+            $("#modelclose").click(function () {
+                $("#newformcreate").removeClass("disabled");
+                $("#btnReset").removeClass("disabled");
+                $("#btnClose").removeClass("disabled");
+                ClearCreateForm();
+            });
+            $('#btnReset,#btnClose').click(function () {
+                ClearCreateForm();
+            });
+        });
+        function ClearCreateForm() {
+
+            $('#lblFormName').hide();
+            $('#lblFormDescription').hide();
+            $('#lblFormOrdinal').hide();
+            $('#lblFormStatus').hide();
+
+            $('#FormName').val('');
+            $('#FormDescription').val('');
+            $('#FormOrdinal').val('');
+            $('#selectedstatus').val('');
+
+        }
+
+        function bind() {
+            debugger;
+            try {
+                var oTable;
+                var dvHt = screen.height - 380;
+                /* Add the events etc before DataTables hides a column */
+                $("thead input").keyup(function () {
+                    /* Filter on the column (the index) of this element */
+                    oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(
+                        oTable.fnSettings(), $("thead input").index(this)));
+                });
+
+                $.ajax({
+                type: "GET",
+                url: '@Url.Action("GetAllForms", "Forms")',
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (data, status, jqXHR) {
+                    console.log(data);
+                    if (data.length > 0) {
+                        $.each(data, function (index, item) {
+
+                            var Row = 0;
+                            oTable = $('#tbForm').dataTable({
+                                "bPaginate": true,
+                                "searching": true,
+                                "destroy": true,
+                                "autoWidth": false,
+                                "scrollX": true,
+                                "pageLength": 10,
+                                "pagingType": "full_numbers",
+                                "lengthMenu": [[05, 10], [05, 10]],
+                                "iDisplayLength": 10,
+                                "order": [],
+                                "aaData": data,
+                                "language": {
+                                    "searchPlaceholder": "Search",
+                                    "search": "",
+                                    "sEmptyTable": "No Data Available"
+                                },
+                                "responsive": true,
+                                "aoColumns": [
+                                    {
+                                        mData: null,
+                                        render: function (item, type, row) {
+
+                                                if (item.Id != null && item.Id != "" && item.Id != undefined) {
+                                                    return item.Id;
+                                            } else {
+                                                return "N/A";
+                                            }
+                                        }
+                                    },
+                                    {
+                                        mData: null,
+                                        render: function (item, type, row) {
+
+                                            if (item.Name != null && item.Name != "" && item.Name != undefined) {
+                                                return item.Name;
+                                            } else {
+                                                return "N/A";
+                                            }
+                                        }
+                                    },
+                                    {
+                                        mData: null,
+                                        render: function (item, type, row) {
+
+                                                if (item.Description != null && item.Description != "" && item.Description != undefined) {
+                                                    return item.Description;
+                                            } else {
+                                                return "N/A";
+                                            }
+                                        }
+                                    },
+                                    {
+                                        mData: null,
+                                        render: function (item, type, row) {
+
+                                                if (item.Status != null && item.Status != "" && item.Status != undefined) {
+                                                    return item.Status;
+                                            } else {
+                                                return "N/A";
+                                            }
+                                        }
+                                    },
+                                    {
+                                        mData: null,
+                                        render: function (item, type, row) {
+
+                                                if (item.Ordinal != null && item.Ordinal != "" && item.Ordinal != undefined) {
+                                                    return item.Ordinal;
+                                            } else {
+                                                return "N/A";
+                                            }
+                                        }
+                                    },
+                                    {
+                                        mData: null,
+                                        render: function (item, type, row) {
+                                            return '<button type="submit"  onclick="showDiv(' + item.Id + ');" class="btn btn-info btn-xs"> <i class="fa fa-pencil"></i></button>';
+
+                                        }
+                                    }
+                                ]
+                            });
+                        })
+                    }
+                    else {
+                        $("#tdForm").html('<tr><td colspan="10" style="text-align:center">No Forms Available</td></tr>');
+                    }
+                },
+
+                error: function (xhr) {
+                }
+                });
+                $('a.toggle-vis').on('click', function (e) {
+                    e.preventDefault();
+
+                    // Get the column API object
+                    var column = oTable.column($(this).attr('data-column'));
+
+                    // Toggle the visibility
+                    column.visible(!column.visible());
+                });
+                //oTable.columns.adjust().draw();
+            }
+            catch (ex) {
+                //  CaptureLogForJquery(ex.message, ex.stack, 'Bind()');
+            }
+        }
+            function validateCreateForm() {
+                createFlag = false;
+                var cFormName = $('#FormName').val();
+
+                if (cFormName == null || cFormName == "" || cFormName == undefined) {
+                    $('#lblFormName').show();
+                    createFlag = true;
+                }
+                else {
+                $('#lblFormName').hide();
+                }
+
+            var cFormDescription = $('#cFormDescription').val();
+
+            if (cFormDescription == null || cFormDescription == "" || cFormDescription == undefined) {
+                $('#lblcFormDescription').show();
+                    createFlag = true;
+                }
+                else {
+                $('#lblcFormDescription').hide();
+                }
+
+            var FormOrdinal = $('#FormOrdinal').val();
+
+            if (FormOrdinal == null || FormOrdinal == "" || FormOrdinal == undefined) {
+                $('#lblFormOrdinal').show();
+                    createFlag = true;
+                }
+                else {
+                $('#lblFormOrdinal').hide();
+                }
+
+                return createFlag;
+            }
+
+        function addForm(event) {
+            debugger;
+            var cFormName = $('#FormName').val();
+            var cFormDescription = $('#FormDescription').val();
+            var cFormOrdinal = $('#FormOrdinal').val();
+            var cFormStatus = $('#selectedstatus').val();
+
+            
+       
+    </script>
+}

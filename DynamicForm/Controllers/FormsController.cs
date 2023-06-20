@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 
-namespace DynamicForm.Controllers.Forms
+namespace DynamicForm.Controllers
 {
     public class FormsController : Controller
     {

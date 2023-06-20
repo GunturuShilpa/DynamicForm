@@ -1,4 +1,4 @@
-﻿namespace DynamicForm.Models.Forms
+﻿namespace DynamicForm.Models
 {
     public class Form
     {

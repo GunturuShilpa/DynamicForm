@@ -3,7 +3,6 @@ using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
-using System.Reflection;
 
 namespace DynamicForm.Controllers
 {
@@ -12,8 +11,7 @@ namespace DynamicForm.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            FormRequest obj = new FormRequest();
-            return View(obj);
+            return View();
         }
 
         [HttpPost]
@@ -24,9 +22,20 @@ namespace DynamicForm.Controllers
                 dynamic res = new ExpandoObject();
                 AddEditFormCommand command = new AddEditFormCommand(model);
                 var mediatorResponse = await _mediator.Send(command);
-                return Json(mediatorResponse);
+
+                if (mediatorResponse.Succeeded)
+                {
+                    res.error = false;
+                }
+                else
+                {
+                    res.error = true;
+                }
+                res.message = mediatorResponse.Messages.FirstOrDefault();
+
+                return Json(res);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -35,9 +44,9 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> GetAllForms()
         {
             try
-            {                
+            {
                 dynamic res = new ExpandoObject();
-                FormRequest formRequest = new FormRequest();             
+                FormRequest formRequest = new FormRequest();
 
                 var query = await _mediator.Send(new GetAllFormsQuery() { Where = "where status=1" });
 

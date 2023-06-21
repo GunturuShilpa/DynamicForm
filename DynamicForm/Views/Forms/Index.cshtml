@@ -3,7 +3,9 @@
 @{
     ViewBag.Title = "Form";
 }
-
+<link href="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css
+" rel="stylesheet">
 <style>
     .modal {
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
@@ -27,7 +29,7 @@
                     </select>
                     <button class="btn btn-group-sm btn-info">Search</button>
                     <div class="pull-right">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add-form-model">
                             <span class="glyphicon glyphicon-plus"></span> Create
                         </button>
                     </div>
@@ -58,14 +60,17 @@
                 </table>
             </div>
         </div>
-        <form id="createForm" method="post" enctype="multipart/form-data" autocomplete="off" asp-controller="Forms" asp-action="SaveForm" method="post">
+      
+        <form name="createform" asp-controller="Forms" asp-action="SaveForm" method="post"
+              data-ajax="true" data-ajax-method="post" data-ajax-complete="completedForm" enctype="multipart/form-data" autocomplete="off">
+
             <!-- Modal -->
-            <div class="modal fade" id="myModal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+            <div class="modal fade" id="add-form-model" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
                 <div class="modal-dialog">
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
-                            <h4 class="modal-title">New Form</h4>
+                            <h4 class="modal-title">Template Form</h4>
                             <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
                         </div>
                         <div class="modal-body">
@@ -84,17 +89,18 @@
                                 <input type="number" id="FormOrdinal" class="form-control" asp-for="Ordinal" />
                                 <span asp-validation-for="Ordinal" class="text-danger"></span>
                             </div>
-                            <div class="form-group">
+                           @* <div class="form-group">
                                 <label for="FormStatus" class="required">Status</label>
-                                <select name="FormStatus" id="selectedstatus" class="form-control" asp-for="Status">
-                                    <option value="1">Active</option>
-                                    <option value="0">Inactive</option>
+                                <select id="FormStatus" class="form-control" asp-for="Test">
+                                    <option value="AA">Active</option>
+                                    <option value="dd">Inactive</option>
+                                    <option value="1">ddd</option>
                                 </select>
-                            </div>
+                            </div>*@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-success " type="submit"><span class="glyphicon glyphicon-floppy-saved"></span> Create</button>
-                            <button type="button" class="btn btn-danger" data-dismiss="modal"> <span class="glyphicon glyphicon-remove"></span> Close</button>
+                            <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnFormClose"> <span class="glyphicon glyphicon-remove"></span> Close</button>
                         </div>
                     </div>
                 </div>
@@ -104,13 +110,18 @@
 </div>
 
 
-    <!-- Jquery js -->
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
-    <!-- Data tables js -->
+<!-- Jquery js -->
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="
+https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js
+"></script>
+<!-- Data tables js -->
 <script type="text/javascript">
     $(document).ready(function () {
-       
+        //completedForm = function (xhr) {
+        //    debugger
+        //}
         bind();
         $("#modelclose").click(function () {
             $("#newformcreate").removeClass("disabled");
@@ -118,154 +129,174 @@
             $("#btnClose").removeClass("disabled");
             ClearCreateForm();
         });
-        $('#btnReset,#btnClose').click(function () {
-            ClearCreateForm();
+        $('#btnFormClose').click(function () {
+            clearFormCreate();
         });
     });
-    function ClearCreateForm() {
 
-        $('#lblFormName').hide();
-        $('#lblFormDescription').hide();
-        $('#lblFormOrdinal').hide();
-        $('#lblFormStatus').hide();
+    completedForm = function (xhr) {
+        debugger
+        var rtn = JSON.parse(xhr.responseText);
+        if (rtn.error == false) {
+            Swal.fire({
+                title: 'Template Form',
+                text: rtn.message,
+                type: 'success',
+                allowOutsideClick: false
+            }).then(function () {
+                $('#add-form-model').hide();
+                //oTable = $('#datatable-region').DataTable();
+                //oTable.draw();
+            });
+            $('#btnFormClose').click();
+            clearFormCreate();
+        }
+        else {
+            Swal.fire({
+                icon: 'error',
+                title: 'Template Form',
+                text: 'Oops!! Something Went Wrong!',
+                type: 'error',
+                allowOutsideClick: false
+            });
+        }
+    };
 
-        $('#FormName').val('');
-        $('#FormDescription').val('');
-        $('#FormOrdinal').val('');
-        $('#selectedstatus').val('');
-
+    function clearFormCreate() {
+        $('.field-validation-error').empty();
+        var frm = document.getElementsByName('createform')[0];
+        frm.reset();
     }
-
     function bind() {
-        debugger;
-        try {
-            var oTable;
-            var dvHt = screen.height - 380;
-            /* Add the events etc before DataTables hides a column */
-            $("thead input").keyup(function () {
-                /* Filter on the column (the index) of this element */
-                oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(
-                    oTable.fnSettings(), $("thead input").index(this)));
-            });
+        //debugger;
+        //try {
+        //    var oTable;
+        //    var dvHt = screen.height - 380;
+        //    /* Add the events etc before DataTables hides a column */
+        //    $("thead input").keyup(function () {
+        //        /* Filter on the column (the index) of this element */
+        //        oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(
+        //            oTable.fnSettings(), $("thead input").index(this)));
+        //    });
 
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetAllForms", "Forms")',
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data, status, jqXHR) {
-                    console.log(data);
-                    if (data.length > 0) {
-                        $.each(data, function (index, item) {
+        //    $.ajax({
+        //        type: "GET",
+        //        url: '@Url.Action("GetAllForms", "Forms")',
+        //        contentType: "application/json; charset=utf-8",
+        //        dataType: "json",
+        //        success: function (data, status, jqXHR) {
+        //            console.log(data);
+        //            if (data.length > 0) {
+        //                $.each(data, function (index, item) {
 
-                            var Row = 0;
-                            oTable = $('#tbForm').dataTable({
-                                "bPaginate": true,
-                                "searching": true,
-                                "destroy": true,
-                                "autoWidth": false,
-                                "scrollX": true,
-                                "pageLength": 10,
-                                "pagingType": "full_numbers",
-                                "lengthMenu": [[05, 10], [05, 10]],
-                                "iDisplayLength": 10,
-                                "order": [],
-                                "aaData": data,
-                                "language": {
-                                    "searchPlaceholder": "Search",
-                                    "search": "",
-                                    "sEmptyTable": "No Data Available"
-                                },
-                                "responsive": true,
-                                "aoColumns": [
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
+        //                    var Row = 0;
+        //                    oTable = $('#tbForm').dataTable({
+        //                        "bPaginate": true,
+        //                        "searching": true,
+        //                        "destroy": true,
+        //                        "autoWidth": false,
+        //                        "scrollX": true,
+        //                        "pageLength": 10,
+        //                        "pagingType": "full_numbers",
+        //                        "lengthMenu": [[05, 10], [05, 10]],
+        //                        "iDisplayLength": 10,
+        //                        "order": [],
+        //                        "aaData": data,
+        //                        "language": {
+        //                            "searchPlaceholder": "Search",
+        //                            "search": "",
+        //                            "sEmptyTable": "No Data Available"
+        //                        },
+        //                        "responsive": true,
+        //                        "aoColumns": [
+        //                            {
+        //                                mData: null,
+        //                                render: function (item, type, row) {
 
-                                            if (item.Id != null && item.Id != "" && item.Id != undefined) {
-                                                return item.Id;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
+        //                                    if (item.Id != null && item.Id != "" && item.Id != undefined) {
+        //                                        return item.Id;
+        //                                    } else {
+        //                                        return "N/A";
+        //                                    }
+        //                                }
+        //                            },
+        //                            {
+        //                                mData: null,
+        //                                render: function (item, type, row) {
 
-                                            if (item.Name != null && item.Name != "" && item.Name != undefined) {
-                                                return item.Name;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
+        //                                    if (item.Name != null && item.Name != "" && item.Name != undefined) {
+        //                                        return item.Name;
+        //                                    } else {
+        //                                        return "N/A";
+        //                                    }
+        //                                }
+        //                            },
+        //                            {
+        //                                mData: null,
+        //                                render: function (item, type, row) {
 
-                                            if (item.Description != null && item.Description != "" && item.Description != undefined) {
-                                                return item.Description;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
+        //                                    if (item.Description != null && item.Description != "" && item.Description != undefined) {
+        //                                        return item.Description;
+        //                                    } else {
+        //                                        return "N/A";
+        //                                    }
+        //                                }
+        //                            },
+        //                            {
+        //                                mData: null,
+        //                                render: function (item, type, row) {
 
-                                            if (item.Status != null && item.Status != "" && item.Status != undefined) {
-                                                return item.Status;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
+        //                                    if (item.Status != null && item.Status != "" && item.Status != undefined) {
+        //                                        return item.Status;
+        //                                    } else {
+        //                                        return "N/A";
+        //                                    }
+        //                                }
+        //                            },
+        //                            {
+        //                                mData: null,
+        //                                render: function (item, type, row) {
 
-                                            if (item.Ordinal != null && item.Ordinal != "" && item.Ordinal != undefined) {
-                                                return item.Ordinal;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
-                                            return '<button type="submit"  onclick="showDiv(' + item.Id + ');" class="btn btn-info btn-xs"> <i class="fa fa-pencil"></i></button>';
+        //                                    if (item.Ordinal != null && item.Ordinal != "" && item.Ordinal != undefined) {
+        //                                        return item.Ordinal;
+        //                                    } else {
+        //                                        return "N/A";
+        //                                    }
+        //                                }
+        //                            },
+        //                            {
+        //                                mData: null,
+        //                                render: function (item, type, row) {
+        //                                    return '<button type="submit"  onclick="showDiv(' + item.Id + ');" class="btn btn-info btn-xs"> <i class="fa fa-pencil"></i></button>';
 
-                                        }
-                                    }
-                                ]
-                            });
-                        })
-                    }
-                    else {
-                        $("#tdForm").html('<tr><td colspan="10" style="text-align:center">No Forms Available</td></tr>');
-                    }
-                },
+        //                                }
+        //                            }
+        //                        ]
+        //                    });
+        //                })
+        //            }
+        //            else {
+        //                $("#tdForm").html('<tr><td colspan="10" style="text-align:center">No Forms Available</td></tr>');
+        //            }
+        //        },
 
-                error: function (xhr) {
-                }
-            });
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
+        //        error: function (xhr) {
+        //        }
+        //    });
+        //    $('a.toggle-vis').on('click', function (e) {
+        //        e.preventDefault();
 
-                // Get the column API object
-                var column = oTable.column($(this).attr('data-column'));
+        //        // Get the column API object
+        //        var column = oTable.column($(this).attr('data-column'));
 
-                // Toggle the visibility
-                column.visible(!column.visible());
-            });
-            //oTable.columns.adjust().draw();
-        }
-        catch (ex) {
-            //  CaptureLogForJquery(ex.message, ex.stack, 'Bind()');
-        }
+        //        // Toggle the visibility
+        //        column.visible(!column.visible());
+        //    });
+        //    //oTable.columns.adjust().draw();
+        //}
+        //catch (ex) {
+        //    //  CaptureLogForJquery(ex.message, ex.stack, 'Bind()');
+        //}
     }
     function validateCreateForm() {
         createFlag = false;
@@ -311,4 +342,4 @@
     }
 
 </script>
-    
+

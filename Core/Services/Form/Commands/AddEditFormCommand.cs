@@ -35,7 +35,7 @@ namespace Core.Services.Form.Commands
                         Name = command.Form.Name,
                         Description = command.Form.Description,
                         Ordinal = command.Form.Ordinal,
-                        Status = command.Form.Status
+                        Status = true
                     };
                     var rtn = await _formRepository.Create(forms);
 

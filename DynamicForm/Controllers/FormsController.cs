@@ -1,7 +1,9 @@
 ﻿using Core.Services.Form.Commands;
+using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
+using System.Reflection;
 
 namespace DynamicForm.Controllers
 {
@@ -10,7 +12,8 @@ namespace DynamicForm.Controllers
         [HttpGet]
         public IActionResult Index()
         {
-            return View();
+            FormRequest obj = new FormRequest();
+            return View(obj);
         }
 
         [HttpPost]
@@ -24,6 +27,24 @@ namespace DynamicForm.Controllers
                 return Json(mediatorResponse);
             }
             catch(Exception ex)
+            {
+                throw ex;
+            }
+        }
+        [HttpGet]
+        public async Task<IActionResult> GetAllForms()
+        {
+            try
+            {                
+                dynamic res = new ExpandoObject();
+                FormRequest formRequest = new FormRequest();             
+
+                var query = await _mediator.Send(new GetAllFormsQuery() { Where = "where status=1" });
+
+                var mediatorResponse = await _mediator.Send(query);
+                return Json(mediatorResponse);
+            }
+            catch (Exception ex)
             {
                 throw ex;
             }

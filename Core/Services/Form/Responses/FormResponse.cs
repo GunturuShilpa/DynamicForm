@@ -8,5 +8,6 @@ namespace Core.Services.Form.Responses
         public string Description { get; set; }
         public bool Status { get; set; }
         public int Ordinal { get; set; }
+
     }
 }

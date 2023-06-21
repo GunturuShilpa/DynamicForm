@@ -7,24 +7,20 @@ using Shared.Result;
 
 namespace Core.Services.Form.Queries
 {
-    public class GetAllFormsQuery : IRequest<Result<FormResponse>>
+    public class GetAllFormsQuery : IRequest<Result<IEnumerable<FormResponse>>>
     {
-        public int Status { get; set; }
-        public int PageNumber { get; set; }
-        public int PageSize { get; set; }
+        public string Where { get; set; }
 
-        public string SearchText { get; set; }
-
-        public GetAllFormsQuery(int status, int pageNumber, int pageSize, string searchText)
-        {
-            Status = status;
-            PageSize = pageSize;
-            PageNumber = pageNumber;
-            SearchText = searchText;
-        }
+        //public GetAllFormsQuery(int status, int pageNumber, int pageSize, string searchText)
+        //{
+        //    Status = status;
+        //    PageSize = pageSize;
+        //    PageNumber = pageNumber;
+        //    SearchText = searchText;
+        //}
 
     }
-    internal class GetAllFormsQueryHandler : IRequestHandler<GetAllFormsQuery, Result<FormResponse>>
+    internal class GetAllFormsQueryHandler : IRequestHandler<GetAllFormsQuery, Result<IEnumerable<FormResponse>>>
     {
         private readonly IMapper _mapper;
 
@@ -38,33 +34,27 @@ namespace Core.Services.Form.Queries
            
         }
 
-        public async Task<Result<FormResponse>> Handle(GetAllFormsQuery command, CancellationToken cancellationToken)
+        public async Task<Result<IEnumerable<FormResponse>>> Handle(GetAllFormsQuery command, CancellationToken cancellationToken)
         {
             try
             {
-                string query = string.Empty;
-
-                if (command.Status != 0)
-                {
-                    query += String.Format("where status = {0}", command.Status);
-                }
-
-                var rtn = await _formRepository.GetByQuery(query);
+                var rtn = await _formRepository.GetByQuery(command.Where);
 
                 if (rtn != null)
                 {
-                    var response = _mapper.Map<FormResponse>(rtn);
+                    IEnumerable<FormResponse> response = _mapper.Map<IEnumerable<FormResponse>>(rtn);
 
-                    return await Result<FormResponse>.SuccessAsync(response);
+                    return await Result<IEnumerable<FormResponse>>.SuccessAsync(response);
+
                 }
                 else
                 {
-                    return await Result<FormResponse>.FailAsync();
+                    return await Result<IEnumerable<FormResponse>>.FailAsync();
                 }
             }
             catch (Exception ex)
             {
-                return await Result<FormResponse>.FailAsync(ex.Message);
+                return await Result<IEnumerable<FormResponse>>.FailAsync(ex.Message);
             }
         }
     }

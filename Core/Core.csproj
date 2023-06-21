@@ -18,6 +18,10 @@
     <Folder Include="Services\TemplateFields\Responses\" />
     <Folder Include="Services\TemplateFields\Queries\" />
   </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Services\Form\Responses\" />
+    <Folder Include="Services\Form\Queries\" />
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="12.0.1" />

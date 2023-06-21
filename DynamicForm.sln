@@ -5,9 +5,11 @@ VisualStudioVersion = 17.4.33122.133
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DynamicForm", "DynamicForm\DynamicForm.csproj", "{27526B4F-D871-4C29-B9EF-2DC89BD1A874}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{D4A1442B-2264-4A54-BB9C-6109E8547445}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "Infrastructure\Infrastructure.csproj", "{D4A1442B-2264-4A54-BB9C-6109E8547445}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Core", "Core\Core.csproj", "{9DC8BE9E-B501-4F23-AA10-CBD88AF0C2CD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Core", "Core\Core.csproj", "{9DC8BE9E-B501-4F23-AA10-CBD88AF0C2CD}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Shared", "Shared\Shared.csproj", "{EC39CFC7-0E23-4D86-9A0E-C19EC74F4FD1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,6 +29,10 @@ Global
 		{9DC8BE9E-B501-4F23-AA10-CBD88AF0C2CD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9DC8BE9E-B501-4F23-AA10-CBD88AF0C2CD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9DC8BE9E-B501-4F23-AA10-CBD88AF0C2CD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EC39CFC7-0E23-4D86-9A0E-C19EC74F4FD1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EC39CFC7-0E23-4D86-9A0E-C19EC74F4FD1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EC39CFC7-0E23-4D86-9A0E-C19EC74F4FD1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EC39CFC7-0E23-4D86-9A0E-C19EC74F4FD1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

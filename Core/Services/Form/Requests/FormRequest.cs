@@ -1,6 +1,6 @@
-﻿namespace DynamicForm.Models
+﻿namespace Core.Services.Form.Requests
 {
-    public class Form
+    public class FormRequest
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -1,16 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.Services.Base.Interfaces;
-using Dapper;
+﻿using Dapper;
 using Microsoft.Extensions.Configuration;
+using System.Data.SqlClient;
 
-namespace Infrastructure.Repository
+namespace Infrastructure.Base.Repository
 {
-    public abstract class RepositoryBase<T>: IAsyncGenericRepository<T>
+    public abstract class RepositoryBase<T> : IAsyncGenericRepository<T>
     {
         private readonly string _tableName;
         protected string _connectionString;
@@ -18,20 +12,27 @@ namespace Infrastructure.Repository
         public RepositoryBase(IConfiguration configuration)
         {
             _connectionString = configuration.GetConnectionString("DbConstr");
-            _tableName = "PLC_" + typeof(T).Name;
+            _tableName = typeof(T).Name;
         }
 
         public async Task<int> AddAsync(T entity)
         {
-            var columns = GetColumns();
-            var stringOfColumns = string.Join(", ", columns);
-            var stringOfParameters = string.Join(", ", columns.Select(e => "@" + e));
-            var query = $"insert into {_tableName} ({stringOfColumns}) output inserted.Id values ({stringOfParameters})";
-            using (SqlConnection conn = new SqlConnection(_connectionString))
+            try
             {
-                conn.Open();
-                var result = await conn.ExecuteScalarAsync(query, entity);
-                return Convert.ToInt32(result);
+                var columns = GetColumns();
+                var stringOfColumns = string.Join(", ", columns);
+                var stringOfParameters = string.Join(", ", columns.Select(e => "@" + e));
+                var query = $"insert into {_tableName} ({stringOfColumns}) output inserted.Id values ({stringOfParameters})";
+                using (SqlConnection conn = new SqlConnection(_connectionString))
+                {
+                    conn.Open();
+                    var result = await conn.ExecuteScalarAsync(query, entity);
+                    return Convert.ToInt32(result);
+                }
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -40,7 +41,7 @@ namespace Infrastructure.Repository
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = UserId, ModifiedDate = DateTime.Now, Status = true });
+                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = UserId, ModifiedDate = DateTime.Now, Status = 1 });
                 return Convert.ToInt32(result);
             }
         }
@@ -79,7 +80,7 @@ namespace Infrastructure.Repository
 
             }
         }
-        public async Task<int> UpdateAsyncByQuery(T entity, string query = null)
+        public async Task<int> UpdateAsyncByQuery(string query)
         {
             var sqlQuery = $"update {_tableName} set ";
             if (!string.IsNullOrWhiteSpace(query))
@@ -88,7 +89,7 @@ namespace Infrastructure.Repository
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync(sqlQuery, entity);
+                var result = await conn.ExecuteAsync(sqlQuery, null);
                 return Convert.ToInt32(result);
             }
         }
@@ -107,12 +108,28 @@ namespace Infrastructure.Repository
             }
         }
 
-        public async Task<T> QueryFirstOrDefaultAsync(string sql, object param = null)
+        public async Task<IEnumerable<T>> GetListByQueryAsync(string where = null)
         {
+            var query = where;
+
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                return await conn.QueryFirstOrDefaultAsync<T>(sql, param);
+                var data = await conn.QueryAsync<T>(query, null);
+                return data;
+            }
+        }
+
+        public async Task<T> QueryFirstOrDefaultAsync(string sql, object param = null)
+        {
+            var query = $"select * from {_tableName} ";
+
+            if (!string.IsNullOrWhiteSpace(sql))
+                query += sql;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                return await conn.QueryFirstOrDefaultAsync<T>(query);
             }
         }
 
@@ -130,8 +147,35 @@ namespace Infrastructure.Repository
             using (SqlConnection conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status " + where + "", new { ModifiedBy = userId, ModifiedDate = DateTime.Now, Status = true });
+                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status " + where + "", new { ModifiedBy = userId, ModifiedDate = DateTime.Now, Status = 0 });
                 return Convert.ToInt32(result);
+            }
+        }
+
+        public async Task<int> QueryCountAsync(string where)
+        {
+            var query = $"select count(id) from {_tableName} ";
+            if (!string.IsNullOrWhiteSpace(where))
+                query += where;
+
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                int count = await conn.ExecuteScalarAsync<int>(query);
+                return count;
+            }
+        }
+
+        public async Task<int> DeletePermanentByQuery(string where)
+        {
+            var query = $"delete from {_tableName} ";
+            if (!string.IsNullOrWhiteSpace(where))
+                query += where;
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var result = await conn.ExecuteAsync(query, null);
+                return result;
             }
         }
 
@@ -144,5 +188,6 @@ namespace Infrastructure.Repository
 
                     .Select(e => e.Name);
         }
+
     }
 }

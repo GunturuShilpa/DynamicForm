@@ -14,6 +14,9 @@
   <ItemGroup>
     <Folder Include="Services\Form\Responses\" />
     <Folder Include="Services\Form\Queries\" />
+    <Folder Include="Services\TemplateFields\Commands\" />
+    <Folder Include="Services\TemplateFields\Responses\" />
+    <Folder Include="Services\TemplateFields\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

@@ -15,51 +15,64 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2>Home - Form</h2>
-                <div class="pull-right">
-                    @*                    <a data-toggle="modal" class="btn btn-primary text-right" href="#FormCreate" id="newForm"><i class="fa fa-check"></i>&nbsp;Create</a>
-                    *@
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
-                        <span class="glyphicon glyphicon-plus"></span> Create
-                    </button>
+                <br />
+                <div input-group>
+                    <input type="text" placeholder="Name">&nbsp;&nbsp;
+                    <input type="text" placeholder="Description">&nbsp;&nbsp;
+                    <input type="number" placeholder="Ordinal" />&nbsp;&nbsp;
+                    <select name="Status" id="selectedstatus" style="padding:3px;">
+                        &nbsp;&nbsp;
+                        <option value="Confirmed">Active</option>
+                        <option value="Cancelled">Inactive</option>
+                    </select>
+                    <button class="btn btn-group-sm btn-info">Search</button>
+                    <div class="pull-right">
+                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#myModal">
+                            <span class="glyphicon glyphicon-plus"></span> Create
+                        </button>
+                    </div>
                 </div>
+                <br />
 
                 <div class="clearfix"></div>
             </div>
+            <br />
+            <br />
             <div class="x_content">
                 <div id="wait" class="loader" style="display:none;width:100px;height:100px;position:absolute;top:50%;left:50%;padding:2px;z-index:100000"></div>
-                @* <table class="table table-striped table-bordered table-responsive" id="tbForm" style="width:100%">
-                <thead>
-                <tr>
-                <th style="min-width:100px">Serial Number</th>
-                <th style="min-width:30px">Name</th>
-                <th style="min-width:30px">Description</th>
-                <th style="min-width:30px">Status</th>
-                <th style="min-width:30px">Ordinal</th>
-                <th style="min-width:30px">Actions</th>
-                </tr>
-                </thead>
-                <tbody id="tdForm"></tbody>
-                </table>*@
+                <table class="table table-striped table-bordered table-responsive" id="tbForm" style="width:100%">
+                    <thead>
+                        <tr class="bg-secondary">
+                            <th style="min-width:100px">Serial Number</th>
+                            <th style="min-width:30px">Name</th>
+                            <th style="min-width:30px">Description</th>
+                            <th style="min-width:30px">Status</th>
+                            <th style="min-width:30px">Ordinal</th>
+                            <th style="min-width:30px">Actions</th>
+                            <th style="min-width:30px">Fields</th>
+                            <th style="min-width:30px">Apply</th>
+                            <th style="min-width:30px">Submissions</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tdForm"></tbody>
+                </table>
             </div>
         </div>
-
         <form id="createForm" method="post" enctype="multipart/form-data" autocomplete="off" asp-controller="Forms" asp-action="SaveForm" method="post">
             <!-- Modal -->
             <div class="modal fade" id="myModal" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false">
                 <div class="modal-dialog">
-
                     <!-- Modal content-->
                     <div class="modal-content">
-                        <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal">&times;</button>
+                        <div class="modal-header bg-warning">
                             <h4 class="modal-title">New Form</h4>
+                            <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
                         </div>
                         <div class="modal-body">
-                            @*<p>Some text in the modal.</p>*@
                             <div class="form-group">
                                 <label class="required" for="FormName">Name</label>
                                 <input type="text" id="FormName" class="form-control" asp-for="Name" />
-                                 <span asp-validation-for="Name" class="text-danger"></span>
+                                <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                             <div class="form-group">
                                 <label class="required" for="FormDescription">Description</label>
@@ -70,8 +83,6 @@
                                 <label class="required" for="FormOrdinal">Ordinal</label>
                                 <input type="number" id="FormOrdinal" class="form-control" asp-for="Ordinal" />
                                 <span asp-validation-for="Ordinal" class="text-danger"></span>
-                                @*<input id="FormOrdinal" name="FormOrdinal" type="number" class="form-control">
-                                <span id="lblFormOrdinal" style="display:none" class="text-danger">The Form Ordinal field is required</span>*@
                             </div>
                             <div class="form-group">
                                 <label for="FormStatus" class="required">Status</label>
@@ -79,59 +90,15 @@
                                     <option value="1">Active</option>
                                     <option value="0">Inactive</option>
                                 </select>
-                             </div>
+                            </div>
                         </div>
                         <div class="modal-footer">
-@*                            <button class="btn btn-success " type="button" onclick="addForm(event);" id="newformcreate"><span class="glyphicon glyphicon-floppy-saved"></span> Create</button>
-*@
                             <button class="btn btn-success " type="submit"><span class="glyphicon glyphicon-floppy-saved"></span> Create</button>
-
                             <button type="button" class="btn btn-danger" data-dismiss="modal"> <span class="glyphicon glyphicon-remove"></span> Close</button>
                         </div>
                     </div>
-
                 </div>
             </div>
-            @* <div id="formCreate" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-            <div class="modal-dialog">
-            <div class="modal-content">
-            <div class="modal-header">
-            <h4 class="modal-title">New Form</h4>
-            <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
-            </div>
-            <div class="modal-body">
-            <div class="form-group">
-            <label class="required">Name</label>
-            <input id="FormName" name="FormName" type="text" class="form-control">
-            <span id="lblFormName" style="display:none" class="text-danger">The Form Name field is required</span>
-            </div>
-            <div class="form-group">
-            <label class="required">Description</label>
-            <input id="FormDescription" name="FormDescription" type="text" class="form-control">
-            <span id="lblFormDescription" style="display:none" class="text-danger">The Form Description field is required</span>
-            </div>
-            <div class="form-group">
-            <label class="required">Ordinal</label>
-            <input id="FormOrdinal" name="FormOrdinal" type="text" class="form-control">
-            <span id="lblFormOrdinal" style="display:none" class="text-danger">The Form Ordinal field is required</span>
-            </div>
-            <div class="form-group">
-            <label for="Status" class="required">Status</label>
-            <select name="Status" id="selectedstatus">
-            <option value="Confirmed">Active</option>
-            <option value="Cancelled">Inactive</option>
-            </select>
-            <span id="lblFormStatus" style="display:none" class="text-danger">The Form Status field is required</span>
-            </div>
-            <div class="text-left">
-            <button class="btn btn-success " type="button" onclick="addForm(event);" id="newformcreate"><i class="fa fa-check"></i>&nbsp;Add new Form</button>
-            <button type="button" class="btn btn-danger" id="btnReset">Reset</button>
-            <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnClose">Cancel</button>
-            </div>
-            </div>
-            </div>
-            </div>
-            </div>*@
         </form>
     </div>
 </div>
@@ -336,7 +303,6 @@
         var cFormDescription = $('#FormDescription').val();
         var cFormOrdinal = $('#FormOrdinal').val();
         var cFormStatus = $('#selectedstatus').val();
-
 
 
 </script>

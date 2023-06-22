@@ -1,4 +1,4 @@
-﻿namespace Core.Services.Base.Entity
+﻿namespace Infrastructure.Base.Entity
 {
     public abstract class BaseEntity
     {

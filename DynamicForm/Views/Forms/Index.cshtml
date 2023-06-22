@@ -136,8 +136,7 @@
         });
     });
 
-    completedForm = function (xhr) {
-        debugger
+    completedForm = function (xhr) {       
         var rtn = JSON.parse(xhr.responseText);
         if (rtn.error == false) {
             Swal.fire({
@@ -147,8 +146,8 @@
                 allowOutsideClick: false
             }).then(function () {
                 $('#add-form-model').hide();
-                //oTable = $('#tbForm').DataTable();
-                //oTable.draw();
+                oTable = $('#tbForm').DataTable();
+                oTable.draw();
             });
             $('#btnFormClose').click();
             clearFormCreate();
@@ -179,7 +178,7 @@
                     "orderMulti": false, // for disable multiple column at once
                     "ajax": {
                         "url": '@Url.Action("GetAllForms", "Forms")',
-                        "type": "GET",
+                        "type": "POST",
                         headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                         "datatype": "json"
                     },

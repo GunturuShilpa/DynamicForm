@@ -1,5 +1,7 @@
 ﻿using Infrastructure.Field.Repository;
 using Infrastructure.Form.Repository;
+using Infrastructure.ControlType.Repository;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Ioc
@@ -8,7 +10,8 @@ namespace Core.Ioc
     {
         public static void RegisterInfrastructureServices(this IServiceCollection serviceCollection)
         {
-            serviceCollection.AddTransient<IFormRepository, FormRepository>(); 
+            serviceCollection.AddTransient<IFormRepository, FormRepository>();
+            serviceCollection.AddTransient<IControlTypesRepository, ControlTypesRepository>();
             serviceCollection.AddTransient<IFieldRepository, FieldRepository>();
         }
     }

@@ -3,13 +3,9 @@
 @{
     ViewBag.Title = "Form";
 }
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.min.css"
-      integrity="sha512-1k7mWiTNoyx2XtmI96o+hdjP8nn0f3Z2N4oF/9ZZRgijyV4omsKOXEnqL1gKQNPy2MTSP9rIEWGcH/CInulptA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer" />
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
-@*<link href="https://cdn.datatables.net/1.13.4/css/jquery.dataTables.min.css" rel="stylesheet" />*@
+
+<link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/lib/sweetalert/css/sweetalert2.min.css" rel="stylesheet" />
 <style>
     .modal {
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
@@ -92,14 +88,6 @@
                                 <input type="number" id="FormOrdinal" class="form-control" asp-for="Ordinal" />
                                 <span asp-validation-for="Ordinal" class="text-danger"></span>
                             </div>
-                            @* <div class="form-group">
-                            <label for="FormStatus" class="required">Status</label>
-                            <select id="FormStatus" class="form-control" asp-for="Test">
-                            <option value="AA">Active</option>
-                            <option value="dd">Inactive</option>
-                            <option value="1">ddd</option>
-                            </select>
-                            </div>*@
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-success " type="submit"><span class="glyphicon glyphicon-floppy-saved"></span> Create</button>
@@ -116,7 +104,8 @@
     {
     <!-- Jquery js -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/lib/sweetalert/js/sweetalert2.all.min.js"></script>
     <!-- Data tables js -->
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.buttons.min.js"></script>

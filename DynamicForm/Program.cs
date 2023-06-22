@@ -1,9 +1,15 @@
+using AutoMapper;
 using Core.Ioc;
+using DynamicForm.Helpers;
 using MediatR;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
+var mapperConfig = new MapperConfiguration(mc =>
+{
+    mc.AddProfile(new AutomapperWebProfile());
+});
 builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddControllersWithViews();

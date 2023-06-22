@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Services.TemplateFields.Requests
+namespace Infrastructure.Field.Responses
 {
-    public class FieldRequest
+    public class FieldResponse
     {
         public int Id { get; set; }
         public string Name { get; set; }

@@ -110,9 +110,9 @@
                                 <span asp-validation-for="Name" class="text-danger"></span>
                             </div>
                             <div class="form-group">
-                                <label class="required" for="FieldDataType">DataType</label>
-                                <input type="text" id="FieldDataType" class="form-control" asp-for="ControlId" />
+                                <label class="required" for="FieldDataType">Control Type</label>
                                 <span asp-validation-for="ControlId" class="text-danger"></span>
+                                <select name="ControlId" class="form-control" asp-for="ControlId" asp-items="@ViewBag.ControlTypes"></select>
                             </div>                            
                         </div>
                         <div class="modal-footer">

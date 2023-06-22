@@ -1,7 +1,9 @@
-﻿using Core.Services.TemplateFields.Commands;
+﻿using Core.Services.ControlFields.Queries;
+using Core.Services.TemplateFields.Commands;
 using Core.Services.TemplateFields.Queries;
 using Core.Services.TemplateFields.Requests;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Dynamic;
 
 namespace DynamicForm.Controllers
@@ -9,38 +11,26 @@ namespace DynamicForm.Controllers
     public class FieldsController : BaseController<FieldsController>
     {
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
+            await LoadControlTypes();
+
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
-            try
-            {
-                dynamic res = new ExpandoObject();
-                AddEditFieldCommand command = new AddEditFieldCommand(model);
-                var mediatorResponse = await _mediator.Send(command);
+            var command = new AddEditFieldCommand(model);
+            var response = await _mediator.Send(command);
 
-                if (mediatorResponse.Succeeded)
-                {
-                    res.error = false;
-                }
-                else
-                {
-                    res.error = true;
-                }
-                res.message = mediatorResponse.Messages.FirstOrDefault();
+            dynamic result = new ExpandoObject();
+            result.error = response.Succeeded;
+            result.message = response.Messages.FirstOrDefault();
 
-                return Json(res);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Json(result);
         }
-        
+
         [HttpGet]
         public async Task<IActionResult> GetAllFields()
         {
@@ -58,5 +48,27 @@ namespace DynamicForm.Controllers
                 throw ex;
             }
         }
+
+        #region | Private Methods |
+
+        private async Task LoadControlTypes()
+        {
+            var data = new List<SelectListItem>();
+
+            try
+            {
+                var result = await _mediator.Send(new GetAllControlTypesQuery());
+
+                data = result.Data.Select(x => new SelectListItem() { Value = x.Id.ToString(), Text = x.Name }).ToList();
+            }
+            catch
+            {
+                //TODO: record ex into logger
+            }
+
+            ViewBag.ControlTypes = data;
+        }
+
+        #endregion
     }
 }

@@ -4,6 +4,6 @@ namespace Infrastructure.ControlType.Repository
 {
     public interface IControlTypesRepository
     {
-        Task<IEnumerable<ControlTypes>> GetByQuery(string where = null);
+        Task<IEnumerable<ControlTypes>> GetByQuery(string where);
     }
 }

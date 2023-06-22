@@ -12,17 +12,17 @@
 
         Task<int> DeleteAsync(int id, int? UserId);
 
-        Task<T> QueryFirstOrDefaultAsync(string sql, object param = null);
+        Task<T> QueryFirstOrDefaultAsync(string sql, object param);
 
-        Task<T> QuerySingleAsync(string sql, object param = null);
+        Task<T> QuerySingleAsync(string sql, object param);
 
-        Task<IEnumerable<T>> GetByQueryAsync(string where = null);
+        Task<IEnumerable<T>> GetByQueryAsync(string where);
 
-        Task<int> DeleteByQueryAsync(int userId, string where = null);
+        Task<int> DeleteByQueryAsync(int userId, string where);
 
         public Task<int> QueryCountAsync(string where);
 
-        Task<IEnumerable<T>> GetListByQueryAsync(string where = null);
+        Task<IEnumerable<T>> GetListByQueryAsync(string where);
 
         Task<int> DeletePermanentByQuery(string where);
     }

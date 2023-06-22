@@ -6,6 +6,6 @@ namespace Infrastructure.Form.Repository
     {
         Task<int> Create(TemplateForms model);
 
-        Task<IEnumerable<TemplateForms>> GetByQuery(string where = null);
+        Task<IEnumerable<TemplateForms>> GetByQuery(string where);
     }
 }

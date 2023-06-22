@@ -23,7 +23,7 @@ namespace Infrastructure.ControlType.Repository
             }
         }
 
-        public async Task<IEnumerable<ControlTypes>> GetByQuery(string where = null)
+        public async Task<IEnumerable<ControlTypes>> GetByQuery(string where)
         {
             var res = await GetByQueryAsync(where);
             return res;

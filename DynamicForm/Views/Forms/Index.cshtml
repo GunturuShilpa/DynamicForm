@@ -23,7 +23,7 @@
                 <h2>Home - Form</h2>
                 <br />
                 <div input-group>
-                    <input type="text" placeholder="Name">&nbsp;&nbsp;
+                  @*  <input type="text" placeholder="Name">&nbsp;&nbsp;
                     <input type="text" placeholder="Description">&nbsp;&nbsp;
                     <input type="number" placeholder="Ordinal" />&nbsp;&nbsp;
                     <select name="Status" id="selectedstatus" style="padding:3px;">
@@ -31,7 +31,7 @@
                         <option value="Confirmed">Active</option>
                         <option value="Cancelled">Inactive</option>
                     </select>
-                    <button class="btn btn-group-sm btn-info">Search</button>
+                    <button class="btn btn-group-sm btn-info">Search</button>*@
                     <div class="pull-right">
                         <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add-form-model">
                             <span class="glyphicon glyphicon-plus"></span> Create
@@ -53,6 +53,7 @@
                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Description</th>
                             <th style="min-width:30px">Ordinal</th>
+                            <th style="min-width:30px">Action</th>
                             @*  <th style="min-width:30px">Actions</th>
                             <th style="min-width:30px">Fields</th>
                             <th style="min-width:30px">Apply</th>
@@ -112,23 +113,17 @@
     </div>
 </div>
 
-
+@section scripts
+{
 <!-- Jquery js -->
-<!-- ✅ load jQuery ✅ -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"
-        integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4="
-        crossorigin="anonymous"></script>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
-<!-- ✅ load DataTables ✅ -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/js/jquery.dataTables.min.js"
-        integrity="sha512-BkpSL20WETFylMrcirBahHfSnY++H2O1W+UnEEO4yNIl+jI2+zowyoGJpbtk6bx97fBXf++WJHSSK2MV4ghPcg=="
-        crossorigin="anonymous"
-        referrerpolicy="no-referrer"></script>
-@*<script src="https://code.jquery.com/jquery-3.5.1.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-ajax-unobtrusive/3.2.6/jquery.unobtrusive-ajax.min.js" integrity="sha512-DedNBWPF0hLGUPNbCYfj8qjlEnNE92Fqn7xd3Sscfu7ipy7Zu33unHdugqRD3c4Vj7/yLv+slqZhMls/4Oc7Zg==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
-<script src="https://cdn.datatables.net/1.13.4/js/jquery.dataTables.min.js"></script>*@
-<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.all.min.js"></script>
-<!-- Data tables js -->
+    <!-- Data tables js -->
+    <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.buttons.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.rowReorder.min.js"></script>
+    <script src="~/lib/datatables/js/dataTables.responsive.min.js"></script>
+    <script src="~/lib/datatables/js/responsive.bootstrap.min.js"></script>
 <script type="text/javascript">
     $(document).ready(function () {
         //completedForm = function (xhr) {
@@ -152,8 +147,8 @@
                 allowOutsideClick: false
             }).then(function () {
                 $('#add-form-model').hide();
-                oTable = $('#datatable-region').DataTable();
-                oTable.draw();
+                //oTable = $('#tbForm').DataTable();
+                //oTable.draw();
             });
             $('#btnFormClose').click();
             clearFormCreate();
@@ -175,137 +170,41 @@
         frm.reset();
     }
     function bind() {
-        debugger;
-        try {
-            var oTable;
-            var dvHt = screen.height - 380;
-            /* Add the events etc before DataTables hides a column */
-            $("thead input").keyup(function () {
-                /* Filter on the column (the index) of this element */
-                oTable.fnFilter(this.value, oTable.oApi._fnVisibleToColumnIndex(
-                    oTable.fnSettings(), $("thead input").index(this)));
-            });
 
-            $.ajax({
-                type: "GET",
-                url: '@Url.Action("GetAllForms", "Forms")',
-                contentType: "application/json; charset=utf-8",
-                dataType: "json",
-                success: function (data, status, jqXHR) {
-                    //debugger
-                    //console.log(data.data);
 
-                    if (data.data.length > 0) {
-                        $.each(data.data, function (index, item) {
+        $("#tbForm").DataTable({
+                   "processing": true, // for show progress bar
+                    "serverSide": true,
+                    "filter": true, // this is for disable filter (search box)
+                    "orderMulti": false, // for disable multiple column at once
+                    "ajax": {
+                        "url": '@Url.Action("GetAllForms", "Forms")',
+                        "type": "GET",
+                        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                        "datatype": "json"
+                    },
+                    "columnDefs": [{
+                        "targets": '_all',
+                        "defaultContent": ""
+                    }],
+                    "columns": [
+                        { "data": "name", "name": "Name", "autoWidth": true },
+                        { "data": "description", "name": "Description", "autoWidth": true },
+                        { "data": "ordinal", "name": "Ordinal", "autoWidth": true },                      
+                                             
+                        
+                        {
+                            'bSortable': false,
+                            "autoWidth": true,
+                            "render": function (data, type, row) {
+                            //return '<a  type="button"  data-tw-toggle="modal" class="tooltip btn btn-success text-white" title="Fields">Fields</a> > ';
+                            return '<a>Fields </>'
+                              }
+                        }
+                    ]
 
-                            var Row = 0;
-                            oTable = $('#tbForm').DataTable({
-                                "bPaginate": true,
-                                "searching": true,
-                                "destroy": true,
-                                "autoWidth": false,
-                                "scrollX": true,
-                                "pageLength": 10,
-                                "pagingType": "full_numbers",
-                                "lengthMenu": [[05, 10], [05, 10]],
-                                "iDisplayLength": 10,
-                                "order": [],
-                                "aaData": data,
-                                "language": {
-                                    "searchPlaceholder": "Search",
-                                    "search": "",
-                                    "sEmptyTable": "No Data Available"
-                                },
-                                "responsive": true,
-                                "aoColumns": [
-                                    //{
-                                    //    mData: null,
-                                    //    render: function (item, type, row) {
-
-                                    //        if (item.Id != null && item.Id != "" && item.Id != undefined) {
-                                    //            return item.Id;
-                                    //        } else {
-                                    //            return "N/A";
-                                    //        }
-                                    //    }
-                                    //},
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
-                                            debugger
-                                            if (item.name != null && item.name != "" && item.name != undefined) {
-                                                return item.name;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    {
-                                        mData: null,
-                                        render: function (item, type, row) {
-
-                                            if (item.description != null && item.description != "" && item.description != undefined) {
-                                                return item.description;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    //{
-                                    //    mData: null,
-                                    //    render: function (item, type, row) {
-
-                                    //        if (item.Status != null && item.Status != "" && item.Status != undefined) {
-                                    //            return item.Status;
-                                    //        } else {
-                                    //            return "N/A";
-                                    //        }
-                                    //    }
-                                    //},
-                                    //{
-                                        mData: null,
-                                        render: function (item, type, row) {
-
-                                            if (item.ordinal != null && item.ordinal != "" && item.ordinal != undefined) {
-                                                return item.ordinal;
-                                            } else {
-                                                return "N/A";
-                                            }
-                                        }
-                                    },
-                                    //{
-                                    //    mData: null,
-                                    //    render: function (item, type, row) {
-                                    //        return '<button type="submit"  onclick="showDiv(' + item.Id + ');" class="btn btn-info btn-xs"> <i class="fa fa-pencil"></i></button>';
-
-                                    //    }
-                                    //}
-                                ]
-                            });
-                        })
-                    }
-                    else {
-                        $("#tdForm").html('<tr><td colspan="10" style="text-align:center">No Forms Available</td></tr>');
-                    }
-                },
-
-                error: function (xhr) {
-                }
-            });
-            $('a.toggle-vis').on('click', function (e) {
-                e.preventDefault();
-
-                // Get the column API object
-                var column = oTable.column($(this).attr('data-column'));
-
-                // Toggle the visibility
-                column.visible(!column.visible());
-            });
-            //oTable.columns.adjust().draw();
-        }
-        catch (ex) {
-            //  CaptureLogForJquery(ex.message, ex.stack, 'Bind()');
-        }
+                });
+       
     }
     function validateCreateForm() {
         createFlag = false;
@@ -341,5 +240,7 @@
 
         return createFlag;
     }
+    
 </script>
 
+}

@@ -23,13 +23,13 @@
                 <h2>Home - Form</h2>
                 <br />
                 <div input-group>
-                  @*  <input type="text" placeholder="Name">&nbsp;&nbsp;
+                    @*  <input type="text" placeholder="Name">&nbsp;&nbsp;
                     <input type="text" placeholder="Description">&nbsp;&nbsp;
                     <input type="number" placeholder="Ordinal" />&nbsp;&nbsp;
                     <select name="Status" id="selectedstatus" style="padding:3px;">
-                        &nbsp;&nbsp;
-                        <option value="Confirmed">Active</option>
-                        <option value="Cancelled">Inactive</option>
+                    &nbsp;&nbsp;
+                    <option value="Confirmed">Active</option>
+                    <option value="Cancelled">Inactive</option>
                     </select>
                     <button class="btn btn-group-sm btn-info">Search</button>*@
                     <div class="pull-right">
@@ -49,7 +49,6 @@
                 <table class="table table-striped table-bordered table-responsive" id="tbForm" style="width:100%">
                     <thead>
                         <tr class="bg-secondary">
-
                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Description</th>
                             <th style="min-width:30px">Ordinal</th>
@@ -114,8 +113,8 @@
 </div>
 
 @section scripts
-{
-<!-- Jquery js -->
+    {
+    <!-- Jquery js -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
 
     <!-- Data tables js -->
@@ -124,122 +123,112 @@
     <script src="~/lib/datatables/js/dataTables.rowReorder.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.responsive.min.js"></script>
     <script src="~/lib/datatables/js/responsive.bootstrap.min.js"></script>
-<script type="text/javascript">
-    $(document).ready(function () {
-        //completedForm = function (xhr) {
-        //    debugger
-        //}
-        bind();
+    <script type="text/javascript">
+        $(document).ready(function () {
+            bind();
 
-        $('#btnFormClose').click(function () {
-            clearFormCreate();
+            $('#btnFormClose').click(function () {
+                clearFormCreate();
+            });
         });
-    });
 
-    completedForm = function (xhr) {       
-        var rtn = JSON.parse(xhr.responseText);
-        if (rtn.error == false) {
-            Swal.fire({
-                title: 'Template Form',
-                text: rtn.message,
-                type: 'success',
-                allowOutsideClick: false
-            }).then(function () {
-                $('#add-form-model').hide();
-                oTable = $('#tbForm').DataTable();
-                oTable.draw();
-            });
-            $('#btnFormClose').click();
-            clearFormCreate();
-        }
-        else {
-            Swal.fire({
-                icon: 'error',
-                title: 'Template Form',
-                text: 'Oops!! Something Went Wrong!',
-                type: 'error',
-                allowOutsideClick: false
-            });
-        }
-    };
-
-    function clearFormCreate() {
-        $('.field-validation-error').empty();
-        var frm = document.getElementsByName('createform')[0];
-        frm.reset();
-    }
-    function bind() {
-
-
-        $("#tbForm").DataTable({
-                   "processing": true, // for show progress bar
-                    "serverSide": true,
-                    "filter": true, // this is for disable filter (search box)
-                    "orderMulti": false, // for disable multiple column at once
-                    "ajax": {
-                        "url": '@Url.Action("GetAllForms", "Forms")',
-                        "type": "POST",
-                        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
-                        "datatype": "json"
-                    },
-                    "columnDefs": [{
-                        "targets": '_all',
-                        "defaultContent": ""
-                    }],
-                    "columns": [
-                        { "data": "name", "name": "Name", "autoWidth": true },
-                        { "data": "description", "name": "Description", "autoWidth": true },
-                        { "data": "ordinal", "name": "Ordinal", "autoWidth": true },                      
-                                             
-                        
-                        {
-                            'bSortable': false,
-                            "autoWidth": true,
-                            "render": function (data, type, row) {
-                            //return '<a  type="button"  data-tw-toggle="modal" class="tooltip btn btn-success text-white" title="Fields">Fields</a> > ';
-                            return '<a  href="Fields">Fields </>'
-                              }
-                        }
-                    ]
-
+        completedForm = function (xhr) {
+            var rtn = JSON.parse(xhr.responseText);
+            if (rtn.error == false) {
+                Swal.fire({
+                    title: 'Template Form',
+                    text: rtn.message,
+                    type: 'success',
+                    allowOutsideClick: false
+                }).then(function () {
+                    $('#add-form-model').hide();
+                    oTable = $('#tbForm').DataTable();
+                    oTable.draw();
                 });
-       
-    }
-    function validateCreateForm() {
-        createFlag = false;
-        var cFormName = $('#FormName').val();
+                $('#btnFormClose').click();
+                clearFormCreate();
+            }
+            else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Template Form',
+                    text: 'Oops!! Something Went Wrong!',
+                    type: 'error',
+                    allowOutsideClick: false
+                });
+            }
+        };
 
-        if (cFormName == null || cFormName == "" || cFormName == undefined) {
-            $('#lblFormName').show();
-            createFlag = true;
-        }
-        else {
-            $('#lblFormName').hide();
-        }
-
-        var cFormDescription = $('#cFormDescription').val();
-
-        if (cFormDescription == null || cFormDescription == "" || cFormDescription == undefined) {
-            $('#lblcFormDescription').show();
-            createFlag = true;
-        }
-        else {
-            $('#lblcFormDescription').hide();
+        function clearFormCreate() {
+            $('.field-validation-error').empty();
+            var frm = document.getElementsByName('createform')[0];
+            frm.reset();
         }
 
-        var FormOrdinal = $('#FormOrdinal').val();
+        function bind() {
+            $("#tbForm").DataTable({
+                "processing": true, // for show progress bar
+                "serverSide": true,
+                "filter": true, // this is for disable filter (search box)
+                "orderMulti": false, // for disable multiple column at once
+                "ajax": {
+                    "url": '@Url.Action("GetAllForms", "Forms")',
+                    "type": "POST",
+                    headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                    "datatype": "json"
+                },
+                "columnDefs": [{
+                    "targets": '_all',
+                    "defaultContent": ""
+                }],
+                "columns": [
+                    { "data": "name", "name": "Name", "autoWidth": true },
+                    { "data": "description", "name": "Description", "autoWidth": true },
+                    { "data": "ordinal", "name": "Ordinal", "autoWidth": true },
+                    {
+                        'bSortable': false, "autoWidth": true,
+                        "render": function (data, type, row) {
+                            return '<a href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/>'
+                        }
+                    }
+                ]
 
-        if (FormOrdinal == null || FormOrdinal == "" || FormOrdinal == undefined) {
-            $('#lblFormOrdinal').show();
-            createFlag = true;
-        }
-        else {
-            $('#lblFormOrdinal').hide();
+            });
+
         }
 
-        return createFlag;
-    }
-    
-</script>
+        function validateCreateForm() {
+            createFlag = false;
+            var cFormName = $('#FormName').val();
+
+            if (cFormName == null || cFormName == "" || cFormName == undefined) {
+                $('#lblFormName').show();
+                createFlag = true;
+            } else {
+                $('#lblFormName').hide();
+            }
+
+            var cFormDescription = $('#cFormDescription').val();
+
+            if (cFormDescription == null || cFormDescription == "" || cFormDescription == undefined) {
+                $('#lblcFormDescription').show();
+                createFlag = true;
+            } else {
+                $('#lblcFormDescription').hide();
+            }
+
+            var FormOrdinal = $('#FormOrdinal').val();
+
+            if (FormOrdinal == null || FormOrdinal == "" || FormOrdinal == undefined) {
+                $('#lblFormOrdinal').show();
+                createFlag = true;
+            } else {
+                $('#lblFormOrdinal').hide();
+            }
+
+            return createFlag;
+        }
+
+    </script>
 
 }

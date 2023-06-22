@@ -1,7 +1,7 @@
 ﻿@model Core.Services.TemplateFields.Requests.FieldRequest
 
 @{
-    ViewBag.Title = "Fields";
+    ViewBag.Title = "Form Controls";
 }
 <link rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.min.css"
@@ -19,16 +19,16 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Fields</h2>
+                <h2>Form Controls</h2>
                 <br />
                 <div class="text-left">
                 </div>
                 <div input-group>
                     @*<input type="text" placeholder="Name">&nbsp;&nbsp;
                     <select name="Datatype" id="selecteddatatype" style="padding:3px;">
-                        &nbsp;&nbsp;
-                        <option value="Confirmed">Heading</option>
-                        <option value="Cancelled">Text Box</option>
+                    &nbsp;&nbsp;
+                    <option value="Confirmed">Heading</option>
+                    <option value="Cancelled">Text Box</option>
                     </select>
                     <button class="btn btn-group-sm btn-info">Search</button>*@
                     @*<button data-bs-toggle="modal" data-bs-target="#fieldCreate" class="btn btn-primary me-4" style="margin-left:30%;">Create</button>*@
@@ -49,7 +49,7 @@
                         <tr class="bg-secondary">
                             @*<th style="min-width:100px">Serial Number</th>*@
                             <th style="min-width:30px">Name</th>
-                            <th style="min-width:30px">DataType</th>
+                            <th style="min-width:30px">Control Type</th>
                             <th style="min-width:30px">Actions</th>
                         </tr>
                     </thead>
@@ -59,37 +59,37 @@
         </div>
 
         @*<form id="createField" method="post" enctype="multipart/form-data" autocomplete="off">
-            <div id="fieldCreate" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header bg-warning">
-                            <h4 class="modal-title">New Field</h4>
-                            <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
-                        </div>
-                        <div class="modal-body">
-                            <div class="form-group">
-                                <label class="required">Name</label>
-                                <input id="FieldName" name="FieldName" type="text" class="form-control">
-                                <span id="lblFieldName" style="display:none" class="text-danger">The Field Name field is required</span>
-                                <div class="form-group">
-                                    <label for="DataType" class="required">DataType</label>
-                                    <select name="DataType" id="selecteddatatype" class="form-control">
-                                        <option value="Confirmed">Heading</option>
-                                        <option value="Cancelled">TextBox</option>
-                                    </select>
-                                    <span id="lblFieldDataType" style="display:none" class="text-danger">The Field DataType field is required</span>
-                                </div>
-                                <br />
-                                <br />
-                                <div class="text-left">
-                                    <button class="btn btn-success " type="button" onclick="addField(event);" id="newfieldcreate"><i class="fa fa-check"></i>&nbsp;Add new Field</button>
-                                    <button type="button" class="btn btn-danger" id="btnReset">Reset</button>
-                                    <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnClose">Cancel</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+        <div id="fieldCreate" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false">
+        <div class="modal-dialog">
+        <div class="modal-content">
+        <div class="modal-header bg-warning">
+        <h4 class="modal-title">New Field</h4>
+        <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
+        </div>
+        <div class="modal-body">
+        <div class="form-group">
+        <label class="required">Name</label>
+        <input id="FieldName" name="FieldName" type="text" class="form-control">
+        <span id="lblFieldName" style="display:none" class="text-danger">The Field Name field is required</span>
+        <div class="form-group">
+        <label for="DataType" class="required">DataType</label>
+        <select name="DataType" id="selecteddatatype" class="form-control">
+        <option value="Confirmed">Heading</option>
+        <option value="Cancelled">TextBox</option>
+        </select>
+        <span id="lblFieldDataType" style="display:none" class="text-danger">The Field DataType field is required</span>
+        </div>
+        <br />
+        <br />
+        <div class="text-left">
+        <button class="btn btn-success " type="button" onclick="addField(event);" id="newfieldcreate"><i class="fa fa-check"></i>&nbsp;Add new Field</button>
+        <button type="button" class="btn btn-danger" id="btnReset">Reset</button>
+        <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnClose">Cancel</button>
+        </div>
+        </div>
+        </div>
+        </div>
+        </div>
         </form>*@
         <form name="createfield" asp-controller="Fields" asp-action="SaveField" method="post"
               data-ajax="true" data-ajax-method="post" data-ajax-complete="completedField" enctype="multipart/form-data" autocomplete="off">
@@ -100,7 +100,7 @@
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
-                            <h4 class="modal-title">Template Field</h4>
+                            <h4 class="modal-title">Add/Edit Form Control</h4>
                             <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
                         </div>
                         <div class="modal-body">
@@ -111,9 +111,36 @@
                             </div>
                             <div class="form-group">
                                 <label class="required" for="FieldDataType">Control Type</label>
-                                <span asp-validation-for="ControlId" class="text-danger"></span>
                                 <select name="ControlId" class="form-control" asp-for="ControlId" asp-items="@ViewBag.ControlTypes"></select>
-                            </div>                            
+                                <span asp-validation-for="ControlId" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" for="DefaultValue">Default Value</label>
+                                <input type="text" id="FieldName" class="form-control" asp-for="DefaultValue" />
+                                <span asp-validation-for="DefaultValue" class="text-danger"></span>
+                            </div>
+                            <div class="form-check">
+                                <input type="checkbox" class="form-check-input" asp-for="IsRequired" />
+                                <label class="form-check-label" for="IsRequired"> Required</label>
+                                <span asp-validation-for="IsRequired" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" for="RequiredMessage">Required Message</label>
+                                <input type="text" class="form-control" asp-for="RequiredMessage" />
+                                <span asp-validation-for="RequiredMessage" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" for="RegExValue">RegEx Value</label>
+                                <input type="text" class="form-control" asp-for="RegExValue" />
+                                <span asp-validation-for="RegExValue" class="text-danger"></span>
+                            </div>
+                            <div class="form-group">
+                                <label class="required" for="RegExMessage">RegEx Message</label>
+                                <input type="text" class="form-control" asp-for="RegExMessage" />
+                                <span asp-validation-for="RegExMessage" class="text-danger"></span>
+                            </div>
+                            <input type="hidden" asp-for="FieldId" name="FieldId" />
+                            <input type="hidden" value="@ViewBag.FormId" name="TemplateFormId" />
                         </div>
                         <div class="modal-footer">
                             <button class="btn btn-success " type="submit"><span class="glyphicon glyphicon-floppy-saved"></span> Create</button>
@@ -139,9 +166,6 @@
     <script src="~/lib/datatables/js/responsive.bootstrap.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            //completedForm = function (xhr) {
-            //    debugger
-            //}
             bind();
 
             $('#btnFieldClose').click(function () {
@@ -184,14 +208,13 @@
         }
         function bind() {
 
-
             $("#tbField").DataTable({
                 "processing": true, // for show progress bar
                 "serverSide": true,
                 "filter": true, // this is for disable filter (search box)
                 "orderMulti": false, // for disable multiple column at once
                 "ajax": {
-                    "url": '@Url.Action("GetAllFields", "Fields")',
+                    "url": '@Url.Action("GetAllFields", "Fields", new { id = ViewBag.FormId })',
                     "type": "GET",
                     headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                     "datatype": "json"
@@ -202,14 +225,10 @@
                 }],
                 "columns": [
                     { "data": "name", "name": "Name", "autoWidth": true },
-                    { "data": "controlid", "name": "Data Type", "autoWidth": true },
-
-                    
+                    { "data": "controlId", "name": "controlId", "autoWidth": true },
                     {
-                        'bSortable': false,
-                        "autoWidth": true,
+                        'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            //return '<a  type="button"  data-tw-toggle="modal" class="tooltip btn btn-success text-white" title="Fields">Fields</a> > ';
                             return '<a>Properties </>'
                         }
                     }
@@ -238,7 +257,7 @@
             }
             else {
                 $('#lblcFieldDataType').hide();
-            }          
+            }
 
             return createFlag;
         }

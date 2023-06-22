@@ -8,13 +8,12 @@ namespace Core.Services.TemplateFields.Queries
 {
     public class GetAllFieldsQuery : IRequest<Result<IEnumerable<FieldResponse>>>
     {
-        public string TemplateFormId { get; set; } = string.Empty;
+        public int TemplateFormId { get; set; }
     }
 
     internal class GetAllFieldsQueryHandler : IRequestHandler<GetAllFieldsQuery, Result<IEnumerable<FieldResponse>>>
     {
         private readonly IMapper _mapper;
-
         private readonly IFieldRepository _fieldRepository;
 
         public GetAllFieldsQueryHandler(IMapper mapper, IFieldRepository fieldRepository)
@@ -28,7 +27,8 @@ namespace Core.Services.TemplateFields.Queries
         {
             try
             {
-                var rtn = await _fieldRepository.GetByQuery(command.TemplateFormId);
+                var sql = $"WHERE TemplateFormId = {command.TemplateFormId}";
+                var rtn = await _fieldRepository.GetByQuery(sql);
 
                 if (rtn != null)
                 {

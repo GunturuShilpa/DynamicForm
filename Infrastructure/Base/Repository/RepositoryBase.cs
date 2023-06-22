@@ -184,8 +184,8 @@ namespace Infrastructure.Base.Repository
         {
             return typeof(T)
                     .GetProperties()
-                                        //.Where(e => e.Name != "Id" && !e.PropertyType.GetTypeInfo().IsGenericType)
-                                        .Where(e => e.Name != "Id")
+                    //.Where(e => e.Name != "Id" && !e.PropertyType.GetTypeInfo().IsGenericType)
+                    .Where(e => e.Name != "Id")
                     .Select(e => e.Name);
         }
     }

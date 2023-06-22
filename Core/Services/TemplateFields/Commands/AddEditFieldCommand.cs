@@ -31,9 +31,17 @@ namespace Core.Services.TemplateFields.Commands
                 {
                     TemplateFormFields fields = new()
                     {
+                        Id = command.Field.Id,
+                        TemplateFormId = command.Field.TemplateFormId,
                         Name = command.Field.Name,
                         ControlId = command.Field.ControlId,
-                        //Status = true
+                        OrderNo = command.Field.OrderNo,
+                        DefaultValue = command.Field.DefaultValue,
+                        IsRequired = command.Field.IsRequired,
+                        RequiredMessage = command.Field.RequiredMessage,
+                        RegExValue = command.Field.RegExValue,
+                        RegExMessage = command.Field.RegExMessage,
+                        Status = true
                     };
 
                     var rtn = await _fieldRepository.Create(fields);

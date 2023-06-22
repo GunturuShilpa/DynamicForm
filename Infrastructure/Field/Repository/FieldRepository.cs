@@ -33,9 +33,9 @@ namespace Infrastructure.Field.Repository
             return await AddAsync(fields);
         }
 
-        public async Task<IEnumerable<Entity.TemplateFormFields>> GetByQuery(string id = null)
+        public async Task<IEnumerable<Entity.TemplateFormFields>> GetByQuery(string clause)
         {
-            var res = await GetByQueryAsync(id);
+            var res = await GetByQueryAsync(clause);
             return res;
         }
     }

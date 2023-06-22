@@ -11,9 +11,10 @@ namespace DynamicForm.Controllers
     public class FieldsController : BaseController<FieldsController>
     {
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int id = 0)
         {
             await LoadControlTypes();
+            ViewBag.FormId = id;
 
             return View();
         }
@@ -21,6 +22,8 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
+            model.Id = model.FieldId;
+
             var command = new AddEditFieldCommand(model);
             var response = await _mediator.Send(command);
 
@@ -32,21 +35,14 @@ namespace DynamicForm.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAllFields()
+        public async Task<IActionResult> GetAllFields(int id)
         {
-            try
-            {
-                dynamic res = new ExpandoObject();
-                FieldRequest formRequest = new FieldRequest();
+            dynamic res = new ExpandoObject();
+            FieldRequest formRequest = new FieldRequest();
 
-                var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = null });
+            var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = id });
 
-                return Json(mediatorResponse);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return Json(mediatorResponse);
         }
 
         #region | Private Methods |

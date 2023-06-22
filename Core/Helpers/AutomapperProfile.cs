@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using Core.Services.Form.Responses;
 using Infrastructure.Form.Entity;
+using Core.Services.ControlFields.Responses;
+using Infrastructure.ControlType.Entity;
 
 namespace Core.Helpers
 {
@@ -8,7 +10,8 @@ namespace Core.Helpers
     {
         public AutomapperProfile()
         {
-             CreateMap<TemplateForms, FormResponse>();
+            CreateMap<TemplateForms, FormResponse>();
+            CreateMap<ControlTypes, ControlTypesResponse>();
         }
     }
 }

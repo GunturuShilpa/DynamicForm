@@ -37,6 +37,7 @@ namespace Core.Services.Form.Commands
                         Ordinal = command.Form.Ordinal,
                         Status = true
                     };
+
                     var rtn = await _formRepository.Create(forms);
 
                     if (rtn == 0)
@@ -52,7 +53,6 @@ namespace Core.Services.Form.Commands
                 {
                     return await Result<string>.FailAsync("Failed to create form");
                 }
-
             }
             catch (Exception ex)
             {

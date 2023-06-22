@@ -1,16 +1,8 @@
 ﻿using Infrastructure.Base.Repository;
 using Infrastructure.Field.Entity;
-using Infrastructure.Form.Entity;
-using Infrastructure.Form.Repository;
 using Microsoft.Extensions.Configuration;
-using System;
-using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Reflection;
+using System.Data.SqlClient;
 
 namespace Infrastructure.Field.Repository
 {

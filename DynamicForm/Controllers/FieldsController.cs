@@ -1,12 +1,8 @@
-﻿using Core.Services.Form.Commands;
-using Core.Services.Form.Queries;
-using Core.Services.Form.Requests;
-using Core.Services.TemplateFields.Commands;
+﻿using Core.Services.TemplateFields.Commands;
 using Core.Services.TemplateFields.Queries;
 using Core.Services.TemplateFields.Requests;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
-
 
 namespace DynamicForm.Controllers
 {
@@ -17,6 +13,7 @@ namespace DynamicForm.Controllers
         {
             return View();
         }
+
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
@@ -43,6 +40,7 @@ namespace DynamicForm.Controllers
                 throw ex;
             }
         }
+        
         [HttpGet]
         public async Task<IActionResult> GetAllFields()
         {

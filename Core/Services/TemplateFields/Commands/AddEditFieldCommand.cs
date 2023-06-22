@@ -1,18 +1,9 @@
 ﻿using AutoMapper;
-using Core.Services.Form.Commands;
-using Core.Services.Form.Requests;
 using Core.Services.TemplateFields.Requests;
+using Infrastructure.Field.Entity;
 using Infrastructure.Field.Repository;
-using Infrastructure.Form.Entity;
-using Infrastructure.Form.Repository;
 using MediatR;
 using Shared.Result;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Infrastructure.Field.Entity;
 
 namespace Core.Services.TemplateFields.Commands
 {
@@ -25,7 +16,6 @@ namespace Core.Services.TemplateFields.Commands
     {
         private readonly IMapper _mapper;
         private readonly IFieldRepository _fieldRepository;
-
 
         public AddEditFieldCommandHandler(IMapper mapper, IFieldRepository fieldRepository)
         {
@@ -42,9 +32,10 @@ namespace Core.Services.TemplateFields.Commands
                     TemplateFormFields fields = new()
                     {
                         Name = command.Field.Name,
-                        ControlId = command.Field.ControlId,                        
+                        ControlId = command.Field.ControlId,
                         //Status = true
                     };
+
                     var rtn = await _fieldRepository.Create(fields);
 
                     if (rtn == 0)
@@ -60,7 +51,6 @@ namespace Core.Services.TemplateFields.Commands
                 {
                     return await Result<string>.FailAsync("Failed to create field");
                 }
-
             }
             catch (Exception ex)
             {

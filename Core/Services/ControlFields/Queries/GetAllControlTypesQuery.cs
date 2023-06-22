@@ -8,7 +8,7 @@ namespace Core.Services.ControlFields.Queries
 {
     public class GetAllControlTypesQuery : IRequest<Result<IEnumerable<ControlTypesResponse>>>
     {
-        public string Where { get; set; }
+        public string Where { get; set; } = "";
     }
 
     internal class GetAllControlTypesQueryHandler : IRequestHandler<GetAllControlTypesQuery, Result<IEnumerable<ControlTypesResponse>>>

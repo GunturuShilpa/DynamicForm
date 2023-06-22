@@ -1,7 +1,6 @@
-﻿using Infrastructure.Field.Repository;
+﻿using Infrastructure.ControlType.Repository;
+using Infrastructure.Field.Repository;
 using Infrastructure.Form.Repository;
-using Infrastructure.ControlType.Repository;
-
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Ioc

@@ -27,29 +27,24 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveForm(FormRequest model)
         {
-            try
-            {
-                dynamic res = new ExpandoObject();
-                AddEditFormCommand command = new AddEditFormCommand(model);
-                var mediatorResponse = await _mediator.Send(command);
+            dynamic res = new ExpandoObject();
+            var command = new AddEditFormCommand(model);
+            var mediatorResponse = await _mediator.Send(command);
 
-                if (mediatorResponse.Succeeded)
-                {
-                    res.error = false;
-                }
-                else
-                {
-                    res.error = true;
-                }
-                res.message = mediatorResponse.Messages.FirstOrDefault();
-
-                return Json(res);
-            }
-            catch (Exception ex)
+            if (mediatorResponse.Succeeded)
             {
-                throw ex;
+                res.error = false;
             }
+            else
+            {
+                res.error = true;
+            }
+
+            res.message = mediatorResponse.Messages.FirstOrDefault();
+
+            return Json(res);
         }
+
         [HttpPost]
         public async Task<IActionResult> GetAllForms()
         {
@@ -69,8 +64,6 @@ namespace DynamicForm.Controllers
                 int pageSize = length != null ? Convert.ToInt32(length) : 0;
                 int skip = start != null ? Convert.ToInt32(start) : 0;
                 int recordsTotal = 0;
-
-                
 
                 var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { Where = "where status=1" });
 

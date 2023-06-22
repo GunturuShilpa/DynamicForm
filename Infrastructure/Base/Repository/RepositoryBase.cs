@@ -11,7 +11,7 @@ namespace Infrastructure.Base.Repository
 
         public RepositoryBase(IConfiguration configuration)
         {
-            _connectionString = configuration.GetConnectionString("DbConstr");
+            _connectionString = configuration.GetConnectionString("DbConstr") ?? string.Empty;
             _tableName = typeof(T).Name;
         }
 
@@ -63,7 +63,6 @@ namespace Infrastructure.Base.Repository
                 var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE Id = @Id", new { Id = id });
                 return data.FirstOrDefault();
             }
-
         }
 
         public async Task<int> UpdateAsync(T entity)
@@ -76,10 +75,11 @@ namespace Infrastructure.Base.Repository
             {
                 conn.Open();
                 var result = await conn.ExecuteAsync(query, entity);
-                return Convert.ToInt32(result);
 
+                return Convert.ToInt32(result);
             }
         }
+
         public async Task<int> UpdateAsyncByQuery(string query)
         {
             var sqlQuery = $"update {_tableName} set ";
@@ -93,6 +93,7 @@ namespace Infrastructure.Base.Repository
                 return Convert.ToInt32(result);
             }
         }
+
         public async Task<IEnumerable<T>> GetByQueryAsync(string where = null)
         {
             var query = $"select * from {_tableName} ";
@@ -185,9 +186,7 @@ namespace Infrastructure.Base.Repository
                     .GetProperties()
                                         //.Where(e => e.Name != "Id" && !e.PropertyType.GetTypeInfo().IsGenericType)
                                         .Where(e => e.Name != "Id")
-
                     .Select(e => e.Name);
         }
-
     }
 }

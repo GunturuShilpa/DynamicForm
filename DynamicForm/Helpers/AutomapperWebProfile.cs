@@ -10,6 +10,5 @@ namespace DynamicForm.Helpers
         {
             CreateMap<TemplateFormModel, FormResponse>().ReverseMap();
         }
-
-        }
+    }
 }

@@ -1,7 +1,6 @@
 ﻿using AutoMapper;
 using Core.Services.Form.Responses;
 using Infrastructure.Form.Repository;
-using Shared;
 using MediatR;
 using Shared.Result;
 
@@ -9,7 +8,7 @@ namespace Core.Services.Form.Queries
 {
     public class GetAllFormsQuery : IRequest<Result<IEnumerable<FormResponse>>>
     {
-        public string Where { get; set; }
+        public string Where { get; set; } = string.Empty;
 
         //public GetAllFormsQuery(int status, int pageNumber, int pageSize, string searchText)
         //{
@@ -20,18 +19,17 @@ namespace Core.Services.Form.Queries
         //}
 
     }
+
     internal class GetAllFormsQueryHandler : IRequestHandler<GetAllFormsQuery, Result<IEnumerable<FormResponse>>>
     {
         private readonly IMapper _mapper;
 
         private readonly IFormRepository _formRepository;
 
-
         public GetAllFormsQueryHandler(IMapper mapper, IFormRepository formRepository)
         {
             _mapper = mapper;
             _formRepository = formRepository;
-           
         }
 
         public async Task<Result<IEnumerable<FormResponse>>> Handle(GetAllFormsQuery command, CancellationToken cancellationToken)
@@ -45,7 +43,6 @@ namespace Core.Services.Form.Queries
                     IEnumerable<FormResponse> response = _mapper.Map<IEnumerable<FormResponse>>(rtn);
 
                     return await Result<IEnumerable<FormResponse>>.SuccessAsync(response);
-
                 }
                 else
                 {

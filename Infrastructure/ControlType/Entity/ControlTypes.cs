@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace Infrastructure.ControlType.Entity
+﻿namespace Infrastructure.ControlType.Entity
 {
     public class ControlTypes
     {
         public int Id { get; set; }
-        public string Name { get; set; }
+
+        public string Name { get; set; } = string.Empty;
+
         public int OrderNo { get; set; }
     }
 }

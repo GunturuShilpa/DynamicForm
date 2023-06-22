@@ -19,28 +19,13 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Form Controls</h2>
-                <br />
-                <div class="text-left">
-                </div>
-                <div input-group>
-                    @*<input type="text" placeholder="Name">&nbsp;&nbsp;
-                    <select name="Datatype" id="selecteddatatype" style="padding:3px;">
-                    &nbsp;&nbsp;
-                    <option value="Confirmed">Heading</option>
-                    <option value="Cancelled">Text Box</option>
-                    </select>
-                    <button class="btn btn-group-sm btn-info">Search</button>*@
-                    @*<button data-bs-toggle="modal" data-bs-target="#fieldCreate" class="btn btn-primary me-4" style="margin-left:30%;">Create</button>*@
-                    <div class="pull-right">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add-field-model">
-                            <span class="glyphicon glyphicon-plus"></span> Create
-                        </button>
-                    </div>
-                </div>
-                <br />
-                <br />
-                <div class="clearfix"></div>
+                <h2 class="page-title">
+                    Form Controls
+
+                    <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#add-field-model">
+                        <span class="glyphicon glyphicon-plus"></span> Create
+                    </button>
+                </h2>
             </div>
             <div class="x_content">
                 <div id="wait" class="loader" style="display:none;width:100px;height:100px;position:absolute;top:50%;left:50%;padding:2px;z-index:100000"></div>
@@ -50,6 +35,9 @@
                             @*<th style="min-width:100px">Serial Number</th>*@
                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Control Type</th>
+                            <th style="min-width:30px">Default Value</th>
+                            <th style="min-width:30px">Required?</th>
+                            <th style="min-width:30px">Status</th>
                             <th style="min-width:30px">Actions</th>
                         </tr>
                     </thead>
@@ -58,43 +46,8 @@
             </div>
         </div>
 
-        @*<form id="createField" method="post" enctype="multipart/form-data" autocomplete="off">
-        <div id="fieldCreate" class="modal fade" aria-hidden="true" data-backdrop="static" data-keyboard="false">
-        <div class="modal-dialog">
-        <div class="modal-content">
-        <div class="modal-header bg-warning">
-        <h4 class="modal-title">New Field</h4>
-        <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
-        </div>
-        <div class="modal-body">
-        <div class="form-group">
-        <label class="required">Name</label>
-        <input id="FieldName" name="FieldName" type="text" class="form-control">
-        <span id="lblFieldName" style="display:none" class="text-danger">The Field Name field is required</span>
-        <div class="form-group">
-        <label for="DataType" class="required">DataType</label>
-        <select name="DataType" id="selecteddatatype" class="form-control">
-        <option value="Confirmed">Heading</option>
-        <option value="Cancelled">TextBox</option>
-        </select>
-        <span id="lblFieldDataType" style="display:none" class="text-danger">The Field DataType field is required</span>
-        </div>
-        <br />
-        <br />
-        <div class="text-left">
-        <button class="btn btn-success " type="button" onclick="addField(event);" id="newfieldcreate"><i class="fa fa-check"></i>&nbsp;Add new Field</button>
-        <button type="button" class="btn btn-danger" id="btnReset">Reset</button>
-        <button type="button" class="btn btn-primary" data-dismiss="modal" id="btnClose">Cancel</button>
-        </div>
-        </div>
-        </div>
-        </div>
-        </div>
-        </form>*@
         <form name="createfield" asp-controller="Fields" asp-action="SaveField" method="post"
               data-ajax="true" data-ajax-method="post" data-ajax-complete="completedField" enctype="multipart/form-data" autocomplete="off">
-
-            <!-- Modal -->
             <div class="modal fade" id="add-field-model" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
                 <div class="modal-dialog">
                     <!-- Modal content-->
@@ -226,6 +179,9 @@
                 "columns": [
                     { "data": "name", "name": "Name", "autoWidth": true },
                     { "data": "controlId", "name": "controlId", "autoWidth": true },
+                    { "data": "defaultValue", "name": "defaultValue", "autoWidth": true },
+                    { "data": "isRequired", "name": "isRequired", "autoWidth": true },
+                    { "data": "status", "name": "status", "autoWidth": true },
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
@@ -233,10 +189,9 @@
                         }
                     }
                 ]
-
             });
-
         }
+
         function validateCreateField() {
             createFlag = false;
             var cFieldName = $('#FieldName').val();
@@ -244,8 +199,7 @@
             if (cFieldName == null || cFieldName == "" || cFieldName == undefined) {
                 $('#lblFieldName').show();
                 createFlag = true;
-            }
-            else {
+            } else {
                 $('#lblFieldName').hide();
             }
 
@@ -254,8 +208,7 @@
             if (cFieldDataType == null || cFieldDataType == "" || cFieldDataType == undefined) {
                 $('#lblcFieldDataType').show();
                 createFlag = true;
-            }
-            else {
+            } else {
                 $('#lblcFieldDataType').hide();
             }
 
@@ -263,5 +216,4 @@
         }
 
     </script>
-
 }

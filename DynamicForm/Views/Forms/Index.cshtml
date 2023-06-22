@@ -1,7 +1,7 @@
 ﻿@model Core.Services.Form.Requests.FormRequest
 
 @{
-    ViewBag.Title = "Form";
+    ViewBag.Title = "Forms";
 }
 
 <link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" />
@@ -16,30 +16,13 @@
     <div class="col-md-12 col-sm-12 col-xs-12">
         <div class="x_panel">
             <div class="x_title">
-                <h2>Home - Form</h2>
-                <br />
-                <div input-group>
-                    @*  <input type="text" placeholder="Name">&nbsp;&nbsp;
-                    <input type="text" placeholder="Description">&nbsp;&nbsp;
-                    <input type="number" placeholder="Ordinal" />&nbsp;&nbsp;
-                    <select name="Status" id="selectedstatus" style="padding:3px;">
-                    &nbsp;&nbsp;
-                    <option value="Confirmed">Active</option>
-                    <option value="Cancelled">Inactive</option>
-                    </select>
-                    <button class="btn btn-group-sm btn-info">Search</button>*@
-                    <div class="pull-right">
-                        <button type="button" class="btn btn-info" data-toggle="modal" data-target="#add-form-model">
-                            <span class="glyphicon glyphicon-plus"></span> Create
-                        </button>
-                    </div>
-                </div>
-                <br />
-
-                <div class="clearfix"></div>
+                <h2 class="page-title">
+                    Forms
+                    <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#add-form-model">
+                        <span class="glyphicon glyphicon-plus"></span> Create
+                    </button>
+                </h2>
             </div>
-            <br />
-            <br />
             <div class="x_content">
                 <div id="wait" class="loader" style="display:none;width:100px;height:100px;position:absolute;top:50%;left:50%;padding:2px;z-index:100000"></div>
                 <table class="table table-striped table-bordered table-responsive" id="tbForm" style="width:100%">
@@ -48,11 +31,7 @@
                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Description</th>
                             <th style="min-width:30px">Ordinal</th>
-                            <th style="min-width:30px">Action</th>
-                            @*  <th style="min-width:30px">Actions</th>
-                            <th style="min-width:30px">Fields</th>
-                            <th style="min-width:30px">Apply</th>
-                            <th style="min-width:30px">Submissions</th>*@
+                            <th style="min-width:30px">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tdForm"></tbody>
@@ -69,7 +48,7 @@
                     <!-- Modal content-->
                     <div class="modal-content">
                         <div class="modal-header bg-warning">
-                            <h4 class="modal-title">Template Form</h4>
+                            <h4 class="modal-title">Add/Edit Template Form</h4>
                             <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
                         </div>
                         <div class="modal-body">

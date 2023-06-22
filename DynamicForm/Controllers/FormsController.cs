@@ -46,11 +46,9 @@ namespace DynamicForm.Controllers
             try
             {
                 dynamic res = new ExpandoObject();
-                FormRequest formRequest = new FormRequest();
 
-                var query = await _mediator.Send(new GetAllFormsQuery() { Where = "where status=1" });
+                var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { Where = "where status=1" });
 
-                var mediatorResponse = await _mediator.Send(query);
                 return Json(mediatorResponse);
             }
             catch (Exception ex)

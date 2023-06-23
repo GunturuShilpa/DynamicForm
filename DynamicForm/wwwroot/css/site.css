@@ -22,3 +22,11 @@ body {
     padding-bottom: 8px;
     margin-bottom: 8px;
 }
+
+.cic-logo {
+    max-height: 28px;
+}
+
+.navbar {
+    border-bottom: 1px solid #ccc;
+}

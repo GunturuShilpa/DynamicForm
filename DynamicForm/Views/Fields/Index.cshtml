@@ -181,7 +181,7 @@
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                         return '<a>Properties </>  <a href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/><a  type="button"  data-tw-toggle="modal" class="btn btn-success" title="Edit Field" data-tw-target="#update-region-modal-preview" onclick="editRegion(\'' + row.id + '\')">Edit</a>  <a  type="button"  class="btn btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a>  ';
+                         return '<a>Properties </> <a  type="button"  data-tw-toggle="modal" class="btn btn-xs btn-success" title="Edit Field" data-tw-target="#update-region-modal-preview" onclick="editRegion(\'' + row.id + '\')">Edit</a>  <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a>  ';
                         }
                     }
                 ] 

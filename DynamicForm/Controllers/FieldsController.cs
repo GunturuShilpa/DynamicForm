@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Dynamic;
 using System.Linq.Dynamic;
+using System.Linq;
 
 namespace DynamicForm.Controllers
 {
@@ -89,6 +90,12 @@ namespace DynamicForm.Controllers
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
                 formModel = formModel.OrderBy(sortColumn + " " + sortColumnDirection).ToList();
+            }
+            GetAllControlTypesQuery getAllControlTypes = new GetAllControlTypesQuery();
+            var fieldsData = await _mediator.Send(getAllControlTypes);
+            foreach (TemplateFieldsModel formFields in formModel)
+            {
+                formFields.ControlName = fieldsData.Data.Where(x => x.Id == formFields.ControlId).FirstOrDefault().Name;
             }
 
             recordsTotal = formModel.Count();

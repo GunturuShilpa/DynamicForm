@@ -11,6 +11,7 @@ namespace DynamicForm.Helpers
         {
             CreateMap<FormResponse, TemplateFormModel>();
             CreateMap<FieldResponse, TemplateFieldsModel>();
+            CreateMap<TemplateFieldsModel, FieldResponse>();
         }
     }
 }

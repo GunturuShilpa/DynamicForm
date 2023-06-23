@@ -156,47 +156,54 @@
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            return '<a href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/>'
+                             return '<a href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/><a  type="button"  data-tw-toggle="modal" class="btn btn-success" title="Edit Region" data-tw-target="#update-region-modal-preview" onclick="editRegion(\'' + row.id + '\')">Edit</a>  <a  type="button"  class="btn btn-danger" title="Delete Region" onclick="deleteForm(\'' + row.id + '\')">Delete</a>  ';
                         }
                     }
-                ]
-
-            });
-
+                ] 
+            }); 
         }
 
-        function validateCreateForm() {
-            createFlag = false;
-            var cFormName = $('#FormName').val();
-
-            if (cFormName == null || cFormName == "" || cFormName == undefined) {
-                $('#lblFormName').show();
-                createFlag = true;
-            } else {
-                $('#lblFormName').hide();
-            }
-
-            var cFormDescription = $('#cFormDescription').val();
-
-            if (cFormDescription == null || cFormDescription == "" || cFormDescription == undefined) {
-                $('#lblcFormDescription').show();
-                createFlag = true;
-            } else {
-                $('#lblcFormDescription').hide();
-            }
-
-            var FormOrdinal = $('#FormOrdinal').val();
-
-            if (FormOrdinal == null || FormOrdinal == "" || FormOrdinal == undefined) {
-                $('#lblFormOrdinal').show();
-                createFlag = true;
-            } else {
-                $('#lblFormOrdinal').hide();
-            }
-
-            return createFlag;
-        }
-
+         function deleteForm(id) {
+         Swal.fire({
+            title: "Confirmation",
+            text: "Are you sure you want to delete?",
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, delete it!',
+            showLoaderOnConfirm: true,
+            animation: !1,
+            preConfirm: function () {
+                return new Promise(function (resolve) {
+                    $.ajax({
+                        url: '@Url.Action("DeleteForm", "Forms")?id=' + id,
+                        type: 'POST',
+                        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                        dataType: 'json'
+                    })
+                        .done(function (response) {
+                            oTable = $('#tbForm').DataTable();
+                            oTable.draw();
+                            if (response.error == true && response.message == "session expired") {
+                                alert('session expired!! Login Again!');
+                                location.href = "/Login/Index";
+                            }
+                            else if (response.error == false) {
+                                Swal.fire('Deleted!', response.message, 'success')
+                            }
+                            else {
+                                Swal.fire('Oops...', response.message, 'error')
+                            }
+                        })
+                        .fail(function () {
+                            Swal.fire('Oops...', response.message, 'error')
+                        });
+                });
+            },
+        });
+    }
+         
     </script>
 
 }

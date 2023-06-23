@@ -33,5 +33,9 @@ namespace Infrastructure.Form.Repository
             var res = await GetByQueryAsync(where);
             return res;
         }
+        public async Task<int> Delete(int id, int? userId = null)
+        {
+            return await DeleteAsync(id, userId);
+        }
     }
 }

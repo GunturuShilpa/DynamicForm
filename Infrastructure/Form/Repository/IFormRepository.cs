@@ -7,5 +7,6 @@ namespace Infrastructure.Form.Repository
         Task<int> Create(TemplateForms model);
 
         Task<IEnumerable<TemplateForms>> GetByQuery(string where);
+        Task<int> Delete(int id, int? userId = null);
     }
 }

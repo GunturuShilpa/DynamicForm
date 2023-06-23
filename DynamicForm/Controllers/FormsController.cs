@@ -84,5 +84,28 @@ namespace DynamicForm.Controllers
 
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteForm(int id)
+        {
+            dynamic res = new ExpandoObject();
+
+            DeleteFormCommand command = new DeleteFormCommand();
+            command.Id = id;
+            command.UserId = 0;
+
+            var mediatorResponse = await _mediator.Send(command);
+
+            if (mediatorResponse.Succeeded)
+            { 
+                res.error = false;
+            }
+            else
+                res.error = true;
+
+            res.message = mediatorResponse.Messages.FirstOrDefault();
+
+            return Json(res);
+        }
     }
 }

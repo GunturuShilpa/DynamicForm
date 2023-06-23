@@ -30,12 +30,12 @@ namespace Infrastructure.Base.Repository
             }
         }
 
-        public async Task<int> DeleteAsync(int id, int? UserId = 0)
+        public async Task<int> DeleteAsync(int id, int? userId = 0)
         {
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = UserId, ModifiedDate = DateTime.Now, Status = 1 });
+                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = userId, ModifiedDate = DateTime.Now, Status = false });
                 return Convert.ToInt32(result);
             }
         }

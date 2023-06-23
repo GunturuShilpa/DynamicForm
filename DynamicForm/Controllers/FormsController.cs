@@ -70,8 +70,7 @@ namespace DynamicForm.Controllers
             if (!string.IsNullOrEmpty(searchValue))
             {
                 searchValue = searchValue.ToLower();
-                formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue))
-                                    || (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue))
+                formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue)) 
                                     || (string.IsNullOrWhiteSpace(x.Description) == false && x.Description.ToLower().Contains(searchValue))
                                     ).ToList();
             }
@@ -80,8 +79,7 @@ namespace DynamicForm.Controllers
                 formModel = formModel.OrderBy(sortColumn + " " + sortColumnDirection).ToList();
             }
 
-            //return Json(mediatorResponse);
-            recordsTotal = formModel.Count();
+             recordsTotal = formModel.Count();
             var data = formModel.Skip(skip).Take(pageSize).ToList();
 
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });

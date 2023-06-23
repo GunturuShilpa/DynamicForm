@@ -3,12 +3,9 @@
 @{
     ViewBag.Title = "Form Controls";
 }
-<link rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/datatables/1.10.21/css/jquery.dataTables.min.css"
-      integrity="sha512-1k7mWiTNoyx2XtmI96o+hdjP8nn0f3Z2N4oF/9ZZRgijyV4omsKOXEnqL1gKQNPy2MTSP9rIEWGcH/CInulptA=="
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer" />
-<link href="https://cdn.jsdelivr.net/npm/sweetalert2@11.7.12/dist/sweetalert2.min.css" rel="stylesheet" />
+<link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" />
+<link href="~/lib/sweetalert/css/sweetalert2.min.css" rel="stylesheet" />
+
 <style>
     .modal {
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
@@ -32,8 +29,7 @@
                 <table class="table table-striped table-bordered table-responsive" id="tbField" style="width:100%">
                     <thead>
                         <tr class="bg-secondary">
-                            @*<th style="min-width:100px">Serial Number</th>*@
-                            <th style="min-width:30px">Name</th>
+                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Control Type</th>
                             <th style="min-width:30px">Default Value</th>
                             <th style="min-width:30px">Required?</th>
@@ -110,7 +106,8 @@
     {
     <!-- Jquery js -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
-
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
+    <script src="~/lib/sweetalert/js/sweetalert2.all.min.js"></script>
     <!-- Data tables js -->
     <script src="~/lib/datatables/js/jquery.dataTables.min.js"></script>
     <script src="~/lib/datatables/js/dataTables.buttons.min.js"></script>
@@ -127,8 +124,7 @@
         });
 
         completedField = function (xhr) {
-            debugger
-            var rtn = JSON.parse(xhr.responseText);
+             var rtn = JSON.parse(xhr.responseText);
             if (rtn.error == false) {
                 Swal.fire({
                     title: 'Template Field',
@@ -137,8 +133,8 @@
                     allowOutsideClick: false
                 }).then(function () {
                     $('#add-field-model').hide();
-                    //oTable = $('#tbField').DataTable();
-                    //oTable.draw();
+                    oTable = $('#tbField').DataTable();
+                    oTable.draw();
                 });
                 $('#btnFieldClose').click();
                 clearFormCreate();
@@ -159,8 +155,8 @@
             var frm = document.getElementsByName('createfield')[0];
             frm.reset();
         }
-        function bind() {
 
+           function bind() {
             $("#tbField").DataTable({
                 "processing": true, // for show progress bar
                 "serverSide": true,
@@ -168,7 +164,7 @@
                 "orderMulti": false, // for disable multiple column at once
                 "ajax": {
                     "url": '@Url.Action("GetAllFields", "Fields", new { id = ViewBag.FormId })',
-                    "type": "GET",
+                    "type": "POST",
                     headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                     "datatype": "json"
                 },
@@ -178,42 +174,18 @@
                 }],
                 "columns": [
                     { "data": "name", "name": "Name", "autoWidth": true },
-                    { "data": "controlId", "name": "controlId", "autoWidth": true },
-                    { "data": "defaultValue", "name": "defaultValue", "autoWidth": true },
-                    { "data": "isRequired", "name": "isRequired", "autoWidth": true },
-                    { "data": "status", "name": "status", "autoWidth": true },
+                    { "data": "controlId", "name": "ControlId", "autoWidth": true },
+                    { "data": "defaultValue", "name": "DefaultValue", "autoWidth": true },
+                    { "data": "isRequired", "name": "IsRequired", "autoWidth": true },
+                    { "data": "status", "name": "Status", "autoWidth": true },
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
                             return '<a>Properties </>'
                         }
                     }
-                ]
-            });
-        }
-
-        function validateCreateField() {
-            createFlag = false;
-            var cFieldName = $('#FieldName').val();
-
-            if (cFieldName == null || cFieldName == "" || cFieldName == undefined) {
-                $('#lblFieldName').show();
-                createFlag = true;
-            } else {
-                $('#lblFieldName').hide();
-            }
-
-            var cFieldDataType = $('#cFieldDataType').val();
-
-            if (cFieldDataType == null || cFieldDataType == "" || cFieldDataType == undefined) {
-                $('#lblcFieldDataType').show();
-                createFlag = true;
-            } else {
-                $('#lblcFieldDataType').hide();
-            }
-
-            return createFlag;
-        }
-
+                ] 
+            }); 
+        } 
     </script>
 }

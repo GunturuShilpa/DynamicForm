@@ -1,5 +1,6 @@
 ﻿using Core.Helpers;
 using Core.Services.Form.Responses;
+using Core.Services.TemplateFields.Responses;
 using DynamicForm.Models;
 
 namespace DynamicForm.Helpers
@@ -8,7 +9,8 @@ namespace DynamicForm.Helpers
     {
         public AutomapperWebProfile()
         {
-            CreateMap<TemplateFormModel, FormResponse>().ReverseMap();
+            CreateMap<FormResponse, TemplateFormModel>();
+            CreateMap<FieldResponse, TemplateFieldsModel>();
         }
     }
 }

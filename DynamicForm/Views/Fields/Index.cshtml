@@ -19,7 +19,6 @@
             <div class="x_title">
                 <h2 class="page-title">
                     Form Controls
-
                     <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#add-field-model">
                         <span class="glyphicon glyphicon-plus"></span> Create
                     </button>
@@ -138,7 +137,8 @@
                     allowOutsideClick: false
                 }).then(function () {
                     $('#add-field-model').hide();
-                    $('#myModal').hide();                    
+                    $('#myModal').hide();
+                    
                     oTable = $('#tbField').DataTable();                   
                     oTable.draw();
                 });
@@ -159,6 +159,7 @@
         function clearFieldCreate() {
             $('.field-validation-error').empty();
             var frm = document.getElementsByName('createfield')[0];
+            var frm = document.getElementsByName('editfield')[0];
             frm.reset();
         }
 
@@ -187,8 +188,8 @@
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            return '<a type="button"  data-tw-toggle="modal" class="btn btn-xs btn-info">Properties <a/> <a  type="button"  data-tw-toggle="modal" class="btn btn-xs btn-success" title="Edit Field" data-tw-target="#update-region-modal-preview" onclick="editRegion(\'' + row.id + '\')">Edit</a>  <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a>  ';
-                            return '<a type="button" data-toggle="modal" data-target="#myModal" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a>  ';
+                            
+                            return '<a type="button" data-toggle="modal" data-target="#myModal" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
 
                         }
                     }

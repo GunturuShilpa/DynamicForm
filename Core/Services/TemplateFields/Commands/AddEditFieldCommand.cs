@@ -52,7 +52,7 @@ namespace Core.Services.TemplateFields.Commands
                     }
                     else
                     {
-                        return await Result<string>.SuccessAsync(rtn.ToString(), "field is created successfully");
+                        return await Result<string>.SuccessAsync(rtn.ToString(), "Field is created successfully");
                     }
                 }
 
@@ -77,11 +77,11 @@ namespace Core.Services.TemplateFields.Commands
 
                     if (rtn == 0)
                     {
-                        return await Result<string>.FailAsync("Failed to Update field");
+                        return await Result<string>.FailAsync("Failed to update field");
                     }
                     else
                     {
-                        return await Result<string>.SuccessAsync(rtn.ToString(), "field is updated successfully");
+                        return await Result<string>.SuccessAsync(rtn.ToString(), "Field is updated successfully");
                     }
                 }
                 else

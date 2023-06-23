@@ -3,11 +3,6 @@ using Core.Services.TemplateFields.Responses;
 using Infrastructure.Field.Repository;
 using MediatR;
 using Shared.Result;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Core.Services.TemplateFields.Queries
 {

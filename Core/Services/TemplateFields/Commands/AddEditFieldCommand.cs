@@ -55,6 +55,35 @@ namespace Core.Services.TemplateFields.Commands
                         return await Result<string>.SuccessAsync(rtn.ToString(), "field is created successfully");
                     }
                 }
+
+                else if (Convert.ToInt32(command.Field.Id) != 0)
+                {
+                    TemplateFormFields fields = new()
+                    {
+                        Id = command.Field.Id,
+                        TemplateFormId = command.Field.TemplateFormId,
+                        Name = command.Field.Name,
+                        ControlId = command.Field.ControlId,
+                        OrderNo = command.Field.OrderNo,
+                        DefaultValue = command.Field.DefaultValue,
+                        IsRequired = command.Field.IsRequired,
+                        RequiredMessage = command.Field.RequiredMessage,
+                        RegExValue = command.Field.RegExValue,
+                        RegExMessage = command.Field.RegExMessage,
+                        Status = true
+                    };
+
+                    var rtn = await _fieldRepository.Update(fields);
+
+                    if (rtn == 0)
+                    {
+                        return await Result<string>.FailAsync("Failed to Update field");
+                    }
+                    else
+                    {
+                        return await Result<string>.SuccessAsync(rtn.ToString(), "field is updated successfully");
+                    }
+                }
                 else
                 {
                     return await Result<string>.FailAsync("Failed to create field");

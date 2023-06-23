@@ -6,7 +6,7 @@ using System.Data.SqlClient;
 
 namespace Infrastructure.Field.Repository
 {
-    public class FieldRepository : RepositoryBase<Entity.TemplateFormFields>, IFieldRepository
+    public class FieldRepository : RepositoryBase<TemplateFormFields>, IFieldRepository
     {
         private readonly IConfiguration _configuration;
 
@@ -22,19 +22,30 @@ namespace Infrastructure.Field.Repository
                 return new SqlConnection(_configuration.GetConnectionString("DbConstr"));
             }
         } 
+
         public async Task<int> Create(TemplateFormFields fields)
         {
             return await AddAsync(fields);
         }
 
-        public async Task<IEnumerable<Entity.TemplateFormFields>> GetByQuery(string clause)
+        public async Task<TemplateFormFields> GetById(int id)
+        {
+            return await GetByIdAsync(id);
+        }
+
+        public async Task<IEnumerable<TemplateFormFields>> GetByQuery(string clause)
         {
             var res = await GetByQueryAsync(clause);
             return res;
         }
+
         public async Task<int> Delete(int id, int? userId = null)
         {
             return await DeleteAsync(id, userId);
+        }        
+        public async Task<int> Update(TemplateFormFields fields)
+        {
+            return await UpdateAsync(fields);
         }
     }
 }

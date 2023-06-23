@@ -1,6 +1,5 @@
 ﻿using AutoMapper;
 using Core.Services.ControlFields.Queries;
-using Core.Services.Form.Commands;
 using Core.Services.TemplateFields.Commands;
 using Core.Services.TemplateFields.Queries;
 using Core.Services.TemplateFields.Requests;
@@ -9,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Dynamic;
 using System.Linq.Dynamic;
+
 namespace DynamicForm.Controllers
 {
     public class FieldsController : BaseController<FieldsController>
@@ -19,6 +19,7 @@ namespace DynamicForm.Controllers
         {
             _mapper = mapper;
         }
+
         [HttpGet]
         public async Task<IActionResult> Index(int id = 0)
         {
@@ -31,8 +32,6 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
-            model.Id = model.FieldId;
-
             var command = new AddEditFieldCommand(model);
             var response = await _mediator.Send(command);
 
@@ -53,7 +52,7 @@ namespace DynamicForm.Controllers
 
             return Json(result);
         }
-
+        
         [HttpPost]
         public async Task<IActionResult> GetAllFields(int id)
         {
@@ -96,6 +95,17 @@ namespace DynamicForm.Controllers
             var data = formModel.Skip(skip).Take(pageSize).ToList();
 
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+        }
+
+        [HttpGet(Name = "GetFieldPropertiesById")]
+        public async Task<IActionResult> GetFieldPropertiesById(int id)
+        {
+            await LoadControlTypes();                   
+
+            GetFieldPropertiesQuery query = new() { Id = id };
+            var fieldProperties = await _mediator.Send(query);
+            var fieldPropertiesModel = _mapper.Map<TemplateFieldsModel>(fieldProperties.Data);            
+            return PartialView("_EditFields", fieldPropertiesModel);
         }
 
         [HttpPost]

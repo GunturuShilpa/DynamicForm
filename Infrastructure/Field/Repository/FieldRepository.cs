@@ -21,13 +21,7 @@ namespace Infrastructure.Field.Repository
             {
                 return new SqlConnection(_configuration.GetConnectionString("DbConstr"));
             }
-        }
-
-        //public async Task<int> Create(Entity.TemplateFields model)
-        //{
-        //    return await AddAsync(model);
-        //}
-
+        } 
         public async Task<int> Create(TemplateFormFields fields)
         {
             return await AddAsync(fields);
@@ -37,6 +31,10 @@ namespace Infrastructure.Field.Repository
         {
             var res = await GetByQueryAsync(clause);
             return res;
+        }
+        public async Task<int> Delete(int id, int? userId = null)
+        {
+            return await DeleteAsync(id, userId);
         }
     }
 }

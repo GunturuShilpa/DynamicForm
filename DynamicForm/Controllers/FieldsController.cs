@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Services.ControlFields.Queries;
+using Core.Services.Form.Commands;
 using Core.Services.TemplateFields.Commands;
 using Core.Services.TemplateFields.Queries;
 using Core.Services.TemplateFields.Requests;
@@ -95,6 +96,29 @@ namespace DynamicForm.Controllers
             var data = formModel.Skip(skip).Take(pageSize).ToList();
 
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> DeleteForm(int id)
+        {
+            dynamic res = new ExpandoObject();
+
+            DeleteFieldCommand command = new DeleteFieldCommand();
+            command.Id = id;
+            command.UserId = 0;
+
+            var mediatorResponse = await _mediator.Send(command);
+
+            if (mediatorResponse.Succeeded)
+            {
+                res.error = false;
+            }
+            else
+                res.error = true;
+
+            res.message = mediatorResponse.Messages.FirstOrDefault();
+
+            return Json(res);
         }
 
         #region | Private Methods |

@@ -18,7 +18,7 @@ namespace Core.Services.Form.Commands
         public DeleteFormCommandHandler(IFormRepository formRepository)
         {
             _formRepository = formRepository;
-         }
+        }
         public async Task<Result<string>> Handle(DeleteFormCommand command, CancellationToken cancellationToken)
         {
             if (command.Id == 0)
@@ -27,14 +27,14 @@ namespace Core.Services.Form.Commands
             }
             else
             {
-                var rtn = await _formRepository.Delete(command.Id);
+                var rtn = await _formRepository.Delete(command.Id, command.UserId);
                 if (rtn == 0)
                 {
                     return await Result<string>.FailAsync("Failed to delete template form");
                 }
                 else
-                { 
-                    return await Result<string>.SuccessAsync("Template form deleted successfully"); 
+                {
+                    return await Result<string>.SuccessAsync("Template form deleted successfully");
                 }
             }
         }

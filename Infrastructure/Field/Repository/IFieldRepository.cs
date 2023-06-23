@@ -7,5 +7,6 @@ namespace Infrastructure.Field.Repository
         Task<int> Create(TemplateFormFields fields);
 
         Task<IEnumerable<TemplateFormFields>> GetByQuery(string where);
+        Task<int> Delete(int id, int? userId = null);
     }
 }

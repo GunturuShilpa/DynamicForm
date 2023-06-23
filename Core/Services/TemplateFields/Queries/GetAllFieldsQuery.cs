@@ -27,7 +27,7 @@ namespace Core.Services.TemplateFields.Queries
         {
             try
             {
-                var sql = $"WHERE TemplateFormId = {command.TemplateFormId}";
+                var sql = $"WHERE TemplateFormId = {command.TemplateFormId} and status = 1";
                 var rtn = await _fieldRepository.GetByQuery(sql);
 
                 if (rtn != null)

@@ -1,4 +1,5 @@
-﻿namespace DynamicForm.Models
+﻿using System.ComponentModel.DataAnnotations;
+namespace DynamicForm.Models
 {
     public class TemplateFieldsModel
     {
@@ -9,7 +10,7 @@
         public int TemplateFormId { get; set; }
 
         public int OrderNo { get; set; } = 0;
-
+        [Required]
         public string Name { get; set; } = string.Empty;
 
         public int ControlId { get; set; }

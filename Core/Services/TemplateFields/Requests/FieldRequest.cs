@@ -1,4 +1,5 @@
-﻿namespace Core.Services.TemplateFields.Requests
+﻿using System.ComponentModel.DataAnnotations;
+namespace Core.Services.TemplateFields.Requests
 {
     public class FieldRequest
     {
@@ -9,7 +10,7 @@
         public int TemplateFormId { get; set; }
 
         public int OrderNo { get; set; } = 0;
-
+        [Required]
         public string Name { get; set; } = string.Empty;
 
         public int ControlId { get; set; }

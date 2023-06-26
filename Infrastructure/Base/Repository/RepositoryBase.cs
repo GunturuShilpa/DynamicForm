@@ -188,5 +188,16 @@ namespace Infrastructure.Base.Repository
                     .Where(e => e.Name != "Id")
                     .Select(e => e.Name);
         }
+
+        public async Task<T> GetByIdAsync(string id)
+        {
+            using (SqlConnection conn = new SqlConnection(_connectionString))
+            {
+                conn.Open();
+                var data = await conn.QueryAsync<T>($"SELECT * FROM {_tableName} WHERE Id = @Id", new { Id = id });
+                return data.FirstOrDefault();
+            }
+
+        }
     }
 }

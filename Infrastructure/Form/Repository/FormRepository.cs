@@ -37,5 +37,10 @@ namespace Infrastructure.Form.Repository
         {
             return await DeleteAsync(id, userId);
         }
+
+        public async Task<TemplateForms> GetById(int id)
+        {
+            return await GetByIdAsync(id);
+        }
     }
 }

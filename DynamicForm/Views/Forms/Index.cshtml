@@ -133,6 +133,47 @@
             frm.reset();
         }
 
+
+        function editFormProperty(id) {
+            $.ajax({
+                url: '@Url.Action("GetFormPropertiesById", "Forms")?id=' + id,
+                type: 'get',
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                success: (result) => {
+                    $('#myModal').html(result);
+                }
+            });
+        }
+
+        updatedForm = function (xhr) {
+            var rtn = JSON.parse(xhr.responseText);
+            if (rtn.error == false) {
+                Swal.fire({
+                    title: 'Template Field',
+                    text: rtn.message,
+                    type: 'success',
+                    allowOutsideClick: false
+                }).then(function () {
+                    $('#update-field-model').hide();
+                    oTable = $('#tbField').DataTable();
+                    oTable.draw();
+                });
+                $('#btnUpdateFieldClose').click();
+                clearFieldUpdate();
+            }
+            else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Template Field',
+                    text: 'Oops!! Something Went Wrong!',
+                    type: 'error',
+                    allowOutsideClick: false
+                });
+            }
+        };
+
+
+
         function bind() {
             $("#tbForm").DataTable({
                 "processing": true, // for show progress bar
@@ -156,8 +197,7 @@
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                             return '<a type="button"  data-tw-toggle="modal" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/> <a  type="button"  data-tw-toggle="modal" class="btn btn-xs btn-success" title="Edit Form" data-tw-target="#update-region-modal-preview" onclick="editRegion(\'' + row.id + '\')">Edit</a>  <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a>  ';
-                            return '<a type="button"  data-tw-toggle="modal" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/> <a  type="button"  data-tw-toggle="modal" class="btn btn-xs btn-success" title="Edit Form" data-tw-target="#update-region-modal-preview" onclick="editRegion(\'' + row.id + '\')">Edit</a>  <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a>  ';
+                            return <a type="button" data - toggle="modal" data - target="#myModal" class="btn btn-xs btn-success" onclick = "editFormProperty(\'' + row.id + '\')" > Edit < a /> <a  type="button"  class="btn btn-xs btn-danger" title = "Delete Form" onclick = "deleteForm(\'' + row.id + '\')" > Delete < /a>  ';
                         }
                     }
                 ]

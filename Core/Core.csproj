@@ -13,11 +13,9 @@
 
   <ItemGroup>
     <Folder Include="Services\Form\Responses\" />
-    <Folder Include="Services\Form\Queries\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Services\Form\Responses\" />
-    <Folder Include="Services\Form\Queries\" />
   </ItemGroup>
 
   <ItemGroup>

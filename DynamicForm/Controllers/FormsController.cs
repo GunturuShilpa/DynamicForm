@@ -2,8 +2,11 @@
 using Core.Services.Form.Commands;
 using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
+using Core.Services.TemplateFields.Queries;
 using DynamicForm.Models;
+using Infrastructure.Form.Repository;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Result;
 using System.Dynamic;
 using System.Linq.Dynamic;
 
@@ -12,14 +15,14 @@ namespace DynamicForm.Controllers
     public class FormsController : BaseController<FormsController>
     {
         private IMapper _mapper;
-
+        private readonly IFormRepository _formRepository;
         public FormsController(IMapper mapper)
         {
             _mapper = mapper;
         }
 
         [HttpGet]
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
             return View();
         }
@@ -107,5 +110,16 @@ namespace DynamicForm.Controllers
 
             return Json(res);
         }
+
+        [HttpGet(Name = "GetFormPropertiesById")]
+        public async Task<IActionResult> GetFormPropertiesById(int id)
+        {
+            GetFormsDataById query = new() { Id = id };
+            var formProperties = await _mediator.Send(query);
+            var formPropertiesModel = _mapper.Map<TemplateFieldsModel>(formProperties.Data);
+            return PartialView("EditForms", formPropertiesModel);
+        }
     }
+
+
 }

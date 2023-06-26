@@ -50,9 +50,31 @@ namespace Core.Services.Form.Commands
                         return await Result<string>.SuccessAsync(rtn.ToString(), "Form is created successfully");
                     }
                 }
+
+                else if (Convert.ToInt32(command.Form.Id) != 0)
+                {
+                    TemplateForms forms = new()
+                    {
+                        Id= command.Form.Id,
+                        Name = command.Form.Name,
+                        Description = command.Form.Description,
+                        Ordinal = command.Form.Ordinal,
+                    };
+
+                    var rtn = await _formRepository.Update(forms);
+
+                    if (rtn == 0)
+                    {
+                        return await Result<string>.FailAsync("Failed to Update form");
+                    }
+                    else
+                    {
+                        return await Result<string>.SuccessAsync(rtn.ToString(), "Form is Updated successfully");
+                    }
+                }
                 else
                 {
-                    return await Result<string>.FailAsync("Failed to create form");
+                    return await Result<string>.FailAsync("Failed to update form");
                 }
             }
             catch (Exception ex)

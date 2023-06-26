@@ -3,7 +3,8 @@
 @{
     ViewBag.Title = "Edit Form Controls";
 }
-
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 <form name="editform" asp-controller="Forms" asp-action="SaveForm" method="post"
       data-ajax="true" data-ajax-method="post" data-ajax-complete="updatedForm" enctype="multipart/form-data" autocomplete="off">
 
@@ -20,17 +21,26 @@
                     <div class="form-group">
                         <label class="required" for="FormName">Name</label>
                         <input type="text" id="FormName" class="form-control" asp-for="Name" />
-                        <span asp-validation-for="Name" class="text-danger"></span>
+                        <span class="text-danger">
+                            @Html.ValidationMessageFor(model => model.Name)
+                        </span>
+                        @*<span asp-validation-for="Name" class="text-danger"></span>*@
                     </div>
                     <div class="form-group">
                         <label class="required" for="FormDescription">Description</label>
                         <input type="text" id="FormDescription" class="form-control" asp-for="Description" />
-                        <span asp-validation-for="Description" class="text-danger"></span>
+                        <span class="text-danger">
+                            @Html.ValidationMessageFor(model => model.Description)
+                        </span>
+                        @*<span asp-validation-for="Description" class="text-danger"></span>*@
                     </div>
                     <div class="form-group">
                         <label class="required" for="FormOrdinal">Ordinal</label>
                         <input type="number" id="FormOrdinal" class="form-control" asp-for="Ordinal" />
-                        <span asp-validation-for="Ordinal" class="text-danger"></span>
+                        <span class="text-danger">
+                            @Html.ValidationMessageFor(model => model.Ordinal)
+                        </span>
+                        @*<span asp-validation-for="Ordinal" class="text-danger"></span>*@
                     </div>
                     <input type="hidden" asp-for="Id" name="Id" />
                 </div>

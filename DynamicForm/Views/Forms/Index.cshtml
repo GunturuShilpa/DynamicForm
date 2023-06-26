@@ -85,6 +85,8 @@
     {
     <!-- Jquery js -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/lib/sweetalert/js/sweetalert2.all.min.js"></script>
     <!-- Data tables js -->
@@ -95,7 +97,7 @@
     <script src="~/lib/datatables/js/responsive.bootstrap.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            bind(); 
+            bind();
         });
 
         $('#btnFormClose').click(function () {
@@ -201,7 +203,7 @@
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                             return '<a type="button"  data-tw-toggle="modal" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/> <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> ';
+                            return '<a type="button"  data-tw-toggle="modal" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/> <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> ';
                         }
                     }
                 ]

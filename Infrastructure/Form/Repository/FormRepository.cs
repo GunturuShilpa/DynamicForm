@@ -28,6 +28,10 @@ namespace Infrastructure.Form.Repository
             return await AddAsync(model);
         }
 
+        public async Task<int> Update(TemplateForms model)
+        {
+            return await UpdateAsync(model);
+        }
         public async Task<IEnumerable<TemplateForms>> GetByQuery(string where)
         {
             var res = await GetByQueryAsync(where);

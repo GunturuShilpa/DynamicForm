@@ -2,11 +2,9 @@
 using Core.Services.Form.Commands;
 using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
-using Core.Services.TemplateFields.Queries;
 using DynamicForm.Models;
 using Infrastructure.Form.Repository;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Result;
 using System.Dynamic;
 using System.Linq.Dynamic;
 
@@ -15,7 +13,6 @@ namespace DynamicForm.Controllers
     public class FormsController : BaseController<FormsController>
     {
         private IMapper _mapper;
-        private readonly IFormRepository _formRepository;
         public FormsController(IMapper mapper)
         {
             _mapper = mapper;
@@ -73,7 +70,7 @@ namespace DynamicForm.Controllers
             if (!string.IsNullOrEmpty(searchValue))
             {
                 searchValue = searchValue.ToLower();
-                formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue)) 
+                formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue))
                                     || (string.IsNullOrWhiteSpace(x.Description) == false && x.Description.ToLower().Contains(searchValue))
                                     ).ToList();
             }
@@ -82,7 +79,7 @@ namespace DynamicForm.Controllers
                 formModel = formModel.OrderBy(sortColumn + " " + sortColumnDirection).ToList();
             }
 
-             recordsTotal = formModel.Count();
+            recordsTotal = formModel.Count();
             var data = formModel.Skip(skip).Take(pageSize).ToList();
 
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
@@ -100,7 +97,7 @@ namespace DynamicForm.Controllers
             var mediatorResponse = await _mediator.Send(command);
 
             if (mediatorResponse.Succeeded)
-            { 
+            {
                 res.error = false;
             }
             else
@@ -111,13 +108,13 @@ namespace DynamicForm.Controllers
             return Json(res);
         }
 
-        [HttpGet(Name = "GetFormPropertiesById")]
+        [HttpGet]
         public async Task<IActionResult> GetFormPropertiesById(int id)
         {
             GetFormsDataById query = new() { Id = id };
             var formProperties = await _mediator.Send(query);
-            var formPropertiesModel = _mapper.Map<TemplateFieldsModel>(formProperties.Data);
-            return PartialView("EditForms", formPropertiesModel);
+            var formPropertiesModel = _mapper.Map<TemplateFormModel>(formProperties.Data);
+            return PartialView("_EditForm", formPropertiesModel);
         }
     }
 

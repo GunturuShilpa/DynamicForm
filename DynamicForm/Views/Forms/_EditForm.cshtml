@@ -5,7 +5,7 @@
 }
 
 <form name="editform" asp-controller="Forms" asp-action="SaveForm" method="post"
-      data-ajax="true" data-ajax-method="post" data-ajax-complete="completedForm" enctype="multipart/form-data" autocomplete="off">
+      data-ajax="true" data-ajax-method="post" data-ajax-complete="updatedForm" enctype="multipart/form-data" autocomplete="off">
 
     <!-- Modal -->
     <div class="modal-dialog" id="add-form-model">
@@ -35,8 +35,8 @@
                     <input type="hidden" asp-for="Id" name="Id" />
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-danger" id="btnFieldClose" data-dismiss="modal" aria-hidden="true">Close</button>
-                    <button class="btn btn-success ">Save changes</button>
+                    <button class="btn btn-danger" id="btnUpdateFormClose" data-dismiss="modal" aria-hidden="true"><span class="glyphicon glyphicon-remove"></span>Close</button>
+                    <button class="btn btn-success"> <span class="glyphicon glyphicon-floppy-saved"></span> Save changes</button>
                 </div>
             </div>
         </div>

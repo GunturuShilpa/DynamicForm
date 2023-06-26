@@ -76,6 +76,8 @@
                 </div>
             </div>
         </form>
+        <div class="modal" id="update-form-model" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
+        </div>
     </div>
 </div>
 
@@ -93,13 +95,12 @@
     <script src="~/lib/datatables/js/responsive.bootstrap.min.js"></script>
     <script type="text/javascript">
         $(document).ready(function () {
-            bind();
-
-            $('#btnFormClose').click(function () {
-                clearFormCreate();
-            });
+            bind(); 
         });
 
+        $('#btnFormClose').click(function () {
+            clearFormCreate();
+        });
         completedForm = function (xhr) {
             var rtn = JSON.parse(xhr.responseText);
             if (rtn.error == false) {
@@ -133,6 +134,11 @@
             frm.reset();
         }
 
+        function clearFormUpdate() {
+            $('.field-validation-error').empty();
+            var frm = document.getElementsByName('editform')[0];
+            frm.reset();
+        }
 
         function editFormProperty(id) {
             $.ajax({
@@ -140,7 +146,7 @@
                 type: 'get',
                 headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
                 success: (result) => {
-                    $('#myModal').html(result);
+                    $('#update-form-model').html(result);
                 }
             });
         }
@@ -154,12 +160,12 @@
                     type: 'success',
                     allowOutsideClick: false
                 }).then(function () {
-                    $('#update-field-model').hide();
-                    oTable = $('#tbField').DataTable();
+                    $('#update-form-model').hide();
+                    oTable = $('#tbForm').DataTable();
                     oTable.draw();
                 });
-                $('#btnUpdateFieldClose').click();
-                clearFieldUpdate();
+                $('#btnUpdateFormClose').click();
+                clearFormUpdate();
             }
             else {
                 Swal.fire({
@@ -171,8 +177,6 @@
                 });
             }
         };
-
-
 
         function bind() {
             $("#tbForm").DataTable({
@@ -197,7 +201,7 @@
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            return <a type="button" data - toggle="modal" data - target="#myModal" class="btn btn-xs btn-success" onclick = "editFormProperty(\'' + row.id + '\')" > Edit < a /> <a  type="button"  class="btn btn-xs btn-danger" title = "Delete Form" onclick = "deleteForm(\'' + row.id + '\')" > Delete < /a>  ';
+                             return '<a type="button"  data-tw-toggle="modal" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/> <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> ';
                         }
                     }
                 ]

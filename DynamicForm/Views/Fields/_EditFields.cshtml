@@ -5,7 +5,7 @@
 }
 
 <form name="editfield" asp-controller="Fields" asp-action="SaveField" method="post"
-      data-ajax="true" data-ajax-method="post" data-ajax-complete="completedField" enctype="multipart/form-data" autocomplete="off">
+      data-ajax="true" data-ajax-method="post" data-ajax-complete="updatedField" enctype="multipart/form-data" autocomplete="off">
     <div class="modal-dialog" id="add-field-model">
         <div class="modal-content">
             <div class="modal-header bg-warning">
@@ -52,7 +52,7 @@
                 <input type="hidden" asp-for="TemplateFormId" name="TemplateFormId" />
             </div>
             <div class="modal-footer">
-                <button class="btn btn-danger" id="btnFieldClose" data-dismiss="modal" aria-hidden="true">Close</button>
+                <button class="btn btn-danger" id="btnUpdateFieldClose" data-dismiss="modal" aria-hidden="true">Close</button>
                 <button class="btn btn-success ">Save changes</button>
             </div>          
         </div>

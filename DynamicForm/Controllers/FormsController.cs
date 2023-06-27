@@ -3,7 +3,6 @@ using Core.Services.Form.Commands;
 using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
 using DynamicForm.Models;
-using Infrastructure.Form.Repository;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
 using System.Linq.Dynamic;
@@ -72,6 +71,7 @@ namespace DynamicForm.Controllers
                 searchValue = searchValue.ToLower();
                 formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue))
                                     || (string.IsNullOrWhiteSpace(x.Description) == false && x.Description.ToLower().Contains(searchValue))
+                                    || (x.Ordinal.ToString() == Convert.ToString(searchValue))
                                     ).ToList();
             }
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))

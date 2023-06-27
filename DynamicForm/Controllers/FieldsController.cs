@@ -52,7 +52,7 @@ namespace DynamicForm.Controllers
 
             return Json(result);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> GetAllFields(int id)
         {
@@ -80,11 +80,10 @@ namespace DynamicForm.Controllers
                 searchValue = searchValue.ToLower();
                 formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue))
               || (string.IsNullOrWhiteSpace(x.DefaultValue) == false && x.DefaultValue.ToLower().Contains(searchValue))
+              || (string.IsNullOrWhiteSpace(x.ControlName) == false && x.ControlName.ToLower().Contains(searchValue))
               || (string.IsNullOrWhiteSpace(Convert.ToString(x.IsRequired)) == false && x.IsRequired.ToString().ToLower().Contains(searchValue))
-               || (x.ControlId.ToString() == Convert.ToString(searchValue))
-
-
-                                    ).ToList();
+              || (string.IsNullOrWhiteSpace(Convert.ToString(x.Status)) == false && x.Status.ToString().ToLower().Contains(searchValue))
+              || (x.ControlId.ToString() == Convert.ToString(searchValue))).ToList();
             }
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
             {
@@ -106,11 +105,11 @@ namespace DynamicForm.Controllers
         [HttpGet(Name = "GetFieldPropertiesById")]
         public async Task<IActionResult> GetFieldPropertiesById(int id)
         {
-            await LoadControlTypes();                   
+            await LoadControlTypes();
 
             GetFieldPropertiesQuery query = new() { Id = id };
             var fieldProperties = await _mediator.Send(query);
-            var fieldPropertiesModel = _mapper.Map<TemplateFieldsModel>(fieldProperties.Data);            
+            var fieldPropertiesModel = _mapper.Map<TemplateFieldsModel>(fieldProperties.Data);
             return PartialView("_EditFields", fieldPropertiesModel);
         }
 

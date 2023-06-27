@@ -62,7 +62,7 @@ namespace DynamicForm.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
 
-            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { Where = "where status=1" });
+            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() {});
 
             List<TemplateFormModel> formModel = (List<TemplateFormModel>)_mapper.Map<IEnumerable<TemplateFormModel>>(mediatorResponse.Data);
 
@@ -72,6 +72,7 @@ namespace DynamicForm.Controllers
                 formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue))
                                     || (string.IsNullOrWhiteSpace(x.Description) == false && x.Description.ToLower().Contains(searchValue))
                                     || (x.Ordinal.ToString() == Convert.ToString(searchValue))
+                                    || (string.IsNullOrWhiteSpace(Convert.ToString(x.Status)) == false && x.Status.ToString().ToLower().Contains(searchValue))
                                     ).ToList();
             }
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))

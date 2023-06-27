@@ -213,13 +213,41 @@
                 "columns": [
                     { "data": "name", "name": "Name", "autoWidth": true },
                     { "data": "controlName", "name": "ControlName", "autoWidth": true },
-                    { "data": "defaultValue", "name": "DefaultValue", "autoWidth": true },
-                    { "data": "isRequired", "name": "IsRequired", "autoWidth": true },
-                    { "data": "status", "name": "Status", "autoWidth": true },
+                    { "data": "defaultValue", "name": "DefaultValue", "autoWidth": true }, 
+                    {
+                        "autoWidth": true,
+                        "name": "isRequired",
+                        "render": function (data, type, full, meta) {
+                            debugger
+                            if (full.isRequired) {
+                                return "<span class='label label-primary'>True</span>";
+                            }
+                            else {
+                                return "<span class='label label-danger'>False</span>";
+                            }
+                        }
+                    },
+                    {
+                        "autoWidth": true,
+                        "name": "status",
+                        "render": function (data, type, row) {
+                             if (row.status) {
+                                return "<span class='label label-primary'>True</span>";
+                            } 
+                            else {
+                                return "<span class='label label-danger'>False</span>";
+                            }
+                        }
+                    },
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
+                            if(row.status){
                             return '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
+                            }
+                            else {
+                                return "<span class='label label-warning'>NA</span>"
+                            }
                         }
                     }
                 ]

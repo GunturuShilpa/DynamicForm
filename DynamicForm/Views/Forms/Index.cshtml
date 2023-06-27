@@ -31,6 +31,7 @@
                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Description</th>
                             <th style="min-width:30px">Ordinal</th>
+                            <th style="min-width:30px">Status</th>
                             <th style="min-width:30px">Actions</th>
                         </tr>
                     </thead>
@@ -201,9 +202,26 @@
                     { "data": "description", "name": "Description", "autoWidth": true },
                     { "data": "ordinal", "name": "Ordinal", "autoWidth": true },
                     {
+                        "autoWidth": true,
+                        "name": "status",
+                        "render": function (data, type, row) {
+                             if (row.status) {
+                                return "<span class='label label-primary'>True</span>";
+                            }
+                            else {
+                                return "<span class='label label-danger'>False</span>";
+                            }
+                        }
+                    },
+                    {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            return '<a type="button"  data-tw-toggle="modal" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/> <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> ';
+                            if (row.status) {
+                                return '<a type="button" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/>  <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> ';
+
+                            } else {
+                                return "<span class='label label-warning'>NA</span>"
+                            }
                         }
                     }
                 ]

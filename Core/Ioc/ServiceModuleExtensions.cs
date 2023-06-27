@@ -1,6 +1,7 @@
 ﻿using Infrastructure.ControlType.Repository;
 using Infrastructure.Field.Repository;
 using Infrastructure.Form.Repository;
+using Infrastructure.FieldOptions.Repository;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.Ioc
@@ -12,6 +13,7 @@ namespace Core.Ioc
             serviceCollection.AddTransient<IFormRepository, FormRepository>();
             serviceCollection.AddTransient<IControlTypesRepository, ControlTypesRepository>();
             serviceCollection.AddTransient<IFieldRepository, FieldRepository>();
+            serviceCollection.AddTransient<IFormFieldOptionsRepository, FormFieldOptionsRepository>();
         }
     }
 }

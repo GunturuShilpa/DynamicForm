@@ -219,10 +219,10 @@
                         "name": "isRequired",
                         "render": function (data, type, row) {
                             if (row.isRequired) {
-                                return "<span class='label label-primary'>Yes</span>";
+                                return "<span class='text-primary'>Yes</span>";
                             }
                             else {
-                                return "<span class='label label-danger'>No</span>";
+                                return "<span class='text-danger'>No</span>";
                             }
                         }
                     },
@@ -231,19 +231,19 @@
                         "name": "status",
                         "render": function (data, type, row) {
                             if (row.status == 1) {
-                                return "<span class='label label-primary'>Active</span>";
+                                return "<span class='text-primary'>Active</span>";
                             }
                             else if (row.status == 2) {
-                                return "<span class='label label-success'>Incomplete</span>";
+                                return "<span class='text-success'>Incomplete</span>";
                             }
                             else if (row.status == 3) {
-                                return "<span class='label label-warning'>Withheld</span>";
+                                return "<span class='text-warning'>Withheld</span>";
                             }
                             else if (row.status == 4) {
-                                return "<span class='label label-danger'>Deleted</span>";
+                                return "<span class='textdanger'>Deleted</span>";
                             }
                             else {
-                                return "<span class='label label-danger'>NA</span>";
+                                return "<span class='text-danger'></span>";
                             }
                         }
                     },
@@ -254,7 +254,7 @@
                                 return '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
                             }
                             else {
-                                return "NA";
+                                return "";
                             }
                         }
                     }

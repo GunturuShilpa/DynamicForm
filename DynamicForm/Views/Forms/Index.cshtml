@@ -204,19 +204,19 @@
                         "name": "status",
                         "render": function (data, type, row) {
                             if (row.status == 1) {
-                                return "<span class='label label-primary'>Pending</span>";
+                                return "<span class='text-primary'>Pending</span>";
                             }
                             else if (row.status == 2) {
-                                return "<span class='label label-success'>Published</span>";
+                                return "<span class='text-success'>Published</span>";
                             }
                             else if (row.status == 3) {
-                                return "<span class='label label-warning'>Unpublished</span>";
+                                return "<span class='text-warning'>Unpublished</span>";
                             }
                             else if (row.status == 4) {
-                                return "<span class='label label-danger'>Deleted</span>";
+                                return "<span class='text-danger'>Deleted</span>";
                             }
                             else {
-                                return "<span class='label label-danger'>NA</span>";
+                                return "<span class='text-danger'></span>";
                             }
                         }
                     },
@@ -225,19 +225,18 @@
                         "render": function (data, type, row) {
                             var html = '';
                             if (row.status == 4) {
-                                return "NA"
-                            } else {
-                                if (row.status == 1 || row.status == 3) {
-                                    html = html + ' <a class="btn btn-info btn-xs" onclick="return publishForm(\'' + row.id + '\')">Publish</a>';
-                                }
-                                else if (row.status == 2) {
-                                    html = html + ' <a type="button" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/>  <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> <a class="btn btn-warning btn-xs" onclick="return unPublishForm(\'' + row.id + '\')">UnPublish</a>';
-                                }
-                                else {
-                                    html = html + 'NA';
-                                }
                                 return html;
+                            } else {
+                                html = ' <a type="button" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/>  <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a>';
+
+                                if (row.status == 1 || row.status == 3) {
+                                    html += ' <a class="btn btn-info btn-xs" onclick="return publishForm(\'' + row.id + '\')">Publish</a>';
+                                } else if (row.status == 2) {
+                                    html += ' <a class="btn btn-warning btn-xs" onclick="return unPublishForm(\'' + row.id + '\')">UnPublish</a>';
+                                }
                             }
+
+                            return html;
                         }
                     }
                 ]

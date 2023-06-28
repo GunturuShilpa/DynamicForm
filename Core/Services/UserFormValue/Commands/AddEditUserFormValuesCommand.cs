@@ -44,7 +44,7 @@ namespace Core.Services.UserFormValue.Commands
                     }
                     else
                     {
-                        return await Result<string>.SuccessAsync(rtn.ToString(), "User Form values is inserted successfully");
+                        return await Result<string>.SuccessAsync(rtn.ToString(), "User details submitted successfully");
                     }
                 }               
                 else

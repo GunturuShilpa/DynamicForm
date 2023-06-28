@@ -14,6 +14,7 @@ namespace DynamicForm.Models
         public string Name { get; set; } = string.Empty;
 
         public int ControlId { get; set; }
+        public string TemplateName { get; set; }
         public string ControlName { get; set; } = string.Empty;
 
         public string DefaultValue { get; set; } = string.Empty;

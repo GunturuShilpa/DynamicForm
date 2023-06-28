@@ -5,6 +5,13 @@ using Core.Services.TemplateFields.Responses;
 using Infrastructure.ControlType.Entity;
 using Infrastructure.Field.Entity;
 using Infrastructure.Form.Entity;
+using Core.Services.FieldOptions.Responses;
+using Infrastructure.FieldOptions.Entity;
+using Core.Services.FieldOptions.Requests;
+using Infrastructure.UserFormValue.Entity;
+using Infrastructure.UserFormValue.Responses;
+using Infrastructure.UserForm.Entity;
+using Infrastructure.UserForm.Responses;
 
 namespace Core.Helpers
 {
@@ -15,6 +22,11 @@ namespace Core.Helpers
             CreateMap<TemplateForms, FormResponse>();
             CreateMap<ControlTypes, ControlTypesResponse>();
             CreateMap<TemplateFormFields, FieldResponse>();
+            CreateMap<FormFieldOptions, FieldOptionsResponse>();
+            CreateMap<UserFormValues, UserFormValuesResponse>();
+            CreateMap<UserForms, UserFormsResponse>();
+
+
         }
     }
 }

@@ -218,7 +218,7 @@
                         "autoWidth": true,
                         "name": "isRequired",
                         "render": function (data, type, row) {
-                             if (row.isRequired) {
+                            if (row.isRequired) {
                                 return "<span class='label label-primary'>Yes</span>";
                             }
                             else {
@@ -243,18 +243,18 @@
                                 return "<span class='label label-danger'>Deleted</span>";
                             }
                             else {
-                                return "<span class='label label-danger'>N/A</span>";
+                                return "<span class='label label-danger'>NA</span>";
                             }
                         }
                     },
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            if (row.status == 4) {
-                                return "NA";
+                            if (row.status == 1) {
+                                return '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
                             }
                             else {
-                                return '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
+                                return "NA";
                             }
                         }
                     }

@@ -65,7 +65,7 @@
                                 {
                                     <input id="radio-switch-published" class="form-check-input" type="radio" asp-for="Status" value="2">
                                 }
-                                <label class="form-check-label" for="radio-switch-published">Published</label>
+                                <label class="form-check-label" for="radio-switch-published">Publish</label>
                             </label>
                             <label class="checkbox-inline">
                                 @if (Model.Status == 3)
@@ -76,7 +76,7 @@
                                 {
                                     <input id="radio-switch-unpublished" class="form-check-input" type="radio" asp-for="Status" value="3">
                                 }
-                                <label class="form-check-label" for="radio-switch-unpublished">Unpublished</label>
+                                <label class="form-check-label" for="radio-switch-unpublished">Unpublish</label>
                             </label>
                             <label class="checkbox-inline">
                                 @if (Model.Status == 4)
@@ -87,7 +87,7 @@
                                 {
                                     <input id="radio-switch-deleted" class="form-check-input" type="radio" asp-for="Status" value="4" > 
                                 }
-                                <label class="form-check-label" for="radio-switch-deleted">Deleted</label>
+                                <label class="form-check-label" for="radio-switch-deleted">Delete</label>
                             </label>
                         </div>
                     </div>

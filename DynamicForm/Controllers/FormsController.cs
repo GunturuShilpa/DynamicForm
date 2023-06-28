@@ -18,7 +18,7 @@ namespace DynamicForm.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Index()
+        public IActionResult Index()
         {
             return View();
         }
@@ -62,7 +62,7 @@ namespace DynamicForm.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
 
-            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() {});
+            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { });
 
             List<TemplateFormModel> formModel = (List<TemplateFormModel>)_mapper.Map<IEnumerable<TemplateFormModel>>(mediatorResponse.Data);
 
@@ -71,8 +71,11 @@ namespace DynamicForm.Controllers
                 searchValue = searchValue.ToLower();
                 formModel = formModel.Where(x => (string.IsNullOrWhiteSpace(x.Name) == false && x.Name.ToLower().Contains(searchValue))
                                     || (string.IsNullOrWhiteSpace(x.Description) == false && x.Description.ToLower().Contains(searchValue))
-                                    || (x.Ordinal.ToString() == Convert.ToString(searchValue))
                                     || (string.IsNullOrWhiteSpace(Convert.ToString(x.Status)) == false && x.Status.ToString().ToLower().Contains(searchValue))
+                                    || (searchValue == "pending" && x.Status == 1)
+                                    || (searchValue == "published" && x.Status == 2)
+                                    || (searchValue == "unpublished" && x.Status == 3)
+                                    || (searchValue == "deleted" && x.Status == 4)
                                     ).ToList();
             }
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))
@@ -117,7 +120,51 @@ namespace DynamicForm.Controllers
             var formPropertiesModel = _mapper.Map<TemplateFormModel>(formProperties.Data);
             return PartialView("_EditForm", formPropertiesModel);
         }
+
+        [HttpPost]
+        public async Task<IActionResult> PublishForm(int id)
+        {
+            dynamic res = new ExpandoObject();
+
+            PublishFormCommand command = new PublishFormCommand();
+            command.Id = id;
+            command.UserId = 0;
+
+            var mediatorResponse = await _mediator.Send(command);
+
+            if (mediatorResponse.Succeeded)
+            {
+                res.error = false;
+            }
+            else
+                res.error = true;
+
+            res.message = mediatorResponse.Messages.FirstOrDefault();
+
+            return Json(res);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UnPublishForm(int id)
+        {
+            dynamic res = new ExpandoObject();
+
+            UnPublishFormCommand command = new UnPublishFormCommand();
+            command.Id = id;
+            command.UserId = 0;
+
+            var mediatorResponse = await _mediator.Send(command);
+
+            if (mediatorResponse.Succeeded)
+            {
+                res.error = false;
+            }
+            else
+                res.error = true;
+
+            res.message = mediatorResponse.Messages.FirstOrDefault();
+
+            return Json(res);
+        }
     }
-
-
 }

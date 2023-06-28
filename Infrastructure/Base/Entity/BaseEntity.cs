@@ -4,7 +4,7 @@
     {
         public virtual int Id { get; set; }
 
-        public virtual bool Status { get; set; }
+        public virtual int Status { get; set; }
     }
 
     public abstract class TableEntity : BaseEntity

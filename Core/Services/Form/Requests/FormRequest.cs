@@ -11,5 +11,6 @@ namespace Core.Services.Form.Requests
         public string Description { get; set; } = string.Empty;
 
         public int Ordinal { get; set; }
+        public int Status { get; set; }
     }
 }

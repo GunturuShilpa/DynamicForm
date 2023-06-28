@@ -41,7 +41,9 @@ namespace Core.Services.TemplateFields.Commands
                         RequiredMessage = command.Field.RequiredMessage,
                         RegExValue = command.Field.RegExValue,
                         RegExMessage = command.Field.RegExMessage,
-                        Status = true
+                        Status = 1,
+                        CreatedBy = 0,
+                        CreatedDate = DateTime.Now
                     };
 
                     var rtn = await _fieldRepository.Create(fields);
@@ -56,37 +58,46 @@ namespace Core.Services.TemplateFields.Commands
                     }
                 }
 
-                else if (Convert.ToInt32(command.Field.Id) != 0)
+                else
                 {
-                    TemplateFormFields fields = new()
-                    {
-                        Id = command.Field.Id,
-                        TemplateFormId = command.Field.TemplateFormId,
-                        Name = command.Field.Name,
-                        ControlId = command.Field.ControlId,
-                        OrderNo = command.Field.OrderNo,
-                        DefaultValue = command.Field.DefaultValue,
-                        IsRequired = command.Field.IsRequired,
-                        RequiredMessage = command.Field.RequiredMessage,
-                        RegExValue = command.Field.RegExValue,
-                        RegExMessage = command.Field.RegExMessage,
-                        Status = true
-                    };
+                    var existingObj = await _fieldRepository.GetById(Convert.ToInt32(command.Field.Id));
 
-                    var rtn = await _fieldRepository.Update(fields);
-
-                    if (rtn == 0)
+                    if (existingObj == null)
                     {
-                        return await Result<string>.FailAsync("Failed to update field");
+                        return await Result<string>.FailAsync("Failed to update form");
                     }
                     else
                     {
-                        return await Result<string>.SuccessAsync(rtn.ToString(), "Field is updated successfully");
+                        TemplateFormFields fields = new()
+                        {
+                            Id = command.Field.Id,
+                            TemplateFormId = command.Field.TemplateFormId,
+                            Name = command.Field.Name,
+                            ControlId = command.Field.ControlId,
+                            OrderNo = command.Field.OrderNo,
+                            DefaultValue = command.Field.DefaultValue,
+                            IsRequired = command.Field.IsRequired,
+                            RequiredMessage = command.Field.RequiredMessage,
+                            RegExValue = command.Field.RegExValue,
+                            RegExMessage = command.Field.RegExMessage,
+                            Status = command.Field.Status,
+                            CreatedBy = existingObj.CreatedBy,
+                            CreatedDate = existingObj.CreatedDate,
+                            ModifiedBy = 0,
+                            ModifiedDate = DateTime.Now
+                        };
+
+                        var rtn = await _fieldRepository.Update(fields);
+
+                        if (rtn == 0)
+                        {
+                            return await Result<string>.FailAsync("Failed to update field");
+                        }
+                        else
+                        {
+                            return await Result<string>.SuccessAsync(rtn.ToString(), "Field is updated successfully");
+                        }
                     }
-                }
-                else
-                {
-                    return await Result<string>.FailAsync("Failed to create field");
                 }
             }
             catch (Exception ex)

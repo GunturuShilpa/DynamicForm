@@ -213,17 +213,16 @@
                 "columns": [
                     { "data": "name", "name": "Name", "autoWidth": true },
                     { "data": "controlName", "name": "ControlName", "autoWidth": true },
-                    { "data": "defaultValue", "name": "DefaultValue", "autoWidth": true }, 
+                    { "data": "defaultValue", "name": "DefaultValue", "autoWidth": true },
                     {
                         "autoWidth": true,
                         "name": "isRequired",
-                        "render": function (data, type, full, meta) {
-                            debugger
-                            if (full.isRequired) {
-                                return "<span class='label label-primary'>True</span>";
+                        "render": function (data, type, row) {
+                             if (row.isRequired) {
+                                return "<span class='label label-primary'>Yes</span>";
                             }
                             else {
-                                return "<span class='label label-danger'>False</span>";
+                                return "<span class='label label-danger'>No</span>";
                             }
                         }
                     },
@@ -231,22 +230,31 @@
                         "autoWidth": true,
                         "name": "status",
                         "render": function (data, type, row) {
-                             if (row.status) {
-                                return "<span class='label label-primary'>True</span>";
-                            } 
+                            if (row.status == 1) {
+                                return "<span class='label label-primary'>Active</span>";
+                            }
+                            else if (row.status == 2) {
+                                return "<span class='label label-success'>Incomplete</span>";
+                            }
+                            else if (row.status == 3) {
+                                return "<span class='label label-warning'>Withheld</span>";
+                            }
+                            else if (row.status == 4) {
+                                return "<span class='label label-danger'>Deleted</span>";
+                            }
                             else {
-                                return "<span class='label label-danger'>False</span>";
+                                return "<span class='label label-danger'>N/A</span>";
                             }
                         }
                     },
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            if(row.status){
-                            return '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
+                            if (row.status == 4) {
+                                return "NA";
                             }
                             else {
-                                return "<span class='label label-warning'>NA</span>"
+                                return '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
                             }
                         }
                     }

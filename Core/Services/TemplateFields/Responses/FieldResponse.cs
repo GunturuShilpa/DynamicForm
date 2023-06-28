@@ -22,6 +22,6 @@
 
         public string RegExMessage { get; set; } = string.Empty;
 
-        public bool Status { get; set; } = true;
+        public int Status { get; set; }
     }
 }

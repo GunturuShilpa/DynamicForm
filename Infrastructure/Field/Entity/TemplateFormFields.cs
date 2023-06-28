@@ -1,9 +1,9 @@
-﻿namespace Infrastructure.Field.Entity
-{
-    public class TemplateFormFields
-    {
-        public int Id { get; set; }
+﻿using Infrastructure.Base.Entity;
 
+namespace Infrastructure.Field.Entity
+{
+    public class TemplateFormFields : TableEntity
+    {
         public int TemplateFormId { get; set; }
 
         public int OrderNo { get; set; } = 0;
@@ -21,7 +21,5 @@
         public string RegExValue { get; set; } = string.Empty;
 
         public string RegExMessage { get; set; } = string.Empty;
-
-        public bool Status { get; set; } = true;
     }
 }

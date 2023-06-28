@@ -14,7 +14,7 @@ namespace DynamicForm.Models
         public string Name { get; set; } = string.Empty;
 
         public int ControlId { get; set; }
-        public string ControlName { get; set; }
+        public string ControlName { get; set; } = string.Empty;
 
         public string DefaultValue { get; set; } = string.Empty;
 
@@ -26,6 +26,6 @@ namespace DynamicForm.Models
 
         public string RegExMessage { get; set; } = string.Empty;
 
-        public bool Status { get; set; } = true;
+        public int Status { get; set; }
     }
 }

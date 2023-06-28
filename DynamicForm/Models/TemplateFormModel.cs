@@ -11,6 +11,6 @@ namespace DynamicForm.Models
         public string Description { get; set; } = string.Empty;
 
         public int Ordinal { get; set; }
-        public bool Status { get; set; }
+        public int Status { get; set; }
     }
 }

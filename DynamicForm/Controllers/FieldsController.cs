@@ -83,6 +83,10 @@ namespace DynamicForm.Controllers
               || (string.IsNullOrWhiteSpace(x.ControlName) == false && x.ControlName.ToLower().Contains(searchValue))
               || (string.IsNullOrWhiteSpace(Convert.ToString(x.IsRequired)) == false && x.IsRequired.ToString().ToLower().Contains(searchValue))
               || (string.IsNullOrWhiteSpace(Convert.ToString(x.Status)) == false && x.Status.ToString().ToLower().Contains(searchValue))
+              || (searchValue == "active" && x.Status == 1)
+              || (searchValue == "incomplete" && x.Status == 2)
+              || (searchValue == "withheld" && x.Status == 3)
+              || (searchValue == "deleted" && x.Status == 4)
               || (x.ControlId.ToString() == Convert.ToString(searchValue))).ToList();
             }
             if (!(string.IsNullOrEmpty(sortColumn) && string.IsNullOrEmpty(sortColumnDirection)))

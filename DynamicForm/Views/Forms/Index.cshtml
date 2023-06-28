@@ -30,7 +30,6 @@
                         <tr class="bg-secondary">
                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Description</th>
-                            <th style="min-width:30px">Ordinal</th>
                             <th style="min-width:30px">Status</th>
                             <th style="min-width:30px">Actions</th>
                         </tr>
@@ -200,27 +199,44 @@
                 "columns": [
                     { "data": "name", "name": "Name", "autoWidth": true },
                     { "data": "description", "name": "Description", "autoWidth": true },
-                    { "data": "ordinal", "name": "Ordinal", "autoWidth": true },
                     {
                         "autoWidth": true,
                         "name": "status",
                         "render": function (data, type, row) {
-                             if (row.status) {
-                                return "<span class='label label-primary'>True</span>";
+                            if (row.status == 1) {
+                                return "<span class='label label-primary'>Pending</span>";
+                            }
+                            else if (row.status == 2) {
+                                return "<span class='label label-success'>Published</span>";
+                            }
+                            else if (row.status == 3) {
+                                return "<span class='label label-warning'>Unpublished</span>";
+                            }
+                            else if (row.status == 4) {
+                                return "<span class='label label-danger'>Deleted</span>";
                             }
                             else {
-                                return "<span class='label label-danger'>False</span>";
+                                return "<span class='label label-danger'>N/A</span>";
                             }
                         }
                     },
                     {
                         'bSortable': false, "autoWidth": true,
                         "render": function (data, type, row) {
-                            if (row.status) {
-                                return '<a type="button" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/>  <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> ';
-
+                            var html = '';
+                            if (row.status == 4) {
+                                return "NA"
                             } else {
-                                return "<span class='label label-warning'>NA</span>"
+                                if (row.status == 1 || row.status == 3) {
+                                    html = html + ' <a class="btn btn-info btn-xs" onclick="return publishForm(\'' + row.id + '\')">Publish</a>';
+                                }
+                                else if (row.status == 2) {
+                                    html = html + ' <a type="button" class="btn btn-xs btn-info" href="@Url.Action("Index", "Fields")?id=' + row.id + '">Controls<a/>  <a type="button" data-toggle="modal" data-target="#update-form-model" class="btn btn-xs btn-success"  title="Edit Form" onclick="editFormProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Form" onclick="deleteForm(\'' + row.id + '\')">Delete</a> <a class="btn btn-warning btn-xs" onclick="return unPublishForm(\'' + row.id + '\')">UnPublish</a>';
+                                }
+                                else {
+                                    html = html + 'NA';
+                                }
+                                return html;
                             }
                         }
                     }
@@ -263,6 +279,61 @@
             });
         }
 
+        function unPublishForm(id) {
+            Swal.fire({
+                title: "Confirmation",
+                text: "Are you sure you want to unpublish form?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, unpublish it!',
+                showLoaderOnConfirm: true,
+                animation: !1,
+                preConfirm: function () {
+                    $.ajax({
+                        url: '@Url.Action("UnPublishForm", "Forms")?id=' + id,
+                        type: 'POST',
+                        headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                        dataType: 'json'
+                    })
+                        .done(function (response) {
+                            oTable = $('#tbForm').DataTable();
+                            oTable.draw();
+
+                            if (response.error == false) {
+                                Swal.fire('Unpublished!', response.message, 'success')
+                            } else {
+                                Swal.fire('Oops...', response.message, 'error')
+                            }
+                        })
+                        .fail(function () {
+                            Swal.fire('Oops...', response.message, 'error')
+                        });
+                },
+            });
+        }
+        function publishForm(id) {
+            $.ajax({
+                url: '@Url.Action("PublishForm", "Forms")',
+                type: 'POST',
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                dataType: 'json',
+                data: { id: id },
+            })
+                .done(function (response) {
+                    oTable = $('#tbForm').DataTable();
+                    oTable.draw();
+                    if (response.error == false) {
+                        Swal.fire('Published!', response.message, 'success')
+                    } else {
+                        Swal.fire('Oops...', response.message, 'error')
+                    }
+                })
+                .fail(function () {
+                    Swal.fire('Oops...', response.message, 'error')
+                });
+        }
     </script>
 
 }

@@ -73,6 +73,55 @@
                     </span>
                     @*<span asp-validation-for="RegExMessage" class="text-danger"></span>*@
                 </div>
+                <div class="form-group">
+                    <label class="required" for="FormOrdinal">Status</label>
+                    <div class="form-group">
+                        <label class="checkbox-inline">
+                            @if (Model.Status == 1)
+                            {
+                                <input id="radio-switch-active" class="form-check-input" type="radio" asp-for="Status" value="1" checked>
+                            }
+                            else
+                            {
+                                <input id="radio-switch-active" class="form-check-input" type="radio" asp-for="Status" value="1">
+                            }
+                            <label class="form-check-label" for="radio-switch-active">Active</label>
+                        </label>
+                        <label class="checkbox-inline">
+                            @if (Model.Status == 2)
+                            {
+                                <input id="radio-switch-incomplete" class="form-check-input" type="radio" asp-for="Status" value="2" checked>
+                            }
+                            else
+                            {
+                                <input id="radio-switch-incomplete" class="form-check-input" type="radio" asp-for="Status" value="2">
+                            }
+                            <label class="form-check-label" for="radio-switch-incomplete">Incomplete</label>
+                        </label>
+                        <label class="checkbox-inline">
+                            @if (Model.Status == 3)
+                            {
+                                <input id="radio-switch-withheld" class="form-check-input" type="radio" asp-for="Status" value="3" checked>
+                            }
+                            else
+                            {
+                                <input id="radio-switch-withheld" class="form-check-input" type="radio" asp-for="Status" value="3">
+                            }
+                            <label class="form-check-label" for="radio-switch-withheld">Withheld</label>
+                        </label>
+                        <label class="checkbox-inline">
+                            @if (Model.Status == 4)
+                            {
+                                <input id="radio-switch-deleted" class="form-check-input" type="radio" asp-for="Status" value="4" checked>
+                            }
+                            else
+                            {
+                                <input id="radio-switch-deleted" class="form-check-input" type="radio" asp-for="Status" value="4">
+                            }
+                            <label class="form-check-label" for="radio-switch-deleted">Deleted</label>
+                        </label>
+                    </div>
+                </div>
                 <input type="hidden" asp-for="Id" name="Id" />
                 <input type="hidden" asp-for="TemplateFormId" name="TemplateFormId" />
             </div>

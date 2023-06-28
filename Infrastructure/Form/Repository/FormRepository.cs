@@ -46,5 +46,9 @@ namespace Infrastructure.Form.Repository
         {
             return await GetByIdAsync(id);
         }
+        public async Task<int> UpdateByQuery(string where)
+        {
+            return await UpdateAsyncByQuery(where);
+        } 
     }
 }

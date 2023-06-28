@@ -3,7 +3,7 @@
     public abstract class BaseEntityResponse
     {
         public int Id { get; set; }
-        public bool Status { get; set; }
+        public int Status { get; set; }
 
         //public DateTime CreatedDate { get; set; }
         //public int CreatedBy { get; set; }

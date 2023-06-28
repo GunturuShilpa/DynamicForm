@@ -5,10 +5,10 @@
 }
 
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+@*<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>*@
 
 
-<form name="editfield" asp-controller="Fields" asp-action="SaveField" method="post"
+<form id="edit_form" name="editfield" asp-controller="Fields" asp-action="SaveField" method="post" novalidate
       data-ajax="true" data-ajax-method="post" data-ajax-complete="updatedField" enctype="multipart/form-data" autocomplete="off">
     <div class="modal-dialog" id="add-field-model">
         <div class="modal-content">
@@ -20,26 +20,14 @@
                 <div class="form-group">
                     <label class="required" for="FieldName">Name</label>
                     <input type="text" id="FieldName" class="form-control" asp-for="Name" />
-                    <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.Name)
-                    </span>
-                    @*<span asp-validation-for="Name" class="text-danger"></span>*@
                 </div>
                 <div class="form-group">
-                    <label class="required" for="FieldDataType">Control Type</label>
+                    <label for="FieldDataType">Control Type</label>
                     <select name="ControlId" class="form-control" asp-for="ControlId" asp-items="@ViewBag.ControlTypes"></select>
-                    <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.ControlId,Model.ControlName)
-                    </span>
-                    @*<span asp-validation-for="ControlId" class="text-danger"></span>*@
                 </div>
                 <div class="form-group">
                     <label class="required" for="DefaultValue">Default Value</label>
-                    <input type="text" id="FieldName" class="form-control" asp-for="DefaultValue" />
-                    <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.DefaultValue)
-                    </span>
-                    @*<span asp-validation-for="DefaultValue" class="text-danger"></span>*@
+                    <input type="text" id="DefaultValue" class="form-control" name="DefaultValue" asp-for="DefaultValue" />
                 </div>
                 <div class="form-check">
                     <input type="checkbox" class="form-check-input" asp-for="IsRequired" />
@@ -47,23 +35,14 @@
                     <span class="text-danger">
                         @Html.ValidationMessageFor(model => model.IsRequired)
                     </span>
-                    @*<span asp-validation-for="IsRequired" class="text-danger"></span>*@
                 </div>
                 <div class="form-group">
                     <label class="required" for="RequiredMessage">Required Message</label>
-                    <input type="text" class="form-control" asp-for="RequiredMessage" />
-                    <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.RequiredMessage)
-                    </span>
-                    @* <span asp-validation-for="RequiredMessage" class="text-danger"></span>*@
+                    <input type="text" class="form-control" asp-for="RequiredMessage" novalidate />
                 </div>
                 <div class="form-group">
                     <label class="required" for="RegExValue">RegEx Value</label>
-                    <input type="text" class="form-control" asp-for="RegExValue" />
-                    <span class="text-danger">
-                        @Html.ValidationMessageFor(model => model.RegExValue)
-                    </span>
-                    @*<span asp-validation-for="RegExValue" class="text-danger"></span>*@
+                    <input type="text" class="form-control" asp-for="RegExValue" novalidate />
                 </div>
                 <div class="form-group">
                     <label class="required" for="RegExMessage">RegEx Message</label>
@@ -132,3 +111,34 @@
         </div>
     </div>
 </form>
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#edit_form').validate({
+            errorClass: 'error',
+            rules: {
+                'Name': {
+                    required: true
+                },
+                'DefaultValue': {
+                    required: true
+                }
+            },
+            messages: {
+                'Name': {
+                    required: 'FieldName is required'
+                },
+                'DefaultValue': {
+                    required: 'DefaultValue is required'
+                }
+            },
+            highlight: function (element) {
+                $(element).children().addClass('error')
+            },
+            unhighlight: function (element) {
+                $(element).children().removeClass('error')
+            }
+        });
+    });
+</script>

@@ -26,17 +26,21 @@ namespace Core.Services.FieldOptions.Commands
         {
             try
             {
+                var rtn = 0;
                 if (Convert.ToInt32(command.Field.Id) == 0)
                 {
-                    FormFieldOptions fields = new()
+                    foreach (var option in command.Field.OptionValues)
                     {
-                        Id = command.Field.Id,
-                        TemplateFormFieldId = command.Field.TemplateFormFieldId,
-                        OptionValue = command.Field.OptionValue,                        
-                        Status = true
-                    };
+                        FormFieldOptions fields = new()
+                        {
+                            TemplateFormFieldId = command.Field.TemplateFormFieldId,
+                            OptionValue = option,
+                            Status = true
+                        };
 
-                    var rtn = await _fieldOptionsRepository.Create(fields);
+                        rtn = await _fieldOptionsRepository.Create(fields);
+                    }
+
 
                     if (rtn == 0)
                     {
@@ -50,22 +54,23 @@ namespace Core.Services.FieldOptions.Commands
 
                 else if (Convert.ToInt32(command.Field.Id) != 0)
                 {
-                    FormFieldOptions fields = new()
-                    {
-                        TemplateFormFieldId = command.Field.TemplateFormFieldId,
-                        OptionValue = command.Field.OptionValue,
-                    };
+                    //FormFieldOptions fields = new()
+                    //{
+                    //    TemplateFormFieldId = command.Field.TemplateFormFieldId,
+                    //    OptionValue = command.Field.OptionValue,
+                    //};
 
-                    var rtn = await _fieldOptionsRepository.Update(fields);
+                    //var rtn = await _fieldOptionsRepository.Update(fields);
 
-                    if (rtn == 0)
-                    {
-                        return await Result<string>.FailAsync("Failed to update field option");
-                    }
-                    else
-                    {
-                        return await Result<string>.SuccessAsync(rtn.ToString(), "Field option is updated successfully");
-                    }
+                    //if (rtn == 0)
+                    //{
+                    //    return await Result<string>.FailAsync("Failed to update field option");
+                    //}
+                    //else
+                    //{
+                    //    return await Result<string>.SuccessAsync(rtn.ToString(), "Field option is updated successfully");
+                    //}
+                    return await Result<string>.SuccessAsync(rtn.ToString(), "Field option is updated successfully");
                 }
                 else
                 {

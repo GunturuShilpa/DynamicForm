@@ -6,13 +6,17 @@
     .modal {
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
     }
+
+    .error {
+        color: red;
+    }
 </style>
 <div>
     <div class="x_title">
 
         <h2 class="modal-header bg-warning">@ViewBag.TemplateName</h2>
     </div>
-    <form name="userform" asp-controller="DynamicForm" asp-action="SaveFormValues" method="post"
+    <form id="create-form" name="userform" asp-controller="DynamicForm" asp-action="SaveFormValues" method="post" novalidate
           data-ajax="true" data-ajax-method="post" data-ajax-complete="completedsaveform" enctype="multipart/form-data" autocomplete="off">
         <div class="modal-body">
             @if (Model.Count() > 0)
@@ -27,42 +31,90 @@
                                 @if (item.ControlName == "TextBox")
                                 {
                                     <div class="col-span-12 sm:col-span-6">
-                                        <label for="nameinput" class="form-label">@item.Name</label>
-                                        <input name="@item.Name" id="nameinput" type="text" class="form-control" style="width:40%">                                       
+                                        <label for="@item.Name" class="form-label">@item.Name</label>
+                                        @if (item.IsRequired)
+                                        {
+                                            <input name="@item.Name" id="@item.Name" type="text" class="form-control" style="width:40%" required>
+                                        }
+                                        else
+                                        {
+                                            <input name="@item.Name" id="@item.Name" type="text" class="form-control" style="width:40%">
+                                        }
                                     </div>
                                 }
                                 else if (item.ControlName == "TextArea")
                                 {
                                     <div class="col-span-12 sm:col-span-6">
-                                        <label for="textareainput" class="form-label">@item.Name</label>
-                                        <textarea name="@item.Name" id="textareainput" class="form-control" rows="2" style="width:40%"></textarea>
+                                        <label for="@item.Name" class="form-label">@item.Name</label>
+                                        @if (item.IsRequired)
+                                        {
+                                            <textarea name="@item.Name" id="@item.Name" class="form-control" rows="2" style="width:40%" required></textarea>
+                                        }
+                                        else
+                                        {
+                                            <textarea name="@item.Name" id="@item.Name" class="form-control" rows="2" style="width:40%"></textarea>
+                                        }
                                     </div>
                                 }
                                 else if (item.ControlName == "Select")
                                 {
-                                    <div class="col-span-12 sm:col-span-12">
-                                        <label for="selection" class="form-label">@item.Name</label>
-                                        <select class="form-control" id="selection" style="width:40%">
-                                            <option selected>Telangana</option>
-                                            <option>AP</option>
-                                            <option>KA</option>
-                                        </select>
-                                    </div>
-
+                                    @if (item.IsRequired)
+                                    {
+                                        <div class="col-span-12 sm:col-span-12">
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
+                                            <select class="form-control" id="@item.Name" style="width:40%" required>
+                                                <option selected>Telangana</option>
+                                                <option>AP</option>
+                                                <option>KA</option>
+                                            </select>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-span-12 sm:col-span-12">
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
+                                            <select class="form-control" id="@item.Name" style="width:40%">
+                                                <option selected>Telangana</option>
+                                                <option>AP</option>
+                                                <option>KA</option>
+                                            </select>
+                                        </div>
+                                    }
                                 }
                                 else if (item.ControlName == "CheckBox")
                                 {
-                                    <div class="custom-control custom-checkbox col-span-6 sm:col-span-6">
-                                        <label for="textareainput" class="form-label">@item.Name</label>
-                                        <input name="@item.Name" type="checkbox" id="chkproperty" />
-                                    </div>
+                                    @if (item.IsRequired)
+                                    {
+                                        <div class="custom-control custom-checkbox col-span-6 sm:col-span-6">
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
+                                            <input name="@item.Name" type="checkbox" id="@item.Name" required />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="custom-control custom-checkbox col-span-6 sm:col-span-6">
+                                            <label for="textareainput" class="form-label">@item.Name</label>
+                                            <input name="@item.Name" type="checkbox" id="@item.Name" />
+                                        </div>
+                                    }
+
                                 }
                                 else if (item.ControlName == "FileUpload")
                                 {
-                                    <div class="class=" col-span-12 sm:col-span-12"">
-                                        <label for="customFile" class="form-label">Select File</label>
-                                        <input name="@item.Name" type="file" class="custom-file-input" id="uploadfile" style="width:50%"><br />
-                                    </div>
+                                    @if (item.IsRequired)
+                                    {
+                                        <div class="class=" col-span-12 sm:col-span-12"">
+                                            <label for="@item.Name" class="form-label">Select File</label>
+                                            <input name="@item.Name" type="file" class="custom-file-input" id="@item.Name" style="width:50%" required><br />
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="class=" col-span-12 sm:col-span-12"">
+                                            <label for="@item.Name" class="form-label">Select File</label>
+                                            <input name="@item.Name" type="file" class="custom-file-input" id="@item.Name" style="width:50%"><br />
+                                        </div>
+                                    }
                                 }
 
                             </div>
@@ -79,15 +131,20 @@
     </form>
 </div>
 
+
+
 @section scripts
     {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.unobtrusive-ajax.min.js"></script>
     <script src="~/lib/sweetalert/js/sweetalert2.all.min.js"></script>
     <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
-    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
     <script type="text/javascript">
-    completedsaveform = function (xhr) {
+
+        $(document).ready(function () {
+            $('#create-form').validate();
+        });
+        completedsaveform = function (xhr) {
             var rtn = JSON.parse(xhr.responseText);
             if (rtn.error == false) {
                 Swal.fire({
@@ -97,8 +154,8 @@
                     allowOutsideClick: false
                 }).then(function () {
                     clearFormCreate();
-                });               
-                
+                });
+
             }
             else {
                 Swal.fire({
@@ -111,9 +168,9 @@
             }
         };
 
-          function clearFormCreate() {           
+        function clearFormCreate() {
             var frm = document.getElementsByName('userform')[0];
             frm.reset();
         }
-        </script>
+    </script>
         }

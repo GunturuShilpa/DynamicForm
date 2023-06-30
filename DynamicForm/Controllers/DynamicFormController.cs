@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
 using Core.Services.ControlFields.Queries;
+using Core.Services.FieldOptions.Queries;
+using Core.Services.FieldOptions.Responses;
 using Core.Services.Form.Queries;
 using Core.Services.TemplateFields.Queries;
 using Core.Services.UserForm.Commands;
@@ -11,9 +13,13 @@ using DynamicForm.Models;
 using Infrastructure.UserForm.Entity;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.SqlServer.Server;
+using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq.Dynamic;
+using Shared;
+using Shared.Enum;
 
 namespace DynamicForm.Controllers
 {
@@ -32,9 +38,11 @@ namespace DynamicForm.Controllers
 
             List<TemplateFieldsModel> formModel = (List<TemplateFieldsModel>)_mapper.Map<IEnumerable<TemplateFieldsModel>>(mediatorResponse.Data);
 
+            var options = new List<SelectListItem>();
+            
 
             GetAllControlTypesQuery getAllControlTypes = new GetAllControlTypesQuery();
-            var fieldsData = await _mediator.Send(getAllControlTypes);
+            var fieldsData = await _mediator.Send(getAllControlTypes);            
 
             var templateData = await _mediator.Send(new GetAllFormsQuery() { Where = "where Id =" + id + " and status=1" });
             if (formModel.Count() > 0)
@@ -42,6 +50,22 @@ namespace DynamicForm.Controllers
                 foreach (TemplateFieldsModel formFields in formModel)
                 {
                     formFields.ControlName = fieldsData.Data.Where(x => x.Id == formFields.ControlId).FirstOrDefault().Name;
+                    if(formFields.ControlId == (int)FieldOptions.Select)
+                    {
+                        int FormFieldId = formModel.Where(x => x.ControlId == formFields.ControlId).FirstOrDefault().Id;
+                        var getOptions = await _mediator.Send(new GetAllFieldOptionsQuery() { Where = "where TemplateFormFieldId= " + FormFieldId + "" });
+                        List<FieldOptionsResponse> Options = (List<FieldOptionsResponse>)_mapper.Map<IEnumerable<FieldOptionsResponse>>(getOptions.Data);
+                        
+                        if (Options != null && Options.Count() > 0)
+                        {
+                            foreach (var fieldoption in Options)
+                            {
+                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });                               
+                                
+                            }
+                        }
+
+                    }
                 }
             }
             ViewBag.TemplateFormId = id;
@@ -49,8 +73,8 @@ namespace DynamicForm.Controllers
             {
                 ViewBag.TemplateName = templateData.Data.FirstOrDefault(x => x.Id == id).Name;
             }
-
-
+           
+            ViewBag.TemplateFieldOptions = options;
             return View(formModel);
         }
         [HttpPost]
@@ -76,10 +100,7 @@ namespace DynamicForm.Controllers
                 if (formCollection.Count > 0)
                 {
                     foreach (var key in formCollection.Keys.Skip(1))
-                    {
-                        //name = "Key=" + key + " ";
-                        //value = "Value=" + formCollection[key];                       
-
+                    {                   
                         var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='" + key + "'" });
 
                         userFormValuesdata.TemplateFormId = formId;

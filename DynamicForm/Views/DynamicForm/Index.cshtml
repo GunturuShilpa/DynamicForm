@@ -29,7 +29,7 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
 
                             <div class="x_content">
-                                @if (item.ControlName == "TextBox")
+                                @if (item.ControlName == Shared.Enum.FieldOptions.TextBox.ToString())
                                 {
                                     <div class="col-span-12 sm:col-span-6">
                                         <label for="@item.Name" class="form-label">@item.Name</label>
@@ -43,7 +43,7 @@
                                         }
                                     </div>
                                 }
-                                else if (item.ControlName == "TextArea")
+                                else if (item.ControlName == Shared.Enum.FieldOptions.TextArea.ToString())
                                 {
                                     <div class="col-span-12 sm:col-span-6">
                                         <label for="@item.Name" class="form-label">@item.Name</label>
@@ -57,32 +57,26 @@
                                         }
                                     </div>
                                 }
-                                else if (item.ControlName == "Select")
+                                else if (item.ControlName == Shared.Enum.FieldOptions.Select.ToString())
                                 {
                                     @if (item.IsRequired)
                                     {
                                         <div class="col-span-12 sm:col-span-12">
-                                            <label for="@item.Name" class="form-label">@item.Name</label>
-                                            <select class="form-control" id="@item.Name" style="width:40%" required>
-                                                <option selected>Telangana</option>
-                                                <option>AP</option>
-                                                <option>KA</option>
+                                            <label for="selection" class="form-label">@item.Name</label>
+                                            <select class="form-control" id="selection" style="width:40%" asp-items="@ViewBag.TemplateFieldOptions" required>
                                             </select>
                                         </div>
                                     }
                                     else
-                                    {
+                                    {                                        
                                         <div class="col-span-12 sm:col-span-12">
-                                            <label for="@item.Name" class="form-label">@item.Name</label>
-                                            <select class="form-control" id="@item.Name" style="width:40%">
-                                                <option selected>Telangana</option>
-                                                <option>AP</option>
-                                                <option>KA</option>
-                                            </select>
-                                        </div>
+                                        <label for="selection" class="form-label">@item.Name</label>
+                                        <select class="form-control" id="selection" style="width:40%" asp-items="@ViewBag.TemplateFieldOptions">
+                                        </select>
+                                    </div>
                                     }
                                 }
-                                else if (item.ControlName == "CheckBox")
+                                else if (item.ControlName == Shared.Enum.FieldOptions.CheckBox.ToString())
                                 {
                                     @if (item.IsRequired)
                                     {
@@ -100,7 +94,7 @@
                                     }
 
                                 }
-                                else if (item.ControlName == "FileUpload")
+                                else if (item.ControlName == Shared.Enum.FieldOptions.FileUpload.ToString())
                                 {
                                     @if (item.IsRequired)
                                     {

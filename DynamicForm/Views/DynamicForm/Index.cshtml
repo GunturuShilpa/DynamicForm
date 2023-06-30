@@ -3,6 +3,7 @@
 
 <link href="~/lib/datatables/css/jquery.datatables.min.css" rel="stylesheet" />
 <link href="~/lib/sweetalert/css/sweetalert2.min.css" rel="stylesheet" />
+
 <style>
     .modal {
         background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
@@ -10,19 +11,21 @@
 
     .error {
         color: red;
-    }
+    }   
+
 </style>
 <div>
     <div id="temlateName" class="x_title">
 
         <h2 class="modal-header bg-warning">@ViewBag.TemplateName</h2>
     </div>
-    <form id="create-form" name="userform" asp-controller="DynamicForm" asp-action="SaveFormValues" method="post" novalidate
+    <form id="formSubmit" name="userform" asp-controller="DynamicForm" asp-action="SaveFormValues" method="post" novalidate
           data-ajax="true" data-ajax-method="post" data-ajax-complete="completedsaveform" enctype="multipart/form-data" autocomplete="off">
         <div class="modal-body">
             @if (Model.Count() > 0)
             {
                 @Html.Hidden("TemplateFormId", (object)ViewBag.TemplateFormId)
+                @Html.Hidden("SelectedText")
                 @foreach (var item in Model)
                 {
                     <div class="row">
@@ -63,17 +66,25 @@
                                     {
                                         <div class="col-span-12 sm:col-span-12">
                                             <label for="selection" class="form-label">@item.Name</label>
-                                            <select class="form-control" id="selection" style="width:40%" asp-items="@ViewBag.TemplateFieldOptions" required>
+                                            <select id="selection" class="form-control" style="width:40%" name="@item.Name" required>
+                                                @foreach (SelectListItem option in ViewBag.TemplateFieldOptions)
+                                                {
+                                                    <option value="@option.Text">@option.Text</option>
+                                                }
                                             </select>
                                         </div>
                                     }
                                     else
-                                    {                                        
+                                    {
                                         <div class="col-span-12 sm:col-span-12">
-                                        <label for="selection" class="form-label">@item.Name</label>
-                                        <select class="form-control" id="selection" style="width:40%" asp-items="@ViewBag.TemplateFieldOptions">
-                                        </select>
-                                    </div>
+                                            <label for="selection" class="form-label">@item.Name</label>
+                                            <select id="selection" class="form-control" style="width:40%" name="@item.Name">
+                                                @foreach (SelectListItem option in ViewBag.TemplateFieldOptions)
+                                                {
+                                                    <option value="@option.Text">@option.Text</option>
+                                                }
+                                            </select>
+                                        </div>
                                     }
                                 }
                                 else if (item.ControlName == Shared.Enum.FieldOptions.CheckBox.ToString())
@@ -112,24 +123,24 @@
                                     }
                                 }
 
-                                </div>
                             </div>
                         </div>
-
-                    }
-                    <br />
-                    <div class="form-group">
-                        <button type="submit" id="btnSubmit" class="btn btn-primary w-20">Submit</button>
                     </div>
-                }
-            </div>
-        </form>
-    </div>
 
-    <div class="x_title" id="viewresponse" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
-    </div>
+                }
+                <br />
+                <div class="form-group">
+                    <button type="submit" id="btnSubmit" class="btn btn-primary w-20">Submit</button>
+                </div>
+            }
+        </div>
+    </form>
 </div>
 
+<div class="x_title" id="viewresponse" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
+</div>
+
+<div id="progressbar"></div>
 @section scripts
     {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -142,6 +153,7 @@
             $('#create-form').validate();
         });
         completedsaveform = function (xhr) {
+           // $('#progressbar').progressbar({
             var rtn = JSON.parse(xhr.responseText);
             if (rtn.error == false) {
                 Swal.fire({
@@ -160,7 +172,7 @@
                         data: { id: rtn.TemplateFormId },
                     })
                         .done(function (response) {
-                            $("#showViewResponse").hide();                            
+                            $("#formSubmit").hide();
                             $("#temlateName").hide();
                             $('#viewresponse').html(response);
                         });
@@ -176,6 +188,7 @@
                     allowOutsideClick: false
                 });
             }
+            //});
         };
 
         function clearFormCreate() {

@@ -38,7 +38,7 @@ namespace DynamicForm.Controllers
 
             List<TemplateFieldsModel> formModel = (List<TemplateFieldsModel>)_mapper.Map<IEnumerable<TemplateFieldsModel>>(mediatorResponse.Data);
 
-            var options = new List<SelectListItem>();
+            List<SelectListItem> options = new List<SelectListItem>();
             
 
             GetAllControlTypesQuery getAllControlTypes = new GetAllControlTypesQuery();

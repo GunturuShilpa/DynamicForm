@@ -1,5 +1,6 @@
 ﻿using Core.Helpers;
 using Core.Services.Form.Responses;
+using Core.Services.UserFormValue.Responses;
 using Core.Services.TemplateFields.Responses;
 using DynamicForm.Models;
 
@@ -12,6 +13,7 @@ namespace DynamicForm.Helpers
             CreateMap<FormResponse, TemplateFormModel>();
             CreateMap<FieldResponse, TemplateFieldsModel>();
             CreateMap<TemplateFieldsModel, FieldResponse>();
+            CreateMap<UserFormValuesResponse, UserFormValuesModel>();
         }
     }
 }

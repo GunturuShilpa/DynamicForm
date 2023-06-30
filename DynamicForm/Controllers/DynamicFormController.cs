@@ -38,7 +38,7 @@ namespace DynamicForm.Controllers
 
             List<TemplateFieldsModel> formModel = (List<TemplateFieldsModel>)_mapper.Map<IEnumerable<TemplateFieldsModel>>(mediatorResponse.Data);
 
-            List<SelectListItem> options = new List<SelectListItem>();
+            var options = new List<SelectListItem>();
             
 
             GetAllControlTypesQuery getAllControlTypes = new GetAllControlTypesQuery();
@@ -48,9 +48,8 @@ namespace DynamicForm.Controllers
             if (formModel.Count() > 0)
             {
                 foreach (TemplateFieldsModel formFields in formModel)
-                {
-                    formFields.ControlName = fieldsData.Data.Where(x => x.Id == formFields.ControlId).FirstOrDefault().Name;
-                    if(formFields.ControlId == (int)FieldOptions.Select)
+                {                    
+                    if(formFields.ControlId == (int)ControlType.Select)
                     {
                         int FormFieldId = formModel.Where(x => x.ControlId == formFields.ControlId).FirstOrDefault().Id;
                         var getOptions = await _mediator.Send(new GetAllFieldOptionsQuery() { Where = "where TemplateFormFieldId= " + FormFieldId + "" });
@@ -60,7 +59,7 @@ namespace DynamicForm.Controllers
                         {
                             foreach (var fieldoption in Options)
                             {
-                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });                               
+                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });                              
                                 
                             }
                         }
@@ -81,7 +80,7 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> SaveFormValues(IFormCollection formCollection)
         {
             dynamic result = new ExpandoObject();
-
+           // formCollection.Files
 
             int formId = Convert.ToInt32(formCollection["TemplateFormId"]);
             string name = string.Empty;

@@ -32,7 +32,7 @@
                         <div class="col-md-12 col-sm-12 col-xs-12">
 
                             <div class="x_content">
-                                @if (item.ControlName == Shared.Enum.FieldOptions.TextBox.ToString())
+                                @if (item.ControlId == (int)Shared.Enum.ControlType.TextBox)
                                 {
                                     <div class="col-span-12 sm:col-span-6">
                                         <label for="@item.Name" class="form-label">@item.Name</label>
@@ -46,7 +46,7 @@
                                         }
                                     </div>
                                 }
-                                else if (item.ControlName == Shared.Enum.FieldOptions.TextArea.ToString())
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.TextArea)
                                 {
                                     <div class="col-span-12 sm:col-span-6">
                                         <label for="@item.Name" class="form-label">@item.Name</label>
@@ -60,7 +60,7 @@
                                         }
                                     </div>
                                 }
-                                else if (item.ControlName == Shared.Enum.FieldOptions.Select.ToString())
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.Select)
                                 {
                                     @if (item.IsRequired)
                                     {
@@ -87,7 +87,7 @@
                                         </div>
                                     }
                                 }
-                                else if (item.ControlName == Shared.Enum.FieldOptions.CheckBox.ToString())
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.CheckBox)
                                 {
                                     @if (item.IsRequired)
                                     {
@@ -105,7 +105,7 @@
                                     }
 
                                 }
-                                else if (item.ControlName == Shared.Enum.FieldOptions.FileUpload.ToString())
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.FileUpload)
                                 {
                                     @if (item.IsRequired)
                                     {

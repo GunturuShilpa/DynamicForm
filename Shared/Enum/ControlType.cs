@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Shared.Enum
 {
-    public enum FieldOptions
+    public enum ControlType
     {
         TextBox = 1,
         TextArea = 2,

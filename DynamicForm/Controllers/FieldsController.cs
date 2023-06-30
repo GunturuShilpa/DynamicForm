@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.Services.ControlFields.Queries;
+using Core.Services.Form.Queries;
 using Core.Services.TemplateFields.Commands;
 using Core.Services.TemplateFields.Queries;
 using Core.Services.TemplateFields.Requests;
@@ -25,6 +26,8 @@ namespace DynamicForm.Controllers
         {
             await LoadControlTypes();
             ViewBag.FormId = id;
+            var templateData = await _mediator.Send(new GetAllFormsQuery() { Where = "where Id =" + id + "" });
+            ViewBag.TemplateName = (templateData.Data.Count() > 0) ? templateData.Data.FirstOrDefault(x => x.Id == id).Name : "";
 
             return View();
         }
@@ -71,7 +74,7 @@ namespace DynamicForm.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
 
-            var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = id });
+            var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = id });                      
 
             List<TemplateFieldsModel> formModel = (List<TemplateFieldsModel>)_mapper.Map<IEnumerable<TemplateFieldsModel>>(mediatorResponse.Data);
 

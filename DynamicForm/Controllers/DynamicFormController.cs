@@ -80,11 +80,11 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> SaveFormValues(IFormCollection formCollection)
         {
             dynamic result = new ExpandoObject();
-           // formCollection.Files
+            
+
 
             int formId = Convert.ToInt32(formCollection["TemplateFormId"]);
-            string name = string.Empty;
-            string value = string.Empty;
+           
             var response = (dynamic)null;
 
             var userFormData = new UserFormsRequest();
@@ -99,15 +99,32 @@ namespace DynamicForm.Controllers
                 if (formCollection.Count > 0)
                 {
                     foreach (var key in formCollection.Keys.Skip(1))
-                    {                   
+                    {
                         var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='" + key + "'" });
+                        if (fieldsData.Data.Count() > 0 && fieldsData.Data.FirstOrDefault().Id > 0)
+                        {
+                            userFormValuesdata.TemplateFormId = formId;
+                            userFormValuesdata.TemplateFormFieldId =  fieldsData.Data.FirstOrDefault().Id ;
+                            userFormValuesdata.FieldValue = formCollection[key].ToString();
+                            var command = new AddEditUserFormValuesCommand(userFormValuesdata);
+                            response = await _mediator.Send(command);
+                        }
+                    }
+                }
+                if (formCollection.Files.Count() > 0)
+                {                    
+                    foreach (var files in formCollection.Files)
+                    {
+                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='File Upload' " });
+                        FileUploader fileUpload = new FileUploader();
+
+                        string fileName = await fileUpload.UploadFile(files);
 
                         userFormValuesdata.TemplateFormId = formId;
-                        userFormValuesdata.TemplateFormFieldId = (fieldsData.Data.Count() > 0) ? fieldsData.Data.FirstOrDefault().Id : 0;
-                        userFormValuesdata.FieldValue = formCollection[key].ToString();
-
+                        userFormValuesdata.TemplateFormFieldId = fieldsData.Data.FirstOrDefault().Id;
+                        userFormValuesdata.FieldValue = fileName.ToString();
                         var command = new AddEditUserFormValuesCommand(userFormValuesdata);
-                         response = await _mediator.Send(command);
+                        response = await _mediator.Send(command);
                     }
                 }
                 result.error = false;

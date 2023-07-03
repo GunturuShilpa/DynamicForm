@@ -140,7 +140,7 @@
 <div class="x_title" id="viewresponse" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
 </div>
 
-<div id="progressbar"></div>
+@*<div id="progressbar"></div>*@
 @section scripts
     {
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
@@ -150,7 +150,7 @@
     <script type="text/javascript">
 
         $(document).ready(function () {
-            $('#create-form').validate();
+            $('#formSubmit').validate();
         });
         completedsaveform = function (xhr) {
            // $('#progressbar').progressbar({

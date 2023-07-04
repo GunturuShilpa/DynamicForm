@@ -28,6 +28,10 @@ namespace DynamicForm.Controllers
 
             return Json(result);
         }
+        public async Task<IActionResult> AddOptions()
+        {
 
+            return PartialView("_AddOptions");
+        }
     }
 }

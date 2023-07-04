@@ -100,40 +100,9 @@
 
         <div class="modal" id="update-field-model" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
         </div>
+
         <div class="modal" id="option-field-model" role="dialog" aria-hidden="true" data-backdrop="static" data-keyboard="false" tabindex="-1">
-            <div class="modal-content">
-                <div class="modal-header bg-warning">
-                    <h4 class="modal-title">Add Field Options</h4>
-                    <button type="button" class="close" data-dismiss="modal" id="modelclose">&times;</button>
-                </div>
-                <div class="modal-body">
-                    <div class="input-group control-group after-add-more">
-                        <input type="text" name="addmore[]" class="form-control control-options" placeholder="Enter Name Here">
-                        <div class="input-group-btn">
-                            <button class="btn btn-success add-more" type="button"><i class="glyphicon glyphicon-plus"></i> Add</button>
-                        </div>
-                    </div>
-
-                    <!-- Copy Fields -->
-                    <div class="copy hide">
-                        <div class="control-group input-group" style="margin-top:10px">
-                            <input type="text" name="addmore[]" class="form-control control-options" placeholder="Enter Name Here">
-                            <div class="input-group-btn">
-                                <button class="btn btn-danger remove" type="button"><i class="glyphicon glyphicon-remove"></i> Remove</button>
-                            </div>
-                        </div>
-                    </div>
-                    <input type="hidden" id="TemplateFormFieldId" />
-
-                </div>
-                <div class="modal-footer"> 
-                    <button class="btn btn-success" type="button" onclick="addFieldOptions()"><span class="glyphicon glyphicon-floppy-saved"></span> Create</button>
-                    <button type="button" class="btn btn-danger" data-dismiss="modal" id="btnFieldOptionsClose"> <span class="glyphicon glyphicon-remove"></span> Close</button>
-                </div>
-            </div>
-           
         </div>
-
     </div>
 </div>
 
@@ -153,6 +122,7 @@
     <script src="~/lib/datatables/js/dataTables.responsive.min.js"></script>
     <script src="~/lib/datatables/js/responsive.bootstrap.min.js"></script>
     <script type="text/javascript">
+        var templateFormFieldId = 0;
         $(document).ready(function () {
             bind();
 
@@ -186,9 +156,9 @@
                 clearFieldCreate();
             });
         });
-         completedField = function (xhr) {
+        completedField = function (xhr) {
             var responseObject = JSON.parse(xhr.responseText);
-             if (!responseObject.error) {
+            if (!responseObject.error) {
                 Swal.fire({
                     title: 'Template Field',
                     text: responseObject.message,
@@ -333,38 +303,45 @@
                 }
             });
         }
-
         function optionFieldsModel(id) {
-            $('#TemplateFormFieldId').val(id);
+            templateFormFieldId = id;
+            $.ajax({
+                url: '@Url.Action("AddOptions", "FieldOptions")',
+                type: 'get',
+                headers: { "RequestVerificationToken": $('input[name="__RequestVerificationToken"]').val() },
+                success: (result) => {
+                    $('#option-field-model').html(result);
+                }
+            });
         }
 
-        function addFieldOptions(){
-             var options = [];
-            $('.control-options').each(function () {
+        function addFieldOptions() {
+            var options = [];
+            $("input[name=CreateTextbox]").each(function () {
                 var val = $(this).val();
                 if (val != '' && val != null)
                     options.push(val);
             });
             let formData = {
-                templateFormFieldId: $('#TemplateFormFieldId').val(),
-                optionValues: options, 
+                templateFormFieldId: templateFormFieldId,
+                optionValues: options,
             }
-             $.ajax({
+            $.ajax({
                 url: '@Url.Action("SaveOptions", "FieldOptions")',
                 type: "POST",
                 data: formData,
-                success: function (response) { 
-                     if (!response.error) {
+                success: function (response) {
+                    if (!response.error) {
                         Swal.fire({
                             title: 'Form Field Options',
                             text: response.message,
                             type: 'success',
                             allowOutsideClick: false
-                        }).then(function () { 
+                        }).then(function () {
                             location.reload();
                         });
                         $('#btnFieldOptionsClose').click();
-                        
+
                     }
                     else {
                         Swal.fire({
@@ -387,16 +364,7 @@
                 }
             });
         }
-        $(".add-more").click(function () {
-            var html = $(".copy").html();
-            $(".after-add-more").after(html);
-        });
 
-
-        $("body").on("click", ".remove", function () {
-            $(this).parents(".control-group").remove();
-        }); 
-         
         function deleteField(id) {
             Swal.fire({
                 title: "Confirmation",

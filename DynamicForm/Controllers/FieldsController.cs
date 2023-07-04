@@ -28,31 +28,39 @@ namespace DynamicForm.Controllers
             ViewBag.FormId = id;
             var templateData = await _mediator.Send(new GetAllFormsQuery() { Where = "where Id =" + id + "" });
             ViewBag.TemplateName = (templateData.Data.Count() > 0) ? templateData.Data.FirstOrDefault(x => x.Id == id).Name : "";
-
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
-            var command = new AddEditFieldCommand(model);
-            var response = await _mediator.Send(command);
-
             dynamic result = new ExpandoObject();
-            result.error = response.Succeeded;
-            result.message = response.Messages.FirstOrDefault();
-
-            if (response.Succeeded)
+            var isFieldExisted = await CheckIfFieldNameExist(model.Name);
+            if (isFieldExisted)
             {
-                result.error = false;
+                result.error = true;
+                result.duplicateFiled = true;
+                result.message = "This field already exist.";
             }
             else
             {
-                result.error = true;
+                var command = new AddEditFieldCommand(model);
+                var response = await _mediator.Send(command);
+                
+                result.error = response.Succeeded;
+                result.message = response.Messages.FirstOrDefault();
+
+                if (response.Succeeded)
+                {
+                    result.error = false;
+                }
+                else
+                {
+                    result.error = true;
+                }
+
+                result.message = response.Messages.FirstOrDefault();
             }
-
-            result.message = response.Messages.FirstOrDefault();
-
             return Json(result);
         }
 
@@ -164,5 +172,12 @@ namespace DynamicForm.Controllers
         }
 
         #endregion
+
+        public async Task<bool> CheckIfFieldNameExist(string fieldName)
+        {
+            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = "where  Name=" + "'" + fieldName + "'" + "" });
+            return templateData.Data.Count() > 0 ? true : false;
+            return true;
+        }
     }
 }

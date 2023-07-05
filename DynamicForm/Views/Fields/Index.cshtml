@@ -290,7 +290,7 @@
                             var html = "";
                             if (row.status == 1) {
                                 html += '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
-                                if (row.controlName == "Select") {
+                                if (row.controlName == "Select" || row.controlName == "CheckBox" || row.controlName == "RadioButtonList" || row.controlName== "CheckBoxList") {
                                     html += '<a type="button" data-toggle="modal" data-target="#option-field-model" class="btn btn-xs btn-info" onclick="optionFieldsModel(\'' + row.id + '\')">Options<a/>';
                                 }
                             }

@@ -35,7 +35,7 @@ namespace Infrastructure.Base.Repository
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = userId, ModifiedDate = DateTime.Now, Status = false });
+                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status  WHERE [Id] = @Id", new { Id = id, ModifiedBy = userId, ModifiedDate = DateTime.UtcNow, Status = false });
                 return Convert.ToInt32(result);
             }
         }
@@ -145,7 +145,7 @@ namespace Infrastructure.Base.Repository
             using (var conn = new SqlConnection(_connectionString))
             {
                 conn.Open();
-                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status " + where + "", new { ModifiedBy = userId, ModifiedDate = DateTime.Now, Status = 0 });
+                var result = await conn.ExecuteAsync($"update {_tableName} set ModifiedBy=@ModifiedBy,ModifiedDate=@ModifiedDate,Status = @Status " + where + "", new { ModifiedBy = userId, ModifiedDate = DateTime.UtcNow, Status = 0 });
                 return Convert.ToInt32(result);
             }
         }

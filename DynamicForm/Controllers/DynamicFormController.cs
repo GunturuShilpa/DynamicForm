@@ -89,7 +89,7 @@ namespace DynamicForm.Controllers
 
             var userFormData = new UserFormsRequest();
             userFormData.TemplateFormId = formId;
-            userFormData.CreatedDate = DateTime.Now;
+            userFormData.CreatedDate = DateTime.UtcNow;
 
             var userFormValuesdata = new UserFormValuesRequest();
             var userFormcommand = new AddEditUserFormsCommand(userFormData);

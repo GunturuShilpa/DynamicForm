@@ -43,7 +43,7 @@ namespace Core.Services.TemplateFields.Commands
                         RegExMessage = command.Field.RegExMessage,
                         Status = 1,
                         CreatedBy = 0,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.UtcNow
                     };
 
                     var rtn = await _fieldRepository.Create(fields);
@@ -84,7 +84,7 @@ namespace Core.Services.TemplateFields.Commands
                             CreatedBy = existingObj.CreatedBy,
                             CreatedDate = existingObj.CreatedDate,
                             ModifiedBy = 0,
-                            ModifiedDate = DateTime.Now
+                            ModifiedDate = DateTime.UtcNow
                         };
 
                         var rtn = await _fieldRepository.Update(fields);

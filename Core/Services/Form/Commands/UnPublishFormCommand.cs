@@ -29,7 +29,7 @@ namespace Core.Services.Form.Commands
             else
             {
                 string sql = String.Format("Status={0} ,ModifiedDate='{1}',ModifiedBy={2} where  Id = {3}",
-                           (int)FormAccountStatus.Pending, DateTime.Now.ToString("yyyy-MM-dd hh:mm:ss"), 0, command.Id);
+                           (int)FormAccountStatus.Pending, DateTime.UtcNow.ToString("yyyy-MM-dd hh:mm:ss"), 0, command.Id);
 
                 var rtn = await _formRepository.UpdateByQuery(sql);
                 if (rtn == 0)

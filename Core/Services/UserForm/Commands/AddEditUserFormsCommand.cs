@@ -40,7 +40,7 @@ namespace Core.Services.UserForm.Commands
                     {
                         Id = command.UserFormValues.Id,
                         TemplateFormId = command.UserFormValues.TemplateFormId,                        
-                        CreatedDate = command.UserFormValues.CreatedDate,
+                        CreatedDate = DateTime.UtcNow,
                     };
 
                     var rtn = await _userFormRepository.Create(userForms);

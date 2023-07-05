@@ -37,7 +37,7 @@ namespace Core.Services.Form.Commands
                         Ordinal = command.Form.Ordinal,
                         Status = 1,
                         CreatedBy = 0,
-                        CreatedDate = DateTime.Now
+                        CreatedDate = DateTime.UtcNow
                     };
 
                     var rtn = await _formRepository.Create(forms);
@@ -71,7 +71,7 @@ namespace Core.Services.Form.Commands
                             CreatedBy = existingObj.CreatedBy,
                             CreatedDate = existingObj.CreatedDate,
                             ModifiedBy = 0,
-                            ModifiedDate = DateTime.Now
+                            ModifiedDate = DateTime.UtcNow
                         };
 
                         var rtn = await _formRepository.Update(forms);

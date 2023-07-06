@@ -35,18 +35,18 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
             dynamic result = new ExpandoObject();
-            var isFieldExisted = await CheckIfFieldNameExist(model.Name);
+            var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
             if (isFieldExisted)
             {
                 result.error = true;
                 result.duplicateFiled = true;
-                result.message = "This field already exist.";
+                result.message = "This" + " " + model.Name + " " + "field already exist.";
             }
             else
             {
                 var command = new AddEditFieldCommand(model);
                 var response = await _mediator.Send(command);
-                
+
                 result.error = response.Succeeded;
                 result.message = response.Messages.FirstOrDefault();
 
@@ -82,7 +82,7 @@ namespace DynamicForm.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
 
-            var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = id });                      
+            var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = id });
 
             List<TemplateFieldsModel> formModel = (List<TemplateFieldsModel>)_mapper.Map<IEnumerable<TemplateFieldsModel>>(mediatorResponse.Data);
 
@@ -173,11 +173,11 @@ namespace DynamicForm.Controllers
 
         #endregion
 
-        public async Task<bool> CheckIfFieldNameExist(string fieldName)
+        public async Task<bool> CheckIfFieldNameExist(string fieldName, int TemplateFormId)
         {
-            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = "where  Name=" + "'" + fieldName + "'" + "" });
-            return templateData.Data.Count() > 0 ? true : false;
-            return true;
+            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = "where Name='" + fieldName + "' and TemplateFormId=" + TemplateFormId });
+            return templateData.Data.Count() > 0;
         }
+
     }
 }

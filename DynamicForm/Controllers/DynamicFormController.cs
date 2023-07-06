@@ -10,12 +10,8 @@ using Core.Services.UserFormValue.Commands;
 using Core.Services.UserFormValue.Queries;
 using Core.Services.UserFormValue.Requests;
 using DynamicForm.Models;
-using Infrastructure.UserForm.Entity;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.SqlServer.Server;
-using System.Collections.Generic;
 using System.Dynamic;
 using System.Linq.Dynamic;
 using Shared;
@@ -39,7 +35,8 @@ namespace DynamicForm.Controllers
             List<TemplateFieldsModel> formModel = (List<TemplateFieldsModel>)_mapper.Map<IEnumerable<TemplateFieldsModel>>(mediatorResponse.Data);
 
             var options = new List<SelectListItem>();
-            
+            var RadioButtonsOptions = new List<SelectListItem>();
+            var CheckBoxListOptions = new List<SelectListItem>();
 
             GetAllControlTypesQuery getAllControlTypes = new GetAllControlTypesQuery();
             var fieldsData = await _mediator.Send(getAllControlTypes);            
@@ -48,52 +45,59 @@ namespace DynamicForm.Controllers
             if (formModel.Count() > 0)
             {
                 foreach (TemplateFieldsModel formFields in formModel)
-                {                    
-                    if(formFields.ControlId == (int)ControlType.Select)
+                {
+                    int FormFieldId = formModel.Where(x => x.ControlId == formFields.ControlId).First().Id;
+                    var getOptions = await _mediator.Send(new GetAllFieldOptionsQuery() { Where = "where TemplateFormFieldId= " + FormFieldId + "and status=1" });
+                    List<FieldOptionsResponse> Options = (List<FieldOptionsResponse>)_mapper.Map<IEnumerable<FieldOptionsResponse>>(getOptions.Data);
+                    if (Options != null && Options.Count() > 0)
                     {
-                        int FormFieldId = formModel.Where(x => x.ControlId == formFields.ControlId).FirstOrDefault().Id;
-                        var getOptions = await _mediator.Send(new GetAllFieldOptionsQuery() { Where = "where TemplateFormFieldId= " + FormFieldId + "" });
-                        List<FieldOptionsResponse> Options = (List<FieldOptionsResponse>)_mapper.Map<IEnumerable<FieldOptionsResponse>>(getOptions.Data);
-                        
-                        if (Options != null && Options.Count() > 0)
+                        if (formFields.ControlId == (int)ControlType.Select)
                         {
                             foreach (var fieldoption in Options)
                             {
-                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });                              
-                                
+                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });
                             }
                         }
-
+                        if (formFields.ControlId == (int)ControlType.RadioButtonList)
+                        {
+                            foreach (var fieldoption in Options)
+                            {
+                                RadioButtonsOptions.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });
+                            }
+                        }
+                        if (formFields.ControlId == (int)ControlType.CheckBoxList)
+                        {
+                            foreach (var fieldoption in Options)
+                            {
+                                CheckBoxListOptions.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });
+                            }
+                        }
                     }
                 }
             }
             ViewBag.TemplateFormId = id;
             if (templateData.Data.Count() > 0)
             {
-                ViewBag.TemplateName = templateData.Data.FirstOrDefault(x => x.Id == id).Name;
+                ViewBag.TemplateName = templateData.Data.First().Name;
             }
            
             ViewBag.TemplateFieldOptions = options;
+            ViewBag.RadioButtonsOptions = RadioButtonsOptions;
+            ViewBag.CheckBoxListOptions = CheckBoxListOptions;
             return View(formModel);
         }
         [HttpPost]
         public async Task<IActionResult> SaveFormValues(IFormCollection formCollection)
         {
-            dynamic result = new ExpandoObject();
-            
-
-
-            int formId = Convert.ToInt32(formCollection["TemplateFormId"]);
-           
-            var response = (dynamic)null;
-
+            dynamic result = new ExpandoObject();           
+            int formId = Convert.ToInt32(formCollection["TemplateFormId"]);           
             var userFormData = new UserFormsRequest();
             userFormData.TemplateFormId = formId;
             userFormData.CreatedDate = DateTime.UtcNow;
 
             var userFormValuesdata = new UserFormValuesRequest();
             var userFormcommand = new AddEditUserFormsCommand(userFormData);
-            response = await _mediator.Send(userFormcommand);
+            var response = await _mediator.Send(userFormcommand);
             if (response.Succeeded)
             {
                 if (formCollection.Count > 0)
@@ -101,13 +105,13 @@ namespace DynamicForm.Controllers
                     foreach (var key in formCollection.Keys.Skip(1))
                     {
                         var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='" + key + "'" });
-                        if (fieldsData.Data.Count() > 0 && fieldsData.Data.FirstOrDefault().Id > 0)
+                        if (fieldsData != null && fieldsData.Data.Count() > 0)
                         {
                             userFormValuesdata.TemplateFormId = formId;
-                            userFormValuesdata.TemplateFormFieldId =  fieldsData.Data.FirstOrDefault().Id ;
+                            userFormValuesdata.TemplateFormFieldId = fieldsData.Data.First().Id;
                             userFormValuesdata.FieldValue = formCollection[key].ToString();
                             var command = new AddEditUserFormValuesCommand(userFormValuesdata);
-                            response = await _mediator.Send(command);
+                            await _mediator.Send(command);
                         }
                     }
                 }
@@ -115,16 +119,18 @@ namespace DynamicForm.Controllers
                 {                    
                     foreach (var files in formCollection.Files)
                     {
-                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='File Upload' " });
+                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and ControlId ="+(int)ControlType.FileUpload+" " });
                         FileUploader fileUpload = new FileUploader();
 
                         string fileName = await fileUpload.UploadFile(files);
-
-                        userFormValuesdata.TemplateFormId = formId;
-                        userFormValuesdata.TemplateFormFieldId = fieldsData.Data.FirstOrDefault().Id;
-                        userFormValuesdata.FieldValue = fileName.ToString();
-                        var command = new AddEditUserFormValuesCommand(userFormValuesdata);
-                        response = await _mediator.Send(command);
+                        if (fieldsData != null && fieldsData.Data.Count() > 0)
+                        {
+                            userFormValuesdata.TemplateFormId = formId;
+                            userFormValuesdata.TemplateFormFieldId = fieldsData.Data.First().Id;
+                            userFormValuesdata.FieldValue = fileName.ToString();
+                            var command = new AddEditUserFormValuesCommand(userFormValuesdata);
+                            await _mediator.Send(command);
+                        }
                     }
                 }
                 result.error = false;
@@ -151,8 +157,10 @@ namespace DynamicForm.Controllers
                     if (formFields.TemplateFormFieldId != 0)
                     {
                         var fieldData = await _mediator.Send(new GetFieldDetailsById() { Where = "where  Id=" + formFields.TemplateFormFieldId + "" });
-                        formFields.FieldName = fieldData.Data.Where(x => x.Id == formFields.TemplateFormFieldId).FirstOrDefault().Name;
-                        formFields.FieldValue = formFields.FieldValue.ToString();
+                        if (fieldData != null && fieldData.Data.Count() > 0) {
+                            formFields.FieldName = fieldData.Data.Where(x => x.Id == formFields.TemplateFormFieldId).First().Name;
+                            formFields.FieldValue = formFields.FieldValue.ToString();
+                        }
                     }
                 }
             }

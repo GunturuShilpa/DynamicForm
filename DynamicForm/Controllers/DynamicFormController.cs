@@ -15,6 +15,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Dynamic;
 using System.Linq.Dynamic;
 using Shared;
+using Infrastructure.BlobContainer.Repoistory;
 using Shared.Enum;
 
 namespace DynamicForm.Controllers
@@ -22,10 +23,12 @@ namespace DynamicForm.Controllers
     public class DynamicFormController : BaseController<DynamicFormController>
     {
         private IMapper _mapper;
+        private readonly IBlobContainerRepository _blobContainerRepository;
 
-        public DynamicFormController(IMapper mapper)
+        public DynamicFormController(IMapper mapper, IBlobContainerRepository blobContainerRepository)
         {
             _mapper = mapper;
+            _blobContainerRepository = blobContainerRepository;
         }
 
         public async Task<IActionResult> Index(int id = 0)
@@ -116,18 +119,18 @@ namespace DynamicForm.Controllers
                     }
                 }
                 if (formCollection.Files.Count() > 0)
-                {                    
+                {
+                    string imgURl = string.Empty;
                     foreach (var files in formCollection.Files)
                     {
                         var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and ControlId ="+(int)ControlType.FileUpload+" " });
-                        FileUploader fileUpload = new FileUploader();
-
-                        string fileName = await fileUpload.UploadFile(files);
+                        
+                        imgURl = await _blobContainerRepository.CreateFileInPath(files);
                         if (fieldsData != null && fieldsData.Data.Count() > 0)
                         {
                             userFormValuesdata.TemplateFormId = formId;
                             userFormValuesdata.TemplateFormFieldId = fieldsData.Data.First().Id;
-                            userFormValuesdata.FieldValue = fileName.ToString();
+                            userFormValuesdata.FieldValue = imgURl;
                             var command = new AddEditUserFormValuesCommand(userFormValuesdata);
                             await _mediator.Send(command);
                         }

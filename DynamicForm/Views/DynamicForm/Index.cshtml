@@ -13,6 +13,11 @@
         color: red;
     }
 </style>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DynamicFormLayout.cshtml";
+}
+
 <div>
     <div id="temlateName" class="x_title">
 
@@ -23,7 +28,7 @@
         <div class="modal-body">
             @if (Model.Count() > 0)
             {
-                @Html.Hidden("TemplateFormId", (object)ViewBag.TemplateFormId)               
+                @Html.Hidden("TemplateFormId", (object)ViewBag.TemplateFormId)
                 @foreach (var item in Model)
                 {
                     <div class="row">
@@ -105,11 +110,11 @@
                                 }
                                 else if (item.ControlId == (int)Shared.Enum.ControlType.CheckBoxList)
                                 {
-                                    <div class="col-span-12 sm:col-span-6">                                        
+                                    <div class="col-span-12 sm:col-span-6">
                                         <label for="selection" class="form-label">@item.Name</label>
                                         <br />
                                         @foreach (SelectListItem option in ViewBag.CheckBoxListOptions)
-                                        {                                            
+                                        {
                                             <input type="checkbox" name="@item.Name" value="@option.Text" />
                                             @option.Text
                                             <br />
@@ -150,7 +155,7 @@
                             </div>
                         </div>
                     </div>
-                    
+
                 }
                 <br />
                 <div class="form-group">
@@ -213,7 +218,7 @@
                 });
             }
             //});
-        };      
+        };
 
         function clearFormCreate() {
             var frm = document.getElementsByName('userform')[0];
@@ -221,3 +226,4 @@
         }
     </script>
         }
+

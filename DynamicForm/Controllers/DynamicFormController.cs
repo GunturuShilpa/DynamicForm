@@ -9,17 +9,14 @@ using Core.Services.UserForm.Requests;
 using Core.Services.UserFormValue.Commands;
 using Core.Services.UserFormValue.Queries;
 using Core.Services.UserFormValue.Requests;
+using DynamicForm.Filters;
 using DynamicForm.Models;
-using Infrastructure.UserForm.Entity;
-using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.SqlServer.Server;
-using System.Collections.Generic;
-using System.Dynamic;
-using System.Linq.Dynamic;
 using Shared;
 using Shared.Enum;
+using System.Dynamic;
+using System.Linq.Dynamic;
 
 namespace DynamicForm.Controllers
 {
@@ -31,48 +28,49 @@ namespace DynamicForm.Controllers
         {
             _mapper = mapper;
         }
-
-        public async Task<IActionResult> Index(int id = 0)
+        [DecryptQueryStringParameter]
+        public async Task<IActionResult> Index(string id)
         {
-            var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = id });
+            int formId = Convert.ToInt32(id);
+            var mediatorResponse = await _mediator.Send(new GetAllFieldsQuery() { TemplateFormId = formId });
 
             List<TemplateFieldsModel> formModel = (List<TemplateFieldsModel>)_mapper.Map<IEnumerable<TemplateFieldsModel>>(mediatorResponse.Data);
 
             var options = new List<SelectListItem>();
-            
+
 
             GetAllControlTypesQuery getAllControlTypes = new GetAllControlTypesQuery();
-            var fieldsData = await _mediator.Send(getAllControlTypes);            
+            var fieldsData = await _mediator.Send(getAllControlTypes);
 
-            var templateData = await _mediator.Send(new GetAllFormsQuery() { Where = "where Id =" + id + " and status=1" });
+            var templateData = await _mediator.Send(new GetAllFormsQuery() { Where = "where Id =" + formId + " and status=1" });
             if (formModel.Count() > 0)
             {
                 foreach (TemplateFieldsModel formFields in formModel)
-                {                    
-                    if(formFields.ControlId == (int)ControlType.Select)
+                {
+                    if (formFields.ControlId == (int)ControlType.Select)
                     {
                         int FormFieldId = formModel.Where(x => x.ControlId == formFields.ControlId).FirstOrDefault().Id;
                         var getOptions = await _mediator.Send(new GetAllFieldOptionsQuery() { Where = "where TemplateFormFieldId= " + FormFieldId + "" });
                         List<FieldOptionsResponse> Options = (List<FieldOptionsResponse>)_mapper.Map<IEnumerable<FieldOptionsResponse>>(getOptions.Data);
-                        
+
                         if (Options != null && Options.Count() > 0)
                         {
                             foreach (var fieldoption in Options)
                             {
-                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });                              
-                                
+                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });
+
                             }
                         }
 
                     }
                 }
             }
-            ViewBag.TemplateFormId = id;
+            ViewBag.TemplateFormId = formId;
             if (templateData.Data.Count() > 0)
             {
-                ViewBag.TemplateName = templateData.Data.FirstOrDefault(x => x.Id == id).Name;
+                ViewBag.TemplateName = templateData.Data.FirstOrDefault(x => x.Id == formId).Name;
             }
-           
+
             ViewBag.TemplateFieldOptions = options;
             return View(formModel);
         }
@@ -80,11 +78,11 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> SaveFormValues(IFormCollection formCollection)
         {
             dynamic result = new ExpandoObject();
-            
+
 
 
             int formId = Convert.ToInt32(formCollection["TemplateFormId"]);
-           
+
             var response = (dynamic)null;
 
             var userFormData = new UserFormsRequest();
@@ -104,7 +102,7 @@ namespace DynamicForm.Controllers
                         if (fieldsData.Data.Count() > 0 && fieldsData.Data.FirstOrDefault().Id > 0)
                         {
                             userFormValuesdata.TemplateFormId = formId;
-                            userFormValuesdata.TemplateFormFieldId =  fieldsData.Data.FirstOrDefault().Id ;
+                            userFormValuesdata.TemplateFormFieldId = fieldsData.Data.FirstOrDefault().Id;
                             userFormValuesdata.FieldValue = formCollection[key].ToString();
                             var command = new AddEditUserFormValuesCommand(userFormValuesdata);
                             response = await _mediator.Send(command);
@@ -112,7 +110,7 @@ namespace DynamicForm.Controllers
                     }
                 }
                 if (formCollection.Files.Count() > 0)
-                {                    
+                {
                     foreach (var files in formCollection.Files)
                     {
                         var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='File Upload' " });
@@ -140,8 +138,8 @@ namespace DynamicForm.Controllers
 
         [HttpPost]
         public async Task<IActionResult> GetFormResponse(int id)
-        {            
-            var formData= await _mediator.Send(new GetAllUserFormValues() { Where = "where TemplateFormId= " + id + "" });
+        {
+            var formData = await _mediator.Send(new GetAllUserFormValues() { Where = "where TemplateFormId= " + id + "" });
             List<UserFormValuesModel> formValuesModel = (List<UserFormValuesModel>)_mapper.Map<IEnumerable<UserFormValuesModel>>(formData.Data);
 
             if (formValuesModel.Count() > 0)

@@ -5,6 +5,7 @@ using Infrastructure.FieldOptions.Repository;
 using Microsoft.Extensions.DependencyInjection;
 using Infrastructure.UserFormValue.Repository;
 using Infrastructure.UserForm.Repository;
+using Infrastructure.BlobContainer.Repoistory;
 
 namespace Core.Ioc
 {
@@ -18,7 +19,7 @@ namespace Core.Ioc
             serviceCollection.AddTransient<IFormFieldOptionsRepository, FormFieldOptionsRepository>();
             serviceCollection.AddTransient<IUserFormValuesRepository, UserFormValuesRepository>();
             serviceCollection.AddTransient<IUserFormRepository, UserFormRepository>();
-
+            serviceCollection.AddTransient<IBlobContainerRepository, BlobContainerRepository>();
 
         }
     }

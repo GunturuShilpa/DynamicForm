@@ -11,9 +11,13 @@
 
     .error {
         color: red;
-    }   
-
+    }
 </style>
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_DynamicFormLayout.cshtml";
+}
+
 <div>
     <div id="temlateName" class="x_title">
 
@@ -25,7 +29,6 @@
             @if (Model.Count() > 0)
             {
                 @Html.Hidden("TemplateFormId", (object)ViewBag.TemplateFormId)
-                @Html.Hidden("SelectedText")
                 @foreach (var item in Model)
                 {
                     <div class="row">
@@ -105,18 +108,44 @@
                                     }
 
                                 }
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.CheckBoxList)
+                                {
+                                    <div class="col-span-12 sm:col-span-6">
+                                        <label for="selection" class="form-label">@item.Name</label>
+                                        <br />
+                                        @foreach (SelectListItem option in ViewBag.CheckBoxListOptions)
+                                        {
+                                            <input type="checkbox" name="@item.Name" value="@option.Text" />
+                                            @option.Text
+                                            <br />
+                                        }
+                                    </div>
+                                }
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.RadioButtonList)
+                                {
+                                    <div class="col-span-12 sm:col-span-6">
+                                        <label for="selection" class="form-label">@item.Name</label>
+                                        <br />
+                                        @foreach (SelectListItem option in ViewBag.RadioButtonsOptions)
+                                        {
+                                            <input type="radio" value="@option.Text" name="@item.Name" />
+                                            @option.Text
+                                            <br />
+                                        }
+                                    </div>
+                                }
                                 else if (item.ControlId == (int)Shared.Enum.ControlType.FileUpload)
                                 {
                                     @if (item.IsRequired)
                                     {
-                                        <div class="class=" col-span-12 sm:col-span-12"">
+                                        <div class="custom-file-input">
                                             <label for="@item.Name" class="form-label">Select File</label>
                                             <input name="@item.Name" type="file" class="custom-file-input" id="@item.Name" style="width:50%" required><br />
                                         </div>
                                     }
                                     else
                                     {
-                                        <div class="class=" col-span-12 sm:col-span-12"">
+                                        <div class="custom-file-input">
                                             <label for="@item.Name" class="form-label">Select File</label>
                                             <input name="@item.Name" type="file" class="custom-file-input" id="@item.Name" style="width:50%"><br />
                                         </div>
@@ -153,7 +182,7 @@
             $('#formSubmit').validate();
         });
         completedsaveform = function (xhr) {
-           // $('#progressbar').progressbar({
+            // $('#progressbar').progressbar({
             var rtn = JSON.parse(xhr.responseText);
             if (rtn.error == false) {
                 Swal.fire({
@@ -197,3 +226,4 @@
         }
     </script>
         }
+

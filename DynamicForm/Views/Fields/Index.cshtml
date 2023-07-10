@@ -170,7 +170,7 @@
                     oTable.draw();
                 });
                 $('#btnFieldClose').click();
-                clearFormCreate();
+                clearFieldCreate();
             }
             else if (responseObject.error && responseObject.duplicateFiled) {
                 Swal.fire({
@@ -180,6 +180,8 @@
                     type: 'error',
                     allowOutsideClick: false
                 });
+                 $('#btnFieldClose').click();
+                clearFieldCreate();
             }
             else {
                 Swal.fire({

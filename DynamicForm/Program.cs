@@ -1,38 +1,19 @@
-using AutoMapper;
-using Core.Ioc;
-using DynamicForm.Helpers;
-using MediatR;
-
-var builder = WebApplication.CreateBuilder(args);
-
-// Add services to the container.
-var mapperConfig = new MapperConfiguration(mc =>
+﻿namespace DynamicForm
 {
-    mc.AddProfile(new AutomapperWebProfile());
-});
-builder.Services.AddMediatR(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-builder.Services.AddControllersWithViews();
-builder.Services.RegisterInfrastructureServices();
+    public class Program
+    {
+        public static void Main(string[] args)
+        {
+            CreateHostBuilder(args).Build().Run();
+        }
 
-var app = builder.Build();
-// Configure the HTTP request pipeline.
-if (!app.Environment.IsDevelopment())
-{
-    app.UseExceptionHandler("/Home/Error");
-    // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
-    app.UseHsts();
+        public static IHostBuilder CreateHostBuilder(string[] args) =>
+             Host.CreateDefaultBuilder(args)
+                .ConfigureWebHostDefaults(webBuilder =>
+                {
+                    webBuilder.UseStartup<Startup>();
+                }).UseDefaultServiceProvider(options =>
+    options.ValidateScopes = false); // needed for mediatr DI;
+    }
 }
 
-app.UseHttpsRedirection();
-app.UseStaticFiles();
-
-app.UseRouting();
-
-app.UseAuthorization();
-
-app.MapControllerRoute(
-    name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
-
-app.Run();

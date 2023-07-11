@@ -18,12 +18,12 @@
                     <a class="navbar-brand" href="#"><img class="img-responsive cic-logo" src="~/img/ciclogo.png" ></a>
                 </div>
                 <ul class="nav navbar-nav">
-                    <li class="active"><a href="#">Home</a></li>
+                    <li class="active"><a class="nav-link text-dark" asp-controller="Home" asp-action="Index">Home</a></li>
                     <li><a class="nav-link text-dark" asp-area="" asp-controller="Forms" asp-action="Index">Forms</a></li>                    
                 </ul>               
                 <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>
-                    <li><a href="#"><span class="glyphicon glyphicon-log-in"></span> Login</a></li>
+                    @*<li><a href="#"><span class="glyphicon glyphicon-user"></span> Sign Up</a></li>*@
+                    <li><a class="nav-link text-dark" asp-area="" asp-controller="Login" asp-action="LogOff"><span class="glyphicon glyphicon-log-in"></span> Logoff</a></li>
                 </ul>
             </div>
         </nav>

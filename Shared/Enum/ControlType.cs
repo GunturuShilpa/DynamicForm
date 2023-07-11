@@ -16,5 +16,8 @@ namespace Shared.Enum
         Select = 6,
         Literal = 7,
         FileUpload = 8,
+        Date = 9,
+        Time = 10,
+        DateTime = 11,
     }
 }

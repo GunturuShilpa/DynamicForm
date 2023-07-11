@@ -2,8 +2,12 @@
 using Core.Services.Form.Commands;
 using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
+using Core.Services.TemplateFields.Commands;
+using Core.Services.TemplateFields.Queries;
+using Core.Services.TemplateFields.Requests;
 using DynamicForm.Models;
 using Microsoft.AspNetCore.Mvc;
+using Shared.Result;
 using System.Dynamic;
 using System.Linq.Dynamic;
 
@@ -26,22 +30,50 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveForm(FormRequest model)
         {
-            dynamic res = new ExpandoObject();
+           
+                dynamic res = new ExpandoObject();
+                var ifFormNameExist = await CheckIfFormExist(model.Name);
+                if (ifFormNameExist)
+                {
+                    res.error = true;
+                    res.duplicateForm = true;
+                    res.message = "This" + " " + model.Name + " " + "Form already exist.";
+                }
+                else
+                {
+                    var command = new AddEditFormCommand(model);
+                    var mediatorResponse = await _mediator.Send(command);
+
+                    if (mediatorResponse.Succeeded)
+                    {
+                        res.error = false;
+                    }
+                    else
+                    {
+                        res.error = true;
+                    }
+                    res.message = mediatorResponse.Messages.FirstOrDefault();
+                }
+                return Json(res);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> SaveEditForm(FormRequest model)
+        {
+            dynamic result = new ExpandoObject();
             var command = new AddEditFormCommand(model);
             var mediatorResponse = await _mediator.Send(command);
 
             if (mediatorResponse.Succeeded)
             {
-                res.error = false;
+                result.error = false;
             }
             else
             {
-                res.error = true;
+                result.error = true;
             }
-
-            res.message = mediatorResponse.Messages.FirstOrDefault();
-
-            return Json(res);
+            result.message = mediatorResponse.Messages.FirstOrDefault();
+            return Json(result);
         }
 
         [HttpPost]
@@ -166,5 +198,13 @@ namespace DynamicForm.Controllers
 
             return Json(res);
         }
+
+        public async Task<bool> CheckIfFormExist(string fieldName)
+        {
+            var templateData = await _mediator.Send(new GetAllFormsQuery { Where = "where Name='" + fieldName + "'" });
+            return templateData.Data.Count() > 0;
+        }
+
+
     }
 }

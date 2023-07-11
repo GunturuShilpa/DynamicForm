@@ -15,6 +15,16 @@
     .error {
         color: red;
     }
+
+    .button-group {
+        display: flex;
+    }
+
+        .button-group .btn {
+            flex: 0 0 auto;
+            margin-right: 10px;
+        }
+
 </style>
 
 <div class="row">
@@ -22,7 +32,7 @@
         <div class="x_panel">
             <div class="x_title">
                 <h2 class="page-title">
-                    @ViewBag.TemplateName - > Controls
+                    @ViewBag.TemplateName Controls
                     <button type="button" class="btn btn-info pull-right" data-toggle="modal" data-target="#add-field-model">
                         <span class="glyphicon glyphicon-plus"></span> Create
                     </button>
@@ -36,9 +46,9 @@
                             <th style="min-width:30px">Name</th>
                             <th style="min-width:30px">Control Type</th>
                             <th style="min-width:30px">Default Value</th>
-                            <th style="min-width:30px">Required?</th>
-                            <th style="min-width:30px">Status</th>
-                            <th style="min-width:30px">Actions</th>
+                            <th style="max-width:40px">Required?</th>
+                            <th style="max-width:30px">Status</th>
+                            <th style="max-width:20px">Actions</th>
                         </tr>
                     </thead>
                     <tbody id="tdField"></tbody>
@@ -180,7 +190,7 @@
                     type: 'error',
                     allowOutsideClick: false
                 });
-                 $('#btnFieldClose').click();
+                $('#btnFormClose').click();
                 clearFieldCreate();
             }
             else {
@@ -291,10 +301,13 @@
                         "render": function (data, type, row) {
                             var html = "";
                             if (row.status == 1) {
-                                html += '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit<a/> <a  type="button"  class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a> ';
-                                if (row.controlName == "Select" || row.controlName == "CheckBox" || row.controlName == "RadioButtonList" || row.controlName== "CheckBoxList") {
-                                    html += '<a type="button" data-toggle="modal" data-target="#option-field-model" class="btn btn-xs btn-info" onclick="optionFieldsModel(\'' + row.id + '\')">Options<a/>';
+                                html += '<div class="button-group">';
+                                html += '<a type="button" data-toggle="modal" data-target="#update-field-model" class="btn btn-xs btn-success" onclick="editFieldProperty(\'' + row.id + '\')">Edit</a>';
+                                html += '<a type="button" class="btn btn-xs btn-danger" title="Delete Field" onclick="deleteField(\'' + row.id + '\')">Delete</a>';
+                                if (row.controlName == "Select" || row.controlName == "CheckBox" || row.controlName == "RadioButtonList" || row.controlName == "CheckBoxList") {
+                                    html += '<a type="button" data-toggle="modal" data-target="#option-field-model" class="btn btn-xs btn-info" onclick="optionFieldsModel(\'' + row.id + '\')">Options</a>';
                                 }
+                                html += '</div>';
                             }
                             return html;
                         }

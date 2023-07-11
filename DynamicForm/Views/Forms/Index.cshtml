@@ -118,6 +118,16 @@
                 });
                 $('#btnFormClose').click();
                 clearFormCreate();
+            } else if (rtn.error && rtn.duplicateForm) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Template Form',
+                    text: rtn.message,
+                    type: 'error',
+                    allowOutsideClick: false
+                });
+                $('#btnFieldClose').click();
+                clearFormCreate();
             }
             else {
                 Swal.fire({
@@ -235,7 +245,6 @@
                                     html += ' <a class="btn btn-warning btn-xs" onclick="return unPublishForm(\'' + row.id + '\')">UnPublish</a>';
                                 }
                             }
-
                             return html;
                         }
                     }

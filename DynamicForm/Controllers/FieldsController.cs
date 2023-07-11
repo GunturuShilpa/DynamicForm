@@ -34,33 +34,54 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
-            dynamic result = new ExpandoObject();
-            var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
-            if (isFieldExisted)
-            {
-                result.error = true;
-                result.duplicateFiled = true;
-                result.message = "This" + " " + model.Name + " " + "field already exist.";
-            }
-            else
-            {
-                var command = new AddEditFieldCommand(model);
-                var response = await _mediator.Send(command);
-
-                result.error = response.Succeeded;
-                result.message = response.Messages.FirstOrDefault();
-
-                if (response.Succeeded)
+                dynamic result = new ExpandoObject();
+                var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
+                if (isFieldExisted)
                 {
-                    result.error = false;
+                    result.error = true;
+                    result.duplicateFiled = true;
+                    result.message = "This" + " " + model.Name + " " + "field already exist.";
                 }
                 else
                 {
-                    result.error = true;
-                }
+                    var command = new AddEditFieldCommand(model);
+                    var response = await _mediator.Send(command);
 
-                result.message = response.Messages.FirstOrDefault();
+                    result.error = response.Succeeded;
+                    result.message = response.Messages.FirstOrDefault();
+
+                    if (response.Succeeded)
+                    {
+                        result.error = false;
+                    }
+                    else
+                    {
+                        result.error = true;
+                    }
+
+                    result.message = response.Messages.FirstOrDefault();
+                }
+                return Json(result);
+        }
+           
+        
+        [HttpPost]
+        public async Task<IActionResult> SaveEditField(FieldRequest model)
+        {
+            dynamic result = new ExpandoObject();
+            var command = new AddEditFieldCommand(model);
+            var response = await _mediator.Send(command);
+            result.error = response.Succeeded;
+            result.message = response.Messages.FirstOrDefault();
+            if (response.Succeeded)
+            {
+                result.error = false;
             }
+            else
+            {
+                result.error = true;
+            }
+            result.message = response.Messages.FirstOrDefault();
             return Json(result);
         }
 

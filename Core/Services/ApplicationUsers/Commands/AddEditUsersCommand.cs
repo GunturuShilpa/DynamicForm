@@ -29,7 +29,7 @@ namespace Core.Services.ApplicationUsers.Commands
         {
             try
             {
-               
+
                 if (Convert.ToInt32(command.User.Id) == 0)
                 {
                     byte[] passwordHash, passwordSalt;
@@ -59,7 +59,40 @@ namespace Core.Services.ApplicationUsers.Commands
                 }
                 else
                 {
-                    return await Result<string>.SuccessAsync("", "User is created successfully");
+                    var existingObj = await _applicationUserRepository.GetById(Convert.ToInt32(command.User.Id));
+
+                    if (existingObj == null)
+                    {
+                        return await Result<string>.FailAsync("Failed to update user");
+                    }
+                    else
+                    {
+                        Users user = new()
+                        {
+                            Id = command.User.Id,
+                            UserName = command.User.UserName,
+                            Email = command.User.Email,
+                            RoleId = existingObj.RoleId,
+                            PasswordHash = existingObj.PasswordHash,
+                            PasswordSalt = existingObj.PasswordSalt,
+                            Status = existingObj.Status,
+                            CreatedBy = existingObj.CreatedBy,
+                            CreatedDate = existingObj.CreatedDate,
+                            ModifiedBy = 0,
+                            ModifiedDate = DateTime.UtcNow
+                        };
+
+                        var rtn = await _applicationUserRepository.Update(user);
+
+                        if (rtn == 0)
+                        {
+                            return await Result<string>.FailAsync("Failed to Update user");
+                        }
+                        else
+                        {
+                            return await Result<string>.SuccessAsync(rtn.ToString(), "User is Updated successfully");
+                        }
+                    }
                 }
             }
             catch (Exception ex)

@@ -35,5 +35,23 @@ namespace Infrastructure.ApplicationUsers.Repository
                 return null;
             return user;
         }
+        public async Task<int> Update(Users model)
+        {
+            return await UpdateAsync(model);
+        }
+        public async Task<IEnumerable<Users>> GetByQuery(string where)
+        {
+            var res = await GetByQueryAsync(where);
+            return res;
+        }
+        public async Task<int> Delete(int id, int? userId = null)
+        {
+            return await DeleteAsync(id, userId);
+        }
+
+        public async Task<Users> GetById(int id)
+        {
+            return await GetByIdAsync(id);
+        }
     }
 }

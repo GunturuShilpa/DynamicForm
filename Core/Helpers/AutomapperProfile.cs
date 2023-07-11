@@ -11,7 +11,8 @@ using Core.Services.UserFormValue.Responses;
 using Core.Services.UserForm.Responses;
 using Infrastructure.UserFormValue.Entity;
 using Infrastructure.UserForm.Entity;
-
+using Core.Services.ApplicationUsers.Responses;
+using Infrastructure.ApplicationUsers.Entity;
 
 namespace Core.Helpers
 {
@@ -25,7 +26,7 @@ namespace Core.Helpers
             CreateMap<FormFieldOptions, FieldOptionsResponse>();
             CreateMap<UserFormValues, UserFormValuesResponse>();
             CreateMap<UserForms, UserFormsResponse>();
-
+            CreateMap<Users, UserResponse>();
 
         }
     }

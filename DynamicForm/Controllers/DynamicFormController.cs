@@ -45,7 +45,7 @@ namespace DynamicForm.Controllers
             GetAllControlTypesQuery getAllControlTypes = new GetAllControlTypesQuery();
             var fieldsData = await _mediator.Send(getAllControlTypes);
 
-            var templateData = await _mediator.Send(new GetAllFormsQuery() { Where = "where Id =" + formId + " and status=1" });
+            var templateData = await _mediator.Send(new GetAllFormsQuery() { Where = "where Id =" + formId + " and status in (1,2)" });
             if (formModel.Count() > 0)
             {
                 foreach (TemplateFieldsModel formFields in formModel)

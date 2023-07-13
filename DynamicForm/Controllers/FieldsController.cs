@@ -45,23 +45,33 @@ namespace DynamicForm.Controllers
             }
             else
             {
-                model.CreatedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-                var command = new AddEditFieldCommand(model);
-                var response = await _mediator.Send(command);
-
-                result.error = response.Succeeded;
-                result.message = response.Messages.FirstOrDefault();
-
-                if (response.Succeeded)
+                var isOrderIdExisted = await CheckIfOrderNoExist(model.OrderNo, model.TemplateFormId);
+                if (isOrderIdExisted)
                 {
-                    result.error = false;
+                    result.error = true;
+                    result.duplicateFiled = true;
+                    result.message = "This" + " " + model.OrderNo + " " + "OrderNo already exist.Please try with different Order No";
                 }
                 else
                 {
-                    result.error = true;
+                    var command = new AddEditFieldCommand(model);
+                    var response = await _mediator.Send(command);
+
+                    result.error = response.Succeeded;
+                    result.message = response.Messages.FirstOrDefault();
+
+                    if (response.Succeeded)
+                    {
+                        result.error = false;
+                    }
+                    else
+                    {
+                        result.error = true;
+                    }
+
+                    result.message = response.Messages.FirstOrDefault();
                 }
 
-                result.message = response.Messages.FirstOrDefault();
             }
             return Json(result);
         }
@@ -71,20 +81,30 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> SaveEditField(FieldRequest model)
         {
             dynamic result = new ExpandoObject();
-            model.ModifiedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
-            var command = new AddEditFieldCommand(model);
-            var response = await _mediator.Send(command);
-            result.error = response.Succeeded;
-            result.message = response.Messages.FirstOrDefault();
-            if (response.Succeeded)
+            var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
+            if (isFieldExisted)
             {
-                result.error = false;
+                result.error = true;
+                result.duplicateFiled = true;
+                result.message = "This" + " " + model.Name + " " + "field already exist.";
             }
             else
             {
-                result.error = true;
+                model.ModifiedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var command = new AddEditFieldCommand(model);
+                var response = await _mediator.Send(command);
+                result.error = response.Succeeded;
+                result.message = response.Messages.FirstOrDefault();
+                if (response.Succeeded)
+                {
+                    result.error = false;
+                }
+                else
+                {
+                    result.error = true;
+                }
+                result.message = response.Messages.FirstOrDefault();
             }
-            result.message = response.Messages.FirstOrDefault();
             return Json(result);
         }
 
@@ -199,9 +219,14 @@ namespace DynamicForm.Controllers
 
         public async Task<bool> CheckIfFieldNameExist(string fieldName, int TemplateFormId)
         {
-            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = "where Name='" + fieldName + "' and TemplateFormId=" + TemplateFormId });
+            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = $"where Name='{fieldName}' and TemplateFormId={TemplateFormId} and Status= 1" });
             return templateData.Data.Count() > 0;
         }
 
+        public async Task<bool> CheckIfOrderNoExist(int orderNo, int TemplateFormId)
+        {
+            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = $"where OrderNo='{orderNo}' and TemplateFormId={TemplateFormId} and Status in (1,2)" });
+            return templateData.Data.Count() > 0;
+        }
     }
 }

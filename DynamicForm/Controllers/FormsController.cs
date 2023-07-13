@@ -3,6 +3,7 @@ using Core.Services.Form.Commands;
 using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
 using DynamicForm.Models;
+using Infrastructure.Form.Entity;
 using Microsoft.AspNetCore.Mvc;
 using System.Dynamic;
 using System.Linq.Dynamic;
@@ -206,9 +207,9 @@ namespace DynamicForm.Controllers
             return Json(res);
         }
 
-        public async Task<bool> CheckIfFormExist(string fieldName)
+        public async Task<bool> CheckIfFormExist(string formName)
         {
-            var templateData = await _mediator.Send(new GetAllFormsQuery { Where = "where Name='" + fieldName + "'" });
+            var templateData = await _mediator.Send(new GetAllFormsQuery { Where = "where Name='" + formName + "' and Status= 1" });
             return templateData.Data.Count() > 0;
         }
 

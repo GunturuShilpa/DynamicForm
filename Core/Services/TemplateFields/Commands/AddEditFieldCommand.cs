@@ -42,7 +42,7 @@ namespace Core.Services.TemplateFields.Commands
                         RegExValue = command.Field.RegExValue,
                         RegExMessage = command.Field.RegExMessage,
                         Status = 1,
-                        CreatedBy = 0,
+                        CreatedBy = command.Field.CreatedBy,
                         CreatedDate = DateTime.UtcNow
                     };
 
@@ -83,7 +83,7 @@ namespace Core.Services.TemplateFields.Commands
                             Status = command.Field.Status,
                             CreatedBy = existingObj.CreatedBy,
                             CreatedDate = existingObj.CreatedDate,
-                            ModifiedBy = 0,
+                            ModifiedBy = command.Field.ModifiedBy,
                             ModifiedDate = DateTime.UtcNow
                         };
 

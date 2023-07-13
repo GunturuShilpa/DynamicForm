@@ -26,5 +26,7 @@ namespace Core.Services.TemplateFields.Requests
         public string RegExMessage { get; set; } = string.Empty;
 
         public int Status { get; set; }
+        public int CreatedBy { get; set; } = 0;
+        public int ModifiedBy { get; set; } = 0;
     }
 }

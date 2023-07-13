@@ -42,7 +42,7 @@ namespace Core.Services.ApplicationUsers.Commands
                         PasswordHash = passwordHash,
                         PasswordSalt = passwordSalt,
                         Status = 1,
-                        CreatedBy = 0,
+                        CreatedBy = command.User.CreatedBy,
                         CreatedDate = DateTime.UtcNow
                     };
 

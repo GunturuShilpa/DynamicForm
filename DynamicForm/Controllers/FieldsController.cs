@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Dynamic;
 using System.Linq.Dynamic;
+using System.Security.Claims;
 
 namespace DynamicForm.Controllers
 {
@@ -34,41 +35,43 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
-                dynamic result = new ExpandoObject();
-                var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
-                if (isFieldExisted)
+            dynamic result = new ExpandoObject();
+            var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
+            if (isFieldExisted)
+            {
+                result.error = true;
+                result.duplicateFiled = true;
+                result.message = "This" + " " + model.Name + " " + "field already exist.";
+            }
+            else
+            {
+                model.CreatedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                var command = new AddEditFieldCommand(model);
+                var response = await _mediator.Send(command);
+
+                result.error = response.Succeeded;
+                result.message = response.Messages.FirstOrDefault();
+
+                if (response.Succeeded)
                 {
-                    result.error = true;
-                    result.duplicateFiled = true;
-                    result.message = "This" + " " + model.Name + " " + "field already exist.";
+                    result.error = false;
                 }
                 else
                 {
-                    var command = new AddEditFieldCommand(model);
-                    var response = await _mediator.Send(command);
-
-                    result.error = response.Succeeded;
-                    result.message = response.Messages.FirstOrDefault();
-
-                    if (response.Succeeded)
-                    {
-                        result.error = false;
-                    }
-                    else
-                    {
-                        result.error = true;
-                    }
-
-                    result.message = response.Messages.FirstOrDefault();
+                    result.error = true;
                 }
-                return Json(result);
+
+                result.message = response.Messages.FirstOrDefault();
+            }
+            return Json(result);
         }
-           
-        
+
+
         [HttpPost]
         public async Task<IActionResult> SaveEditField(FieldRequest model)
         {
             dynamic result = new ExpandoObject();
+            model.ModifiedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var command = new AddEditFieldCommand(model);
             var response = await _mediator.Send(command);
             result.error = response.Succeeded;
@@ -156,7 +159,7 @@ namespace DynamicForm.Controllers
 
             DeleteFieldCommand command = new DeleteFieldCommand();
             command.Id = id;
-            command.UserId = 0;
+            command.UserId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var mediatorResponse = await _mediator.Send(command);
 

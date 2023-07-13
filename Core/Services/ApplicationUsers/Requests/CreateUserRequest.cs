@@ -12,5 +12,6 @@ namespace Core.Services.ApplicationUsers.Requests
         [DataType(DataType.Password)]
         public string Password { get; set; } = string.Empty;
         public int RoleId { get; set; } = 0;
+        public int CreatedBy { get; set; } = 0;
     }
 }

@@ -16,7 +16,7 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveUser(CreateUserRequest model)
         {
-            model.CreatedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+            //model.CreatedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var command = new AddEditUsersCommand(model);
             var response = await _mediator.Send(command);
             dynamic result = new ExpandoObject();

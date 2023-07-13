@@ -34,13 +34,22 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveField(FieldRequest model)
         {
-                dynamic result = new ExpandoObject();
-                var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
-                if (isFieldExisted)
+            dynamic result = new ExpandoObject();
+            var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
+            if (isFieldExisted)
+            {
+                result.error = true;
+                result.duplicateFiled = true;
+                result.message = "This" + " " + model.Name + " " + "field already exist.";
+            }
+            else
+            {
+                var isOrderIdExisted = await CheckIfOrderNoExist(model.OrderNo, model.TemplateFormId);
+                if (isOrderIdExisted)
                 {
                     result.error = true;
                     result.duplicateFiled = true;
-                    result.message = "This" + " " + model.Name + " " + "field already exist.";
+                    result.message = "This" + " " + model.OrderNo + " " + "OrderNo already exist.Please try with different Order No";
                 }
                 else
                 {
@@ -61,27 +70,38 @@ namespace DynamicForm.Controllers
 
                     result.message = response.Messages.FirstOrDefault();
                 }
-                return Json(result);
+
+            }
+            return Json(result);
         }
-           
-        
+
         [HttpPost]
         public async Task<IActionResult> SaveEditField(FieldRequest model)
         {
             dynamic result = new ExpandoObject();
-            var command = new AddEditFieldCommand(model);
-            var response = await _mediator.Send(command);
-            result.error = response.Succeeded;
-            result.message = response.Messages.FirstOrDefault();
-            if (response.Succeeded)
+            var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
+            if (isFieldExisted)
             {
-                result.error = false;
+                result.error = true;
+                result.duplicateFiled = true;
+                result.message = "This" + " " + model.Name + " " + "field already exist.";
             }
             else
             {
-                result.error = true;
+                var command = new AddEditFieldCommand(model);
+                var response = await _mediator.Send(command);
+                result.error = response.Succeeded;
+                result.message = response.Messages.FirstOrDefault();
+                if (response.Succeeded)
+                {
+                    result.error = false;
+                }
+                else
+                {
+                    result.error = true;
+                }
+                result.message = response.Messages.FirstOrDefault();
             }
-            result.message = response.Messages.FirstOrDefault();
             return Json(result);
         }
 
@@ -196,9 +216,14 @@ namespace DynamicForm.Controllers
 
         public async Task<bool> CheckIfFieldNameExist(string fieldName, int TemplateFormId)
         {
-            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = "where Name='" + fieldName + "' and TemplateFormId=" + TemplateFormId });
+            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = $"where Name='{fieldName}' and TemplateFormId={TemplateFormId} and Status= 1" });
             return templateData.Data.Count() > 0;
         }
 
+        public async Task<bool> CheckIfOrderNoExist(int orderNo, int TemplateFormId)
+        {
+            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = $"where OrderNo='{orderNo}' and TemplateFormId={TemplateFormId} and Status= 1 and Status =2" });
+            return templateData.Data.Count() > 0;
+        }
     }
 }

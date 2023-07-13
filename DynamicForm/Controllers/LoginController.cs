@@ -1,14 +1,16 @@
-﻿using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Authentication.Cookies;
-using AutoMapper;
+﻿using AutoMapper;
 using Core.Services.Authentication.Commands;
 using Core.Services.Authentication.Requests;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json;
+using System.Security.Claims;
 
 namespace DynamicForm.Controllers
-{  
-    
+{
+
     [AllowAnonymous]
     public class LoginController : BaseController<LoginController>
     {
@@ -34,15 +36,21 @@ namespace DynamicForm.Controllers
                 var response = await _mediator.Send(data);
                 if (response.Succeeded)
                 {
-                    //var claims = new List<Claim>()
-                    //{
-                    //    new Claim(ClaimTypes.NameIdentifier, Convert.ToString(response.Data.userId)),
-                    //    new Claim(ClaimTypes.Name, response.Data.userName),                        
-                    //};
+                    //Create claims for user
+                    var claims = new List<Claim>()
+                    {
+                        new Claim(ClaimTypes.NameIdentifier, Convert.ToString(response.Data.userId)),
+                        new Claim(ClaimTypes.Name, response.Data.userName),
+                        new Claim("Email", Convert.ToString(response.Data.email)),
+                         new Claim("RoleId", Convert.ToString(response.Data.roleId))
+                     };
 
-                    //var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
-                    //var principal = new ClaimsPrincipal(identity);
-                    //await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties());
+                    var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+                    var principal = new ClaimsPrincipal(identity);
+                    await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, principal, new AuthenticationProperties()
+                    {
+                        IsPersistent = true
+                    });
                     HttpContext.Session.SetString("userId", response.Data.userName);
                     return RedirectToAction("Index", "Forms");
                 }

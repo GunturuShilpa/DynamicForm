@@ -2,14 +2,11 @@
 using Core.Services.Form.Commands;
 using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
-using Core.Services.TemplateFields.Commands;
-using Core.Services.TemplateFields.Queries;
-using Core.Services.TemplateFields.Requests;
 using DynamicForm.Models;
 using Microsoft.AspNetCore.Mvc;
-using Shared.Result;
 using System.Dynamic;
 using System.Linq.Dynamic;
+using System.Security.Claims;
 
 namespace DynamicForm.Controllers
 {
@@ -30,33 +27,33 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveForm(FormRequest model)
         {
-           
-                dynamic res = new ExpandoObject();
-                var ifFormNameExist = await CheckIfFormExist(model.Name);
-                if (ifFormNameExist)
+
+            dynamic res = new ExpandoObject();
+            var ifFormNameExist = await CheckIfFormExist(model.Name);
+            if (ifFormNameExist)
+            {
+                res.error = true;
+                res.duplicateForm = true;
+                res.message = "This" + " " + model.Name + " " + "Form already exist.";
+            }
+            else
+            {
+                var command = new AddEditFormCommand(model);
+                var mediatorResponse = await _mediator.Send(command);
+
+                if (mediatorResponse.Succeeded)
                 {
-                    res.error = true;
-                    res.duplicateForm = true;
-                    res.message = "This" + " " + model.Name + " " + "Form already exist.";
+                    res.error = false;
                 }
                 else
                 {
-                    var command = new AddEditFormCommand(model);
-                    var mediatorResponse = await _mediator.Send(command);
-
-                    if (mediatorResponse.Succeeded)
-                    {
-                        res.error = false;
-                    }
-                    else
-                    {
-                        res.error = true;
-                    }
-                    res.message = mediatorResponse.Messages.FirstOrDefault();
+                    res.error = true;
                 }
-                return Json(res);
+                res.message = mediatorResponse.Messages.FirstOrDefault();
+            }
+            return Json(res);
         }
-        
+
         [HttpPost]
         public async Task<IActionResult> SaveEditForm(FormRequest model)
         {
@@ -79,6 +76,14 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> GetAllForms()
         {
+            string where = string.Empty;
+            var roleId = Convert.ToInt32(HttpContext.User.FindFirst("RoleId").Value);
+            if (roleId != 1)
+            {
+                var userId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
+                where = string.Format(" where createdBy={0}", userId);
+            }
+
             dynamic res = new ExpandoObject();
 
             var draw = HttpContext.Request.Form["draw"].FirstOrDefault();
@@ -94,7 +99,7 @@ namespace DynamicForm.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
 
-            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { });
+            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { Where = where });
 
             List<TemplateFormModel> formModel = (List<TemplateFormModel>)_mapper.Map<IEnumerable<TemplateFormModel>>(mediatorResponse.Data);
 

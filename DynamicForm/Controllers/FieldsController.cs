@@ -222,7 +222,7 @@ namespace DynamicForm.Controllers
 
         public async Task<bool> CheckIfOrderNoExist(int orderNo, int TemplateFormId)
         {
-            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = $"where OrderNo='{orderNo}' and TemplateFormId={TemplateFormId} and Status= 1 and Status =2" });
+            var templateData = await _mediator.Send(new GetFieldDetailsById() { Where = $"where OrderNo='{orderNo}' and TemplateFormId={TemplateFormId} and Status in (1,2)" });
             return templateData.Data.Count() > 0;
         }
     }

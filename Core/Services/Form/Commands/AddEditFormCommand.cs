@@ -36,7 +36,7 @@ namespace Core.Services.Form.Commands
                         Description = command.Form.Description,
                         Ordinal = command.Form.Ordinal,
                         Status = 1,
-                        CreatedBy = 0,
+                        CreatedBy = command.Form.CreatedBy,
                         CreatedDate = DateTime.UtcNow
                     };
 
@@ -70,7 +70,7 @@ namespace Core.Services.Form.Commands
                             Status = command.Form.Status,
                             CreatedBy = existingObj.CreatedBy,
                             CreatedDate = existingObj.CreatedDate,
-                            ModifiedBy = 0,
+                            ModifiedBy = command.Form.ModifiedBy,
                             ModifiedDate = DateTime.UtcNow
                         };
 

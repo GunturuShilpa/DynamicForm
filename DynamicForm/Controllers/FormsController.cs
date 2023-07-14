@@ -39,6 +39,7 @@ namespace DynamicForm.Controllers
             }
             else
             {
+                model.CreatedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
                 var command = new AddEditFormCommand(model);
                 var mediatorResponse = await _mediator.Send(command);
 
@@ -59,6 +60,7 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> SaveEditForm(FormRequest model)
         {
             dynamic result = new ExpandoObject();
+            model.ModifiedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var command = new AddEditFormCommand(model);
             var mediatorResponse = await _mediator.Send(command);
 
@@ -134,7 +136,7 @@ namespace DynamicForm.Controllers
 
             DeleteFormCommand command = new DeleteFormCommand();
             command.Id = id;
-            command.UserId = 0;
+            command.UserId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var mediatorResponse = await _mediator.Send(command);
 
@@ -166,7 +168,7 @@ namespace DynamicForm.Controllers
 
             PublishFormCommand command = new PublishFormCommand();
             command.Id = id;
-            command.UserId = 0;
+            command.UserId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var mediatorResponse = await _mediator.Send(command);
 
@@ -189,7 +191,7 @@ namespace DynamicForm.Controllers
 
             UnPublishFormCommand command = new UnPublishFormCommand();
             command.Id = id;
-            command.UserId = 0;
+            command.UserId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var mediatorResponse = await _mediator.Send(command);
 

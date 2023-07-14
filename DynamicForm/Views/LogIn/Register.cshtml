@@ -26,22 +26,22 @@
             <div class="modal-content">
                 <div class="modal-header bg-warning">
                     <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                    <h3>User Register</h3>
+                            <h4 class="modal-title">User Register</h4>
                 </div>
                 <div class="modal-body">
                     <div class="form-group">
-                        <label class="required" for="Email">Email</label>
-                        <input type="text" id="email" class="form-control" asp-for="Email" />                        
+                        <label for="Email">Email</label>
+                        <input type="text" id="email" class="form-control" asp-for="Email" required />                        
                         <span asp-validation-for="Email" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label class="required" for="UserName">User Name</label>
-                        <input type="text" id="username" class="form-control" asp-for="UserName" />
+                        <label for="UserName">User Name</label>
+                        <input type="text" id="username" class="form-control" asp-for="UserName" required />
                         <span asp-validation-for="UserName" class="text-danger"></span>
                     </div>
                     <div class="form-group">
-                        <label class="required" for="Password">Password</label>
-                        <input type="password" id="password" class="form-control" asp-for="Password" />                        
+                        <label for="Password">Password</label>
+                        <input type="password" id="password" class="form-control" asp-for="Password" required />                        
                         <span asp-validation-for="Password" class="text-danger"></span>
                     </div>                
                 </div>

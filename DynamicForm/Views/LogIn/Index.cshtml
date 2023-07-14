@@ -27,7 +27,7 @@
     <div class="container sm:px-10">
         <div class="block xl:grid grid-cols-2 gap-4">
             <!-- BEGIN: Login Info -->
-            <div class="hidden xl:flex flex-col min-h-screen">
+            <div class="xl:flex flex-col min-h-screen">
                 <a href="" class="-intro-x flex items-center pt-5">
                     <img alt="" class="w-6" src="~/lib/theme/dist/images/logo.svg">
                     <span class="text-white text-lg ml-3"> Checked In Care </span>
@@ -59,10 +59,10 @@
                         <h2 class="intro-x font-bold">
                             Sign In
                         </h2>                        
+                        <div class="intro-x mt-2 text-slate-400 xl:hidden text-center">Create a better quality of life more cost effectively</div>
                         <div class="intro-x mt-8">
                             <input asp-for="UserName" type="text" class="intro-x login__input form-control py-3 px-4 block" style="width:50%" placeholder="Email/UserName">
                             <span asp-validation-for="UserName" class="text-danger"></span>
-                            </br>
                             <input asp-for="Password" type="password" class="intro-x login__input form-control py-3 px-4 block mt-4" style="width:50%" placeholder="Password">
                             <span asp-validation-for="Password" class="text-danger"></span>
                         </div>
@@ -72,13 +72,13 @@
                                 <label class="cursor-pointer select-none" for="remember-me">Remember me</label>
                             </div>
                             <a href="">Forgot Password?</a>
-                        </div>*@
-                        </br>
-                        <div>
-                            <button type="submit" class="btn btn-info">Login</button>
-                            <button type="button" data-toggle="modal" data-target="#User-Register" class="btn btn-xl btn-success" title="Register" onclick="userRegister()">Register</button>
+                        </div>*@                      
+                        <div class="intro-x mt-5 xl:mt-8 text-center xl:text-left">
+                            <button type="submit" class="btn btn-primary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top">Login</button>
+                            <button type="button" data-toggle="modal" data-target="#User-Register" class="btn btn-outline-secondary py-3 px-4 w-full xl:w-32 xl:mr-3 align-top" title="Register" onclick="userRegister()">Register</button>
                         </div>
-                        
+                        <div class="intro-x mt-10 xl:mt-24 text-slate-600 dark:text-slate-500 text-center xl:text-left"> By signin up, you agree to our <a class="text-primary dark:text-slate-200" href="">Terms and Conditions</a> & <a class="text-primary dark:text-slate-200" href="">Privacy Policy</a> </div>
+
                     </form>
                 </div>
             </div>
@@ -115,7 +115,6 @@
         }
         completedUser = function (xhr) {
             var rtn = JSON.parse(xhr.responseText);
-            alert(rtn.error);
             if (rtn.error == false) {
                 Swal.fire({
                     title: 'Registration Form',
@@ -123,7 +122,7 @@
                     type: 'success',
                     allowOutsideClick: false
                 }).then(function () {
-                    $('#add-user-model').hide();
+                    $('#User-Register').hide();
                 });
                 $('#btnclose').click();
                 clearFormCreate();

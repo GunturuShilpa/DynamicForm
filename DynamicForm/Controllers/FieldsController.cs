@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using System.Dynamic;
 using System.Linq.Dynamic;
+using System.Security.Claims;
 
 namespace DynamicForm.Controllers
 {
@@ -74,6 +75,7 @@ namespace DynamicForm.Controllers
             }
             return Json(result);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> SaveEditField(FieldRequest model)
@@ -167,7 +169,7 @@ namespace DynamicForm.Controllers
 
             DeleteFieldCommand command = new DeleteFieldCommand();
             command.Id = id;
-            command.UserId = 0;
+            command.UserId = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
             var mediatorResponse = await _mediator.Send(command);
 

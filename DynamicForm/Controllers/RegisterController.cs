@@ -2,12 +2,13 @@
 using Core.Services.ApplicationUsers.Commands;
 using Core.Services.ApplicationUsers.Requests;
 using System.Dynamic;
+using System.Security.Claims;
 
 namespace DynamicForm.Controllers
 {
     public class RegisterController : BaseController<FieldsController>
     {
-        
+
         public IActionResult Index()
         {
             return View();
@@ -15,6 +16,7 @@ namespace DynamicForm.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveUser(CreateUserRequest model)
         {
+            //model.CreatedBy = Convert.ToInt32(HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value);
             var command = new AddEditUsersCommand(model);
             var response = await _mediator.Send(command);
             dynamic result = new ExpandoObject();
@@ -34,5 +36,5 @@ namespace DynamicForm.Controllers
 
             return Json(result);
         }
-     }
+    }
 }

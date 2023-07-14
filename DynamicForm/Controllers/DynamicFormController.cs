@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Shared.Enum;
 using System.Dynamic;
 using System.Linq.Dynamic;
+using System.Text.RegularExpressions;
 
 namespace DynamicForm.Controllers
 {
@@ -98,9 +99,9 @@ namespace DynamicForm.Controllers
             var userFormData = new UserFormsRequest();
             userFormData.TemplateFormId = formId;
             userFormData.CreatedDate = DateTime.UtcNow;
-
+            bool IsValidationSuccess = true;
             var userFormValuesdata = new UserFormValuesRequest();
-            var userFormcommand = new AddEditUserFormsCommand(userFormData);
+            var userFormcommand = new AddEditUserFormsCommand(userFormData);       
             var response = await _mediator.Send(userFormcommand);
             if (response.Succeeded)
             {
@@ -108,46 +109,68 @@ namespace DynamicForm.Controllers
                 {
                     foreach (var key in formCollection.Keys.Skip(1))
                     {
-                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='" + key + "'" });
+                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='" + key + "' and Status = 1"  });
                         if (fieldsData != null && fieldsData.Data.Count() > 0)
                         {
                             userFormValuesdata.TemplateFormId = formId;
                             userFormValuesdata.TemplateFormFieldId = fieldsData.Data.First().Id;
                             userFormValuesdata.FieldValue = formCollection[key].ToString();
-                            var command = new AddEditUserFormValuesCommand(userFormValuesdata);
-                            await _mediator.Send(command);
+                            var FieldName = fieldsData.Data.First().Name;
+                            if (!String.IsNullOrEmpty(fieldsData.Data.First().RegExValue))
+                            {
+                                if (RegexCheck(userFormValuesdata.FieldValue, fieldsData.Data.First().RegExValue))
+                                {
+                                    var command = new AddEditUserFormValuesCommand(userFormValuesdata);
+                                    await _mediator.Send(command);
+                                    IsValidationSuccess = true;
+                                    result.error = false;
+                                }
+                                else
+                                {
+                                    result.error = true;                                    
+                                    result.message = "Please enter valid " + FieldName + ".";
+                                    IsValidationSuccess = false;
+                                    break;
+                                }
+                            }
                         }
-                    }
-                }
-                if (formCollection.Files.Count() > 0)
-                {
-                    string imgURl = string.Empty;
-                    foreach (var files in formCollection.Files)
-                    {
-                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and ControlId =" + (int)ControlType.FileUpload + " " });
-
-                        imgURl = await _blobContainerRepository.CreateFileInPath(files);
-                        if (fieldsData != null && fieldsData.Data.Count() > 0)
+                        else
                         {
-                            userFormValuesdata.TemplateFormId = formId;
-                            userFormValuesdata.TemplateFormFieldId = fieldsData.Data.First().Id;
-                            userFormValuesdata.FieldValue = imgURl;
                             var command = new AddEditUserFormValuesCommand(userFormValuesdata);
-                            await _mediator.Send(command);
+                            await _mediator.Send(command);                            
                         }
                     }
                 }
-                result.error = false;
+                if (IsValidationSuccess)
+                {
+                    if (formCollection.Files.Count() > 0)
+                    {
+                        string imgURl = string.Empty;
+                        foreach (var files in formCollection.Files)
+                        {
+                            var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and ControlId =" + (int)ControlType.FileUpload + " " });
+
+                            imgURl = await _blobContainerRepository.CreateFileInPath(files);
+                            if (fieldsData != null && fieldsData.Data.Count() > 0)
+                            {
+                                userFormValuesdata.TemplateFormId = formId;
+                                userFormValuesdata.TemplateFormFieldId = fieldsData.Data.First().Id;
+                                userFormValuesdata.FieldValue = imgURl;
+                                var command = new AddEditUserFormValuesCommand(userFormValuesdata);
+                                await _mediator.Send(command);
+                            }
+                        }
+                        result.error = false;
+                    }
+                }
             }
             else
             {
                 result.error = true;
-            }
-            result.error = false;
+            }           
             result.TemplateFormId = formId;
             return Json(result);
         }
-
         [HttpPost]
         public async Task<IActionResult> GetFormResponse(int id)
         {
@@ -171,6 +194,19 @@ namespace DynamicForm.Controllers
             }
 
             return PartialView("ViewResponse", formValuesModel);
+        }
+        public bool RegexCheck(string Name, string RegexValue)
+        {
+            bool result = true;
+            if (!string.IsNullOrEmpty(Name))
+            {                
+                Regex re = new Regex(@RegexValue);               
+                if (!re.IsMatch(Name))
+                {
+                     result = false;
+                }                
+            }
+            return result;
         }
     }
 }

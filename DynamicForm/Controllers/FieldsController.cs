@@ -49,7 +49,7 @@ namespace DynamicForm.Controllers
                 {
                     result.error = true;
                     result.duplicateFiled = true;
-                    result.message = "This" + " " + model.OrderNo + " " + "OrderNo already exist.Please try with different Order No";
+                    result.message = "This" + " " + model.OrderNo + " " + "Ordinal already exist.Please try with different Order No";
                 }
                 else
                 {
@@ -79,15 +79,7 @@ namespace DynamicForm.Controllers
         public async Task<IActionResult> SaveEditField(FieldRequest model)
         {
             dynamic result = new ExpandoObject();
-            var isFieldExisted = await CheckIfFieldNameExist(model.Name, model.TemplateFormId);
-            if (isFieldExisted)
-            {
-                result.error = true;
-                result.duplicateFiled = true;
-                result.message = "This" + " " + model.Name + " " + "field already exist.";
-            }
-            else
-            {
+            
                 var command = new AddEditFieldCommand(model);
                 var response = await _mediator.Send(command);
                 result.error = response.Succeeded;
@@ -101,7 +93,6 @@ namespace DynamicForm.Controllers
                     result.error = true;
                 }
                 result.message = response.Messages.FirstOrDefault();
-            }
             return Json(result);
         }
 

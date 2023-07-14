@@ -40,23 +40,8 @@
                                     <div class="col-span-12 sm:col-span-6">
                                         <label for="@item.Name" class="form-label">@item.Name</label>
                                         @if (item.IsRequired)
-                                        {
-                                            @if (item.RegExValue == "Phone Number")
-                                            {
-                                                <input name="@item.Name" id="phone" placeholder="Enter phone number" type="text" onchange="validatePhoneNumber()" class="form-control" style="width:40%" required>
-                                                <span id="message" style="display: none;">@item.RegExMessage</span>
-
-                                            }
-                                            else if (item.RegExValue == "Email")
-                                            {
-                                                <input name="@item.Name" id="email" placeholder="Enter Email address" type="text" onchange="validateEmail()" class="form-control" style="width:40%" required>
-                                                <span id="msg" style="display: none;">@item.RegExMessage</span>
-                                            }
-                                            else
-                                            {
-                                                <input name="@item.Name" id="@item.Name" type="text" class="form-control" style="width:40%" required>
-                                                <span id="message" style="display: none;">@item.RequiredMessage</span>
-                                            }
+                                        {                                           
+                                           <input name="@item.Name" id="@item.Name" type="text" class="form-control" style="width:40%" required>                                              
                                         }
                                         else
                                         {
@@ -275,7 +260,7 @@
                 Swal.fire({
                     icon: 'error',
                     title: 'User Form',
-                    text: 'Oops!! Something Went Wrong!',
+                    text: rtn.message,
                     type: 'error',
                     allowOutsideClick: false
                 });
@@ -286,27 +271,7 @@
         function clearFormCreate() {
             var frm = document.getElementsByName('userform')[0];
             frm.reset();
-        }
-
-        function validatePhoneNumber() {
-            var phoneNumber = document.getElementById("phone").value;
-            var phoneRegex = /^\d{10}$/;
-            if (phoneRegex.test(phoneNumber)) {
-                $("#message").hide();
-            } else {
-                $("#message").show();
-            }
-        }
-
-        function validateEmail() {            
-            var email = document.getElementById("email").value;
-            var emailRegex = /^([\w-\.]+@@([\w-]+\.)+[\w-]{2,4})?$/;
-            if (emailRegex.test(email)) {
-                $("#msg").hide();
-            } else {
-                $("#msg").show();
-            }
-        }
+        }     
        
     </script>
  }

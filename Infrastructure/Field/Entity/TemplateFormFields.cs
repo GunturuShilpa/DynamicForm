@@ -21,5 +21,6 @@ namespace Infrastructure.Field.Entity
         public string RegExValue { get; set; } = string.Empty;
 
         public string RegExMessage { get; set; } = string.Empty;
+        public int Orientation { get; set; } = 0;
     }
 }

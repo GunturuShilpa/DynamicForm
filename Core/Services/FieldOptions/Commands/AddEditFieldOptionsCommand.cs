@@ -35,6 +35,7 @@ namespace Core.Services.FieldOptions.Commands
                         {
                             TemplateFormFieldId = command.Field.TemplateFormFieldId,
                             OptionValue = option,
+                            Orientation = command.Field.Orientation,
                             Status = true
                         };
 

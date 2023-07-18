@@ -102,7 +102,7 @@ namespace DynamicForm.Controllers
             int skip = start != null ? Convert.ToInt32(start) : 0;
             int recordsTotal = 0;
 
-            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { Where = where });
+            var mediatorResponse = await _mediator.Send(new GetAllFormsQuery() { Where = $"where Status in (1,2)" });
 
             List<TemplateFormModel> formModel = (List<TemplateFormModel>)_mapper.Map<IEnumerable<TemplateFormModel>>(mediatorResponse.Data);
 

@@ -366,9 +366,11 @@
                 if (val != '' && val != null)
                     options.push(val);
             });
+            var orientation = $("input[name='orientation']:checked").val();            
             let formData = {
                 templateFormFieldId: templateFormFieldId,
                 optionValues: options,
+                orientation: orientation
             }
             $.ajax({
                 url: '@Url.Action("SaveOptions", "FieldOptions")',

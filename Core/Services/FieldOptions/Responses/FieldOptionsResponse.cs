@@ -11,6 +11,8 @@ namespace Core.Services.FieldOptions.Responses
         public int Id { get; set; }
         public int TemplateFormFieldId { get; set; }
         public string OptionValue { get; set; }
+        public bool Orientation { get; set; }
         public bool status { get; set; }
+
     }
 }

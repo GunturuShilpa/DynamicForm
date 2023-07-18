@@ -12,6 +12,7 @@ using Core.Services.UserFormValue.Requests;
 using DynamicForm.Filters;
 using DynamicForm.Models;
 using Infrastructure.BlobContainer.Repoistory;
+using Infrastructure.FieldOptions.Entity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Shared.Enum;
@@ -60,21 +61,21 @@ namespace DynamicForm.Controllers
                         {
                             foreach (var fieldoption in Options)
                             {
-                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });
+                                options.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString()});
                             }
                         }
                         if (formFields.ControlId == (int)ControlType.RadioButtonList)
                         {
                             foreach (var fieldoption in Options)
                             {
-                                RadioButtonsOptions.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });
+                                RadioButtonsOptions.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString(),Selected=fieldoption.Orientation});
                             }
                         }
                         if (formFields.ControlId == (int)ControlType.CheckBoxList)
                         {
                             foreach (var fieldoption in Options)
                             {
-                                CheckBoxListOptions.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString() });
+                                CheckBoxListOptions.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString(),Selected = fieldoption.Orientation});
                             }
                         }
                     }

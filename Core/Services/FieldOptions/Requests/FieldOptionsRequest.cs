@@ -5,5 +5,6 @@
         public int Id { get; set; }
         public int TemplateFormFieldId { get; set; }
         public List<string> OptionValues { get; set; }
+        public int Orientation { get; set; }
     }
 }

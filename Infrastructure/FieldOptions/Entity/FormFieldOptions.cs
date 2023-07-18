@@ -12,5 +12,6 @@ namespace Infrastructure.FieldOptions.Entity
         public int TemplateFormFieldId { get; set; }
         public string OptionValue { get; set; }
         public bool Status { get; set; }
+        public int Orientation { get; set; }
     }
 }

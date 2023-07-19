@@ -40,11 +40,11 @@
                                         <label for="@item.Name" class="form-label">@item.Name</label>
                                         @if (item.IsRequired)
                                         {
-                                            <input name="@item.Name" id="@item.Name" type="text" class="form-control" style="width:40%" required>
+                                            <input name="@item.Name" id="@item.Name" type="text" placeholder="@item.DefaultValue" class="form-control" style="width:40%" required>
                                         }
                                         else
                                         {
-                                            <input name="@item.Name" id="@item.Name" type="text" class="form-control" style="width:40%">
+                                            <input name="@item.Name" id="@item.Name" type="text" placeholder="@item.DefaultValue" class="form-control" style="width:40%">
                                         }
                                     </div>
                                 }
@@ -54,11 +54,11 @@
                                         <label for="@item.Name" class="form-label">@item.Name</label>
                                         @if (item.IsRequired)
                                         {
-                                            <textarea name="@item.Name" id="@item.Name" class="form-control" rows="2" style="width:40%" required></textarea>
+                                            <textarea name="@item.Name" id="@item.Name" placeholder="@item.DefaultValue" class="form-control" rows="2" style="width:40%" required></textarea>
                                         }
                                         else
                                         {
-                                            <textarea name="@item.Name" id="@item.Name" class="form-control" rows="2" style="width:40%"></textarea>
+                                            <textarea name="@item.Name" id="@item.Name"  placeholder="@item.DefaultValue" class="form-control" rows="2" style="width:40%"></textarea>
                                         }
                                     </div>
                                 }

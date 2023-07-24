@@ -19,5 +19,7 @@ namespace Shared.Enum
         Date = 9,
         Time = 10,
         DateTime = 11,
+        Phone = 15,
+        Email = 16,
     }
 }

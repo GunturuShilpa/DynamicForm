@@ -203,18 +203,18 @@
                                 @if (item.IsRequired)
                                 {
                                     <div class="custom-file-input">
-                                        <label for="@item.Name" class="form-label">Select File</label>
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
                                         <input name="@item.Name" type="file" class="custom-file-input" id="@item.Name" style="width:40%" required>
                                     </div>
                                 }
                                 else
                                 {
                                     <div class="custom-file-input">
-                                        <label for="@item.Name" class="form-label">Select File</label>
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
                                         <input name="@item.Name" type="file" class="custom-file-input" id="@item.Name" style="width:40%">
                                     </div>
                                 }
-                                }
+                                }                               
                                 else if (item.ControlId == (int)Shared.Enum.ControlType.Date)
                                 {
                                 @if (item.IsRequired)
@@ -265,6 +265,40 @@
                                         <input name="@item.Name" type="datetime-local" id="datetimepicker" class="form-control" style="width:20%">
                                     </div>
                                 }
+                                }
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.Phone)
+                                {
+                                    @if (item.IsRequired) 
+                                    {
+                                        <div class="col-span-12 sm:col-span-6">
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
+                                            <input name="@item.Name" type="tel" id="Phone" class="form-control" style="width:20%" pattern="[0-9]{10}" required>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-span-12 sm:col-span-6">
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
+                                            <input name="@item.Name" type="tel" id="Phone" class="form-control" style="width:20%" pattern="[0-9]{10}">
+                                        </div>
+                                    }
+                                }
+                                else if (item.ControlId == (int)Shared.Enum.ControlType.Email)
+                                {
+                                    @if (item.IsRequired)
+                                    {
+                                        <div class="col-span-12 sm:col-span-6">
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
+                                            <input name="@item.Name" type="email" id="Email" class="form-control" style="width:20%" required>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="col-span-12 sm:col-span-6">
+                                            <label for="@item.Name" class="form-label">@item.Name</label>
+                                            <input name="@item.Name" type="email" id="Email" class="form-control" style="width:20%">
+                                        </div>
+                                    }
                                 }
                             </div>
                         </div>

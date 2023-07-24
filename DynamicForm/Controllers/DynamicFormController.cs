@@ -110,7 +110,7 @@ namespace DynamicForm.Controllers
                 {
                     foreach (var key in formCollection.Keys.Skip(1))
                     {
-                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='" + key + "' and Status = 1"  });
+                        var fieldsData = await _mediator.Send(new GetFieldDetailsById() { Where = "where TemplateFormId= " + formId + " and Name ='" + key + "' and Status = 1" });
                         if (fieldsData != null && fieldsData.Data.Count() > 0)
                         {
                             userFormValuesdata.TemplateFormId = formId;
@@ -128,17 +128,18 @@ namespace DynamicForm.Controllers
                                 }
                                 else
                                 {
-                                    result.error = true;                                    
+                                    result.error = true;
                                     result.message = "Please enter valid " + FieldName + ".";
                                     IsValidationSuccess = false;
                                     break;
                                 }
                             }
-                        }
-                        else
-                        {
-                            var command = new AddEditUserFormValuesCommand(userFormValuesdata);
-                            await _mediator.Send(command);                            
+                            else
+                            {
+                                var command = new AddEditUserFormValuesCommand(userFormValuesdata);
+                                await _mediator.Send(command);
+                                result.error = false;
+                            }
                         }
                     }
                 }

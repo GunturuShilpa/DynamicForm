@@ -2,6 +2,7 @@
 using Core.Services.Form.Commands;
 using Core.Services.Form.Queries;
 using Core.Services.Form.Requests;
+using DynamicForm.Filters;
 using DynamicForm.Models;
 using Infrastructure.Form.Entity;
 using Microsoft.AspNetCore.Mvc;
@@ -124,7 +125,14 @@ namespace DynamicForm.Controllers
             }
 
             recordsTotal = formModel.Count();
-            var data = formModel.Skip(skip).Take(pageSize).ToList();
+            var data = formModel.Skip(skip).Take(pageSize).Select(x => new {
+                x.Id,
+                x.Name,
+                x.Description,
+                x.Ordinal,
+                x.Status,
+                formLink = CustomQueryStringHelper.EncryptString("", "Index", "DynamicForm", new { id = x.Id })
+            }).ToList();
 
             return Json(new { draw = draw, recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data });
         }

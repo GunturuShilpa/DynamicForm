@@ -52,7 +52,9 @@ namespace DynamicForm.Controllers
             {
                 foreach (TemplateFieldsModel formFields in formModel)
                 {
-                    int FormFieldId = formModel.Where(x => x.ControlId == formFields.ControlId).First().Id;
+                    int FormFieldId = formModel.Where(x => x.Id == formFields.Id).First().Id;
+                    //int FormFieldId = formModel.Where(x => x.ControlId == formFields.ControlId).First().Id;
+                    
                     var getOptions = await _mediator.Send(new GetAllFieldOptionsQuery() { Where = "where TemplateFormFieldId= " + FormFieldId + "and status=1" });
                     List<FieldOptionsResponse> Options = (List<FieldOptionsResponse>)_mapper.Map<IEnumerable<FieldOptionsResponse>>(getOptions.Data);
                     if (Options != null && Options.Count() > 0)
@@ -68,7 +70,7 @@ namespace DynamicForm.Controllers
                         {
                             foreach (var fieldoption in Options)
                             {
-                                RadioButtonsOptions.Add(new SelectListItem { Value = fieldoption.Id.ToString(), Text = fieldoption.OptionValue.ToString(),Selected=fieldoption.Orientation});
+                                RadioButtonsOptions.Add(new SelectListItem { Value = fieldoption.TemplateFormFieldId.ToString(), Text = fieldoption.OptionValue.ToString(),Selected=fieldoption.Orientation});
                             }
                         }
                         if (formFields.ControlId == (int)ControlType.CheckBoxList)

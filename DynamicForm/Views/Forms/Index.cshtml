@@ -243,6 +243,7 @@
                                     html += ' <a class="btn btn-info btn-xs" onclick="return publishForm(\'' + row.id + '\')">Publish</a>';
                                 } else if (row.status == 2) {
                                     html += ' <a class="btn btn-warning btn-xs" onclick="return unPublishForm(\'' + row.id + '\')">UnPublish</a>';
+                                    html += ' <a class="btn btn-warning btn-xs" href="' + row.formLink + '">Link</a> ';
                                 }
                             }
                             return html;
